@@ -1,0 +1,34 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AmazingTech.InternSystem.Data
+{
+    [Table("InternInfo")]
+    public class InternInfo : Entity
+    {
+        public string UserId { get; set; }
+        public string HoTen { get; set; }
+        public DateTime NgaySinh { get; set; }
+        public bool GioiTinh { get; set; }
+        public string MSSV { get; set; }
+        public string EmailTruong { get; set; }
+        public string EmailCaNhan { get; set; }
+        public string Sdt { get; set; }
+        public string SdtNguoiThan { get; set; }
+        public string DiaChi { get; set; }
+        public decimal GPA { get; set; }
+        public string TrinhDoTiengAnh { get; set; }
+        public string ChungChi { get; set; }
+        public string LinkFacebook { get; set; }
+        public string LinkCV { get; set; }
+        public string NganhHoc { get; set; }
+        public string Status { get; set; }
+        public int Round { get; set; }
+        public string KiThucTapId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public User User { get; set; }
+        public ICollection<InternDuAn> InternDuAn { get; set; }
+        public KiThucTap KiThucTap { get; set; }
+    }
+}
