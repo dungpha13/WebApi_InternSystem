@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("LichPhongVan")]
-    public class LichPhongVan : Entity
+    public class LichPhongVan
     {
         [ForeignKey("NguoiPhongVan")]
         public string IdNguoiPhongVan { get; set; }

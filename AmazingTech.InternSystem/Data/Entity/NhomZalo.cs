@@ -13,5 +13,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string MentorId { get; set; }
         public User Mentor { get; set; }
 
+        public ICollection<UserNhomZalo> UserNhomZalos { get; set; } = new List<UserNhomZalo>();
     }
 }

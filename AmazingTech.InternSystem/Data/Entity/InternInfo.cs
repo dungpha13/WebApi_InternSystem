@@ -1,12 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AmazingTech.InternSystem.Data
+namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("InternInfo")]
     public class InternInfo : Entity
     {
+        [ForeignKey("User")]
         public string UserId { get; set; }
+        public User User { get; set; }
+
         public string HoTen { get; set; }
         public DateTime NgaySinh { get; set; }
         public bool GioiTinh { get; set; }
@@ -27,8 +30,8 @@ namespace AmazingTech.InternSystem.Data
         public string KiThucTapId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public User User { get; set; }
         public ICollection<InternDuAn> InternDuAn { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public KiThucTap KiThucTap { get; set; }
     }
 }

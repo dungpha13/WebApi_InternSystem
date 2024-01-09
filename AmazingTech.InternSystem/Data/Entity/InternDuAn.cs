@@ -1,4 +1,4 @@
-namespace AmazingTech.InternSystem.Data
+namespace AmazingTech.InternSystem.Data.Entity
 {
     public class InternDuAn : Entity
     {
