@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AmazingTech.InternSystem.Data
+namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("ThongBao")]
     public class ThongBao : Entity
@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Data
         [ForeignKey("NguoiGui")]
         public string IdNguoiGui { get; set; }
         public virtual User NguoiGui { get; set; }
-        
+
         public string TieuDe { get; set; }
 
         public string NoiDung { get; set; }

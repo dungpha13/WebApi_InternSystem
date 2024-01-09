@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AmazingTech.InternSystem.Data
+namespace AmazingTech.InternSystem.Data.Entity
 {
     public abstract class Entity
     {

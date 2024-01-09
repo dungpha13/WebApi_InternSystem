@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AmazingTech.InternSystem.Data
+namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("NhomZalo")]
     public class NhomZalo : Entity

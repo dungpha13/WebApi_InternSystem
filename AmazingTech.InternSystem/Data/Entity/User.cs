@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AmazingTech.InternSystem.Data
+namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("Users")]
     public class User
@@ -13,7 +13,7 @@ namespace AmazingTech.InternSystem.Data
         public bool EmailConfirmed { get; set; }
         public string Password { get; set; }
         public string Sdt { get; set; }
-        public bool SdtXacNhan {  get; set; }
+        public bool SdtXacNhan { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime DeletedTime { get; set; }
         public DateTime LastUpdatedTime { get; set; }
