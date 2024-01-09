@@ -8,7 +8,7 @@ namespace AmazingTech.InternSystem.Data
     {
         [Key]
         public string Id { get; set; }
-        public string HoTen { get; set; }
+        public string HoVaTen { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string Password { get; set; }
@@ -21,5 +21,6 @@ namespace AmazingTech.InternSystem.Data
         public DateTime ResetTokenExpires { get; set; }
         public string VerificationToken { get; set; }
         public DateTime VerificationTokenExpires { get; set; }
+        public virtual ICollection<Role> Users { get; set; } = new List<Role>();
     }
 }
