@@ -30,7 +30,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string KiThucTapId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public ICollection<InternDuAn> InternDuAn { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public KiThucTap KiThucTap { get; set; }
     }

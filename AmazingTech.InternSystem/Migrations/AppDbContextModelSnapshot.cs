@@ -31,6 +31,21 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("IdNguoiComment")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -38,6 +53,14 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("IdNguoiDuocComment")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -48,25 +71,90 @@ namespace AmazingTech.InternSystem.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNgheDuAn", b =>
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNghe", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DuAnId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdDuAn")
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TenCongNghe")
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdViTri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Ten")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DuAnId");
+                    b.HasIndex("IdViTri");
+
+                    b.ToTable("CongNghe");
+                });
+
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNgheDuAn", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdCongNghe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdDuAn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCongNghe");
+
+                    b.HasIndex("IdDuAn");
 
                     b.ToTable("CongNgheDuAn");
                 });
@@ -101,6 +189,29 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LeaderId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -122,39 +233,6 @@ namespace AmazingTech.InternSystem.Migrations
                     b.ToTable("DuAn");
                 });
 
-            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternDuAn", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DuAnId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdDuAn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdIntern")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternInfoId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ViTri")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DuAnId");
-
-                    b.HasIndex("InternInfoId");
-
-                    b.ToTable("InternDuAns");
-                });
-
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
                     b.Property<string>("Id")
@@ -163,6 +241,21 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("ChungChi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DiaChi")
                         .IsRequired()
@@ -192,6 +285,14 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("KiThucTapId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LinkCV")
                         .IsRequired()
@@ -253,9 +354,32 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("IdTruong")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("NgayBatDau")
                         .HasColumnType("datetime2");
@@ -281,15 +405,41 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("IdNguoiPhongVan")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("DaXacNhanMail")
                         .HasColumnType("bit");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DiaDiemPhongVan")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("KetQua")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ThoiGianPhongVan")
                         .HasColumnType("datetime2");
@@ -308,6 +458,29 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LinkNhom")
                         .IsRequired()
@@ -346,6 +519,21 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("IdNguoiGui")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -353,6 +541,14 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("IdNguoiNhan")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("NoiDung")
                         .IsRequired()
@@ -379,6 +575,29 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SoTuanThucTap")
                         .HasColumnType("int");
 
@@ -397,6 +616,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DeletedTime")
@@ -414,6 +634,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
@@ -446,16 +667,88 @@ namespace AmazingTech.InternSystem.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserDuAn", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdDuAn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ViTri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdDuAn");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserDuAn");
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserNhomZalo", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("IdNhomZalo")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("JoinedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("LeftTime")
@@ -502,6 +795,47 @@ namespace AmazingTech.InternSystem.Migrations
                     b.ToTable("UserTokens");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.ViTri", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LinkNhomZalo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ten")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ViTri");
+                });
+
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.Property<string>("RolesId")
@@ -515,6 +849,21 @@ namespace AmazingTech.InternSystem.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("UserRole", (string)null);
+                });
+
+            modelBuilder.Entity("UserViTri", b =>
+                {
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ViTrisId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UsersId", "ViTrisId");
+
+                    b.HasIndex("ViTrisId");
+
+                    b.ToTable("UserViTri");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.Comment", b =>
@@ -536,11 +885,32 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("NguoiDuocComment");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNghe", b =>
+                {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.ViTri", "ViTri")
+                        .WithMany()
+                        .HasForeignKey("IdViTri")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ViTri");
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNgheDuAn", b =>
                 {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.CongNghe", "CongNghe")
+                        .WithMany()
+                        .HasForeignKey("IdCongNghe")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.DuAn", "DuAn")
                         .WithMany()
-                        .HasForeignKey("DuAnId");
+                        .HasForeignKey("IdDuAn")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CongNghe");
 
                     b.Navigation("DuAn");
                 });
@@ -554,23 +924,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Leader");
-                });
-
-            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternDuAn", b =>
-                {
-                    b.HasOne("AmazingTech.InternSystem.Data.Entity.DuAn", "DuAn")
-                        .WithMany("InternDuAns")
-                        .HasForeignKey("DuAnId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AmazingTech.InternSystem.Data.Entity.InternInfo", "InternInfo")
-                        .WithMany("InternDuAn")
-                        .HasForeignKey("InternInfoId");
-
-                    b.Navigation("DuAn");
-
-                    b.Navigation("InternInfo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
@@ -650,6 +1003,25 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("NguoiNhan");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserDuAn", b =>
+                {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.DuAn", "DuAn")
+                        .WithMany("UserDuAns")
+                        .HasForeignKey("IdDuAn")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.User", "User")
+                        .WithMany("UserDuAns")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("DuAn");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserNhomZalo", b =>
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.NhomZalo", "NhomZalo")
@@ -693,16 +1065,29 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserViTri", b =>
+                {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.ViTri", null)
+                        .WithMany()
+                        .HasForeignKey("ViTrisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.DuAn", b =>
                 {
-                    b.Navigation("InternDuAns");
+                    b.Navigation("UserDuAns");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("InternDuAn");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.KiThucTap", b =>
@@ -733,6 +1118,8 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("ThongBao_NguoiGui");
 
                     b.Navigation("ThongBao_NguoiNhan");
+
+                    b.Navigation("UserDuAns");
 
                     b.Navigation("UserNhomZalos");
 

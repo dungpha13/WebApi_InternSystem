@@ -32,7 +32,7 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<KiThucTap> KiThucTaps { get; set; }
         public DbSet<TruongHoc> TruongHocs { get; set; }
         public DbSet<InternInfo> InternInfos { get; set; }
-        public DbSet<InternDuAn> InternDuAns { get; set; }
+        public DbSet<UserDuAn> InternDuAns { get; set; }
         public DbSet<DuAn> DuAns { get; set; }
         public DbSet<CongNgheDuAn> CongNgheDuAns { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
@@ -43,7 +43,8 @@ namespace AmazingTech.InternSystem.Data
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"),
+                options => options.EnableRetryOnFailure());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -103,6 +104,118 @@ namespace AmazingTech.InternSystem.Data
                 .WithMany(u => u.UserNhomZalos)
                 .HasForeignKey(zl => zl.IdNhomZalo)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserDuAn>()
+                .HasOne(zl => zl.User)
+                .WithMany(u => u.UserDuAns)
+                .HasForeignKey(zl => zl.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserDuAn>()
+                .HasOne(zl => zl.User)
+                .WithMany(u => u.UserDuAns)
+                .HasForeignKey(zl => zl.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Auto generate when inserted/updated
+
+            modelBuilder.Entity<Comment>()
+                .Property(e => e.CreatedTime)
+        .       ValueGeneratedOnAdd();
+            modelBuilder.Entity<Comment>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<CongNghe>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<CongNghe>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<CongNgheDuAn>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<CongNgheDuAn>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<DuAn>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<DuAn>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<InternInfo>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<InternInfo>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<KiThucTap>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<KiThucTap>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<LichPhongVan>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<LichPhongVan>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<ViTri>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<ViTri>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<UserNhomZalo>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<UserNhomZalo>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<UserDuAn>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<UserDuAn>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<User>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<TruongHoc>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<TruongHoc>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.Entity<ThongBao>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<ThongBao>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
+            
+            modelBuilder.Entity<NhomZalo>()
+                .Property(e => e.CreatedTime)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<NhomZalo>()
+                .Property(e => e.LastUpdatedTime)
+                .ValueGeneratedOnAddOrUpdate();
 
             base.OnModelCreating(modelBuilder);
         }
