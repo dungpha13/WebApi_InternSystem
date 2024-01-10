@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AmazingTech.InternSystem.Data.Enum;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmazingTech.InternSystem.Data.Entity
@@ -20,9 +21,9 @@ namespace AmazingTech.InternSystem.Data.Entity
 
         public bool DaXacNhanMail { get; set; }
 
-        public bool TrangThai { get; set; } // Chua PV/Da PV
+        public Status TrangThai { get; set; } // Chua PV/Da PV
 
-        public bool KetQua { get; set; } // Passed/Failed
+        public Result? KetQua { get; set; } // Passed/Failed
 
     }
 }
