@@ -1,4 +1,6 @@
+using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
+using AmazingTech.InternSystem.Services;
 
 namespace AmazingTech.InternSystem
 {
@@ -10,6 +12,7 @@ namespace AmazingTech.InternSystem
 
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
+            builder.Services.AddScoped<IFileReaderService, FileReaderService>();  // Register your ExcelReaderService
 
             builder.Services.AddControllers();
 
