@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazingTech.InternSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240110022824_Test")]
+    [Migration("20240110031753_Test")]
     partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -656,6 +656,10 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.Property<bool>("SdtXacNhan")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VerificationToken")
                         .IsRequired()

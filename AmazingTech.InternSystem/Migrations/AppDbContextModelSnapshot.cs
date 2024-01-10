@@ -655,6 +655,10 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<bool>("SdtXacNhan")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VerificationToken")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
