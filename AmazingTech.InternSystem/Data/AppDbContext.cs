@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace AmazingTech.InternSystem.Data
 {
-    public class AppDbContext : DbContext, IAppDbContext
+    public class AppDbContext : IdentityDbContext<User>, IAppDbContext
     {
         IConfiguration _configuration;
 
@@ -24,7 +25,6 @@ namespace AmazingTech.InternSystem.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<UserTokens> UserTokens { get; set; }
         public DbSet<NhomZalo> NhomZalos { get; set; }
         public DbSet<UserNhomZalo> UserNhomZalos { get; set; }
         public DbSet<LichPhongVan> LichPhongVans { get; set; }

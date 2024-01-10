@@ -6,7 +6,6 @@ namespace AmazingTech.InternSystem.Data.Entity
     [Table("UserNhomZalo")]
     public class UserNhomZalo : Entity
     {
-
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }
