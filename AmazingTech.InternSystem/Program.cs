@@ -1,4 +1,3 @@
-using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
@@ -21,7 +20,8 @@ namespace AmazingTech.InternSystem
 
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
-            builder.Services.AddScoped<IFileReaderService, FileReaderService>();  // Register your ExcelReaderService
+            builder.Services.AddScoped<IFileReaderService, FileReaderService>();
+            builder.Services.AddScoped<IInternRepository, InternRepository>();
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
@@ -37,7 +37,7 @@ namespace AmazingTech.InternSystem
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
             builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();

@@ -1,66 +1,76 @@
-using System.Text;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 
 namespace AmazingTech.InternSystem.Services
 {
     public class FileReaderService : IFileReaderService
     {
-        public List<InternInfo>? ReadFile(IFormFile file)
+        private readonly IInternRepository _repository;
+
+        public FileReaderService(IInternRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public IActionResult ReadFile(IFormFile file, string kiThucTapId)
+        {
+            _repository.AddListIntern(ReadFile(file), kiThucTapId);
+            return new OkResult();
+        }
+
+        public List<InternInfo> ReadFile(IFormFile file)
         {
             try
             {
-                List<InternInfo> list = new List<InternInfo>();
                 using (var stream = new MemoryStream())
                 {
                     file.CopyToAsync(stream);
+
                     using (var package = new ExcelPackage(stream))
                     {
                         var worksheet = package.Workbook.Worksheets[0];
 
-                        int rowCount = worksheet.Dimension.Rows;
-                        int colCount = worksheet.Dimension.Columns;
+                        // var start = worksheet.Dimension.Start;
+                        // var end = worksheet.Dimension.End;
 
-                        StringBuilder result = new StringBuilder();
-                        for (int row = 2; row <= rowCount; row++)
+                        IEnumerable<InternInfo> exportedPersons = worksheet.Cells["A1:O21"].ToCollectionWithMappings<InternInfo>(row =>
                         {
-                            DateTime parsedDate = new DateTime();
-                            DateTime.TryParseExact(worksheet.Cells[row, 3].Value.ToString()!, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate);
-                            InternInfo intern = new InternInfo
+                            var intern = new InternInfo
                             {
-                                HoTen = worksheet.Cells[row, 2].Value.ToString()!,
-                                NgaySinh = parsedDate,
-                                GioiTinh = bool.Parse(worksheet.Cells[row, 4].Value.ToString()!),
-                                MSSV = worksheet.Cells[row, 5].Value.ToString()!,
-                                EmailTruong = worksheet.Cells[row, 6].Value.ToString()!,
-                                EmailCaNhan = worksheet.Cells[row, 7].Value.ToString()!,
-                                SdtNguoiThan = worksheet.Cells[row, 8].Value.ToString()!,
-                                DiaChi = worksheet.Cells[row, 9].Value.ToString()!,
-                                GPA = decimal.Parse(worksheet.Cells[row, 10].Value.ToString()!),
-                                TrinhDoTiengAnh = worksheet.Cells[row, 11].Value.ToString()!,
-                                ChungChi = worksheet.Cells[row, 12].Value.ToString()!,
-                                LinkFacebook = worksheet.Cells[row, 13].Value.ToString()!,
-                                LinkCV = worksheet.Cells[row, 14].Value.ToString()!,
-                                NganhHoc = worksheet.Cells[row, 15].Value.ToString()!,
-                                Sdt = worksheet.Cells[row, 16].Value.ToString()!,
+                                HoTen = row.GetText("HoVaTen"),
+                                NgaySinh = DateTime.FromOADate(row.GetValue<double>("NgaySinh")),
+                                GioiTinh = row.GetText("GioiTinh") == "Nam" ? true : false,
+                                MSSV = row.GetText("MSSV"),
+                                EmailTruong = row.GetText("EmailTruong"),
+                                EmailCaNhan = row.GetText("EmailCaNhan"),
+                                Sdt = row.GetText("SDT"),
+                                DiaChi = row.GetText("DiaChi"),
+                                SdtNguoiThan = row.GetText("SdtNguoiThan"),
+                                GPA = row.GetValue<decimal>("GPA"),
+                                TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
+                                NganhHoc = row.GetText("NganhHoc"),
+                                ChungChi = "a",
+                                LinkFacebook = row.GetText("LinkFacebook"),
+                                LinkCV = row.GetText("LinkCV"),
                                 Round = 0,
                                 Status = "true",
-                                // KiThucTapId = worksheet.Cells[row, 15].Value.ToString()!,
-                                StartDate = DateTime.Now,
-                                EndDate = DateTime.Now,
                             };
 
-                            list.Add(intern);
-                        }
-                        return list;
+                            return intern;
+                        }, options => options.HeaderRow = 0);
+
+                        return exportedPersons.ToList();
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex);
-                return null;
+                Console.WriteLine(ex);
+                return new List<InternInfo>();
             }
         }
+
     }
 }

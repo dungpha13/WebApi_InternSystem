@@ -17,17 +17,16 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Route("sheet")]
-        public IActionResult ReadFile(IFormFile request)
+        [Route("sheet/{kiThucTapId}")]
+        public IActionResult ReadFile(IFormFile request, string kiThucTapId)
         {
             if (request == null || request.Length == 0)
             {
                 return BadRequest("No file uploaded");
             }
 
-            List<InternInfo> list = _service.ReadFile(request);
+            return _service.ReadFile(request, kiThucTapId);
 
-            return Ok(list);
         }
     }
 }
