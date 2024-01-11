@@ -7,7 +7,7 @@ namespace AmazingTech.InternSystem.Data.Entity
     public abstract class Entity
     {
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
         public string CreatedBy { get; set; }
         public string LastUpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
