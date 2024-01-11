@@ -1,43 +1,49 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories
 {
-    public class LichPhongVanRepository
+    public interface ILichPhongVanRepository
     {
-        private readonly AppDbContext _context;
+        public void addNewLichPhongVan(LichPhongVan entity);
 
-        public LichPhongVanRepository(AppDbContext context)
+        public List<LichPhongVan> GetLichPhongVanByIdNgPhongVan(String id);
+        public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(String id);
+    }
+    public class LichPhongVanRepository : ILichPhongVanRepository
+    {
+        private DbSet<LichPhongVan> _dbSet;
+        public LichPhongVanRepository()
         {
-            _context = context;
+
         }
-
-        public LichPhongVan GetLichPhongVanById(string id)
+        
+        public void addNewLichPhongVan(LichPhongVan entity)
         {
-            return _context.LichPhongVans.Find(id);
-        }
-        public void AddLichPhongVan(LichPhongVan lichPhongVan)
-        {
-            _context.LichPhongVans.Add(lichPhongVan);
-        }
-
-        public void UpdateLichPhongVan(LichPhongVan lichPhongVan)
-        {
-            _context.LichPhongVans.Update(lichPhongVan);
-        }
-
-        public void DeleteLichPhongVan(string id)
-        {
-            var lichPhongVan = _context.LichPhongVans.Find(id);
-
-            if (lichPhongVan != null)
+            using(var context = new AppDbContext())
             {
-                _context.LichPhongVans.Remove(lichPhongVan);
+                context.Set<LichPhongVan>().Add(entity);
+                context.SaveChanges();
             }
         }
-        public List<LichPhongVan> GetLichPhongVans()
+
+        public List<LichPhongVan> GetLichPhongVanByIdNgPhongVan(string id)
         {
-            return _context.LichPhongVans.ToList();
+            using (var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan == id).ToList();
+                return list;
+            }
+        }
+
+        public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(string id)
+        {
+            using ( var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == id).ToList();
+                return list;
+            }
         }
     }
 }
