@@ -8,16 +8,15 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string CreatedBy { get; set; }
-        public string LastUpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? LastUpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [DefaultValue("GETDATE()")]
-        public DateTime CreatedTime { get; set; } = DateTime.Now;
+        public DateTime? CreatedTime { get; set; } = DateTime.Now;
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime LastUpdatedTime { get; set; }
+        public DateTime? LastUpdatedTime { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? DeletedTime { get; set; }

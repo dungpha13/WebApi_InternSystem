@@ -14,9 +14,9 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string IdNguoiDuocPhongVan { get; set; }
         public virtual User NguoiDuocPhongVan { get; set; }
 
-        public DateTime ThoiGianPhongVan { get; set; }
+        public DateTime? ThoiGianPhongVan { get; set; }
 
-        public string DiaDiemPhongVan { get; set; }
+        public string? DiaDiemPhongVan { get; set; }
 
         public bool DaXacNhanMail { get; set; }
 

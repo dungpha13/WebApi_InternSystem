@@ -8,10 +8,9 @@ namespace AmazingTech.InternSystem.Data.Entity
 {
     public class User : IdentityUser
     {
-        public string HoVaTen { get; set; }
+        public string? HoVaTen { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [DefaultValue("GETDATE()")]
-        public DateTime CreatedTime { get; set; } = DateTime.Now;
+        public DateTime? CreatedTime { get; set; } = DateTime.Now;
         public DateTime? DeletedTime { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? LastUpdatedTime { get; set; }
