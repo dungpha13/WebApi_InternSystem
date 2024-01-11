@@ -23,5 +23,11 @@ namespace AmazingTech.InternSystem.Services
             List<LichPhongVan> lis = _lirepository.GetAllLichPhong().Where(u => u.IdNguoiDuocPhongVan.Equals(idNguoiDuocPhongVan)).ToList();
             return new OkObjectResult(lis);
         }
+
+        public IActionResult GetLichPhongByIdNguoiPhongVan(string idNguoiPhongVan)
+        {
+            List<LichPhongVan> lis = _lirepository.GetAllLichPhong().Where(u => u.IdNguoiDuocPhongVan.Equals(idNguoiPhongVan)).ToList();
+            return new OkObjectResult(lis);
+        }
     }
 }

@@ -28,5 +28,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             return _lichPhongService.GetLichPhongByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
         }
+
+        [HttpGet]
+        [Route("{idNguoiPhongVan}")]
+
+        public IActionResult GetLichPhongByIdNguoiPhongVan([FromRoute] string idNguoiPhongVan)
+        {
+            return _lichPhongService.GetLichPhongByIdNguoiDuocPhongVan(idNguoiPhongVan);
+        }
     }
 }

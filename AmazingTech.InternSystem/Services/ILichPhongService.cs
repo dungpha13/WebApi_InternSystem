@@ -6,5 +6,7 @@ namespace AmazingTech.InternSystem.Services
     {
         IActionResult GetAllLichPhong();
         IActionResult GetLichPhongByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
+
+        IActionResult GetLichPhongByIdNguoiPhongVan(string idNguoiPhongVan);
     }
 }
