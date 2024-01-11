@@ -21,7 +21,6 @@ namespace AmazingTech.InternSystem
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
             // builder.Services.AddScoped<IFileReaderService, FileReaderService>();
-            builder.Services.AddScoped<IInternRepository, InternRepository>();
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();

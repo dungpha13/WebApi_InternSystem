@@ -13,12 +13,10 @@ namespace AmazingTech.InternSystem.Repositories
     public class InternInfoRepository : IInternInfoRepo
     {
         private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
 
         public InternInfoRepository(AppDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<int> AddInternInfoAsync(InternInfo entity)

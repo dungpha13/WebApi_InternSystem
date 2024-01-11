@@ -16,7 +16,7 @@ namespace AmazingTech.InternSystem.Services
     {
         private readonly IInternInfoRepo _internRepo;
         private readonly UserManager<User> _userManager;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IKiThucTapRepository _kiThucTapRepository;
         private readonly AppDbContext _dbContext;
@@ -29,7 +29,7 @@ namespace AmazingTech.InternSystem.Services
         {
             _dbContext = dbContext;
             _internRepo = internRepo;
-            this.mapper = mapper;
+            _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _kiThucTapRepository = kiThucTapRepository;
