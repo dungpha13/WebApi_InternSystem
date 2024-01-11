@@ -1,11 +1,10 @@
-﻿using AmazingTech.InternSystem.Data.Enum;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("LichPhongVan")]
-    public class LichPhongVan
+    public class LichPhongVan : Entity
     {
         [ForeignKey("NguoiPhongVan")]
         public string IdNguoiPhongVan { get; set; }
@@ -21,9 +20,9 @@ namespace AmazingTech.InternSystem.Data.Entity
 
         public bool DaXacNhanMail { get; set; }
 
-        public Status TrangThai { get; set; } // Chua PV/Da PV
+        public bool TrangThai { get; set; } // Chua PV/Da PV
 
-        public Result? KetQua { get; set; } // Passed/Failed
+        public bool KetQua { get; set; } // Passed/Failed
 
     }
 }

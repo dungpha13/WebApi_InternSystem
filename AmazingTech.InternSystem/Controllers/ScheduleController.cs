@@ -16,7 +16,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpPost]
         [Route("api/[controller]/Send-Interview-Schedule")]
-        public IActionResult SendInterviewSchedule(LichPhongVanRequestModel model)
+        public IActionResult SendInterviewSchedule([FromBody]LichPhongVanRequestModel model)
         {
              _guiLichPhongVanService.AddLichPhongVan(model);
             return Ok("Send Successful");

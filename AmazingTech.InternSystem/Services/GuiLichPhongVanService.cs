@@ -25,7 +25,7 @@ namespace AmazingTech.InternSystem.Services
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
 
-            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string accountId = "1"; //= _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
@@ -45,7 +45,7 @@ namespace AmazingTech.InternSystem.Services
                 IdNguoiDuocPhongVan = InternId,
                 DiaDiemPhongVan = model.DiaDiemPhongVan,
                 ThoiGianPhongVan = model.ThoiGianPhongVan,
-                TrangThai = Data.Enum.Status.Not_Yet,
+                TrangThai = true,
             };
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
