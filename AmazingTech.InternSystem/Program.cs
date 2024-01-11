@@ -1,4 +1,7 @@
+using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
+using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Services;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +21,13 @@ namespace AmazingTech.InternSystem
 
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
+            builder.Services.AddScoped<IFileReaderService, FileReaderService>();  // Register your ExcelReaderService
+
+            builder.Services.AddScoped<ITruongService, TruongService>();
+            builder.Services.AddScoped<ITruongRepository, TruongRepository>();
+
+            builder.Services.AddScoped<IKiThucTapService, KiThucTapService>();
+            builder.Services.AddScoped<IKiThucTapRepository, KiThucTapRepository>();
 
             builder.Services.AddControllers();
 
