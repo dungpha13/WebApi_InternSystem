@@ -15,7 +15,7 @@ namespace AmazingTech.InternSystem
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
             builder.Services.AddScoped<ILichPhongVanRepository, LichPhongVanRepository>();
-            builder.Services.AddScoped<IGuiLichPhongVanService, GuiLichPhongVanService>();
+            builder.Services.AddScoped<IGuiLichPhongVanService, LichPhongVanService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddControllers();

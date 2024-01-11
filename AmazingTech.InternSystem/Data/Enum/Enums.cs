@@ -15,4 +15,9 @@
         Success,
         Failed
     }
+    public enum InterviewForm {
+        Online,
+        Offline
+
+    }
 }

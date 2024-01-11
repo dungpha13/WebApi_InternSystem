@@ -9,17 +9,18 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [ForeignKey("NguoiPhongVan")]
         public string IdNguoiPhongVan { get; set; }
-        public virtual User NguoiPhongVan { get; set; }
+        public virtual User? NguoiPhongVan { get; set; }
 
         [ForeignKey("NguoiDuocPhongVan")]
         public string IdNguoiDuocPhongVan { get; set; }
-        public virtual User NguoiDuocPhongVan { get; set; }
+        public virtual User? NguoiDuocPhongVan { get; set; }
 
         public DateTime ThoiGianPhongVan { get; set; }
 
         public string DiaDiemPhongVan { get; set; }
 
-        public bool DaXacNhanMail { get; set; }
+        public bool? DaXacNhanMail { get; set; }
+        public InterviewForm InterviewForm { get; set; }
 
         public Status TrangThai { get; set; } // Chua PV/Da PV
 

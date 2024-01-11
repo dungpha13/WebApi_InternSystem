@@ -30,6 +30,21 @@ namespace AmazingTech.InternSystem.Repositories
                 }
             }
         }
+        public string GetUserIdByUserName(string userName)
+        {
+            using (var context = new AppDbContext())
+            {
+                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == userName).FirstOrDefault();
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return user.Id;
+                }
+            }
+        }
     }
 
 }

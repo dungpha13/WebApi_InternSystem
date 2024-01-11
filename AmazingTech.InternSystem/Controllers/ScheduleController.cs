@@ -18,8 +18,28 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("api/[controller]/Send-Interview-Schedule")]
         public IActionResult SendInterviewSchedule(LichPhongVanRequestModel model)
         {
-             _guiLichPhongVanService.AddLichPhongVan(model);
-            return Ok("Send Successful");
+            try
+            {
+                _guiLichPhongVanService.AddLichPhongVan(model);
+                return Ok("Send Successful");
+            }catch(Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+           
+        }
+        [HttpGet]
+        [Route("api/[controller]/Get-Schedule-By-InterviewerLogin")]
+        public IActionResult GetScheduleByInterviewerLogin()
+        {
+            try
+            {
+               var result =  _guiLichPhongVanService.getLichPhongVanByIdNgPhongVan();
+                return Ok(result);
+            }catch(Exception ex)
+            {
+                return Ok(ex.Message);
+            }
         }
     }
 }

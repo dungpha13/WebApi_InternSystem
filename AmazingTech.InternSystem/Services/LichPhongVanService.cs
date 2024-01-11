@@ -8,14 +8,15 @@ namespace AmazingTech.InternSystem.Services
     public interface IGuiLichPhongVanService
     {
         public void AddLichPhongVan(LichPhongVanRequestModel model);
+        public List<LichPhongVan> getLichPhongVanByIdNgPhongVan();
     }
-    public class GuiLichPhongVanService : IGuiLichPhongVanService
+    public class LichPhongVanService : IGuiLichPhongVanService
     {
         private readonly IUserRepository _userRepository;
         private readonly ILichPhongVanRepository _lichPhongVanRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailService _emailService;
-        public GuiLichPhongVanService(ILichPhongVanRepository lichPhongVanRepository , IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService)
+        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository , IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService)
         {
             _emailService = emailService;
             _userRepository = userRepository;
@@ -30,9 +31,13 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan == null || model.Email == null)
+            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null)
             {
                 throw new BadHttpRequestException("You need to fill all information");
+            }
+            if(model.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17,0,0) || model.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
+            {
+                throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
             }
             var InternId = _userRepository.GetUserIdByEmail(model.Email);
             if (InternId == null)
@@ -46,6 +51,8 @@ namespace AmazingTech.InternSystem.Services
                 DiaDiemPhongVan = model.DiaDiemPhongVan,
                 ThoiGianPhongVan = model.ThoiGianPhongVan,
                 TrangThai = Data.Enum.Status.Not_Yet,
+                InterviewForm = model.interviewForm,
+                DaXacNhanMail = false
             };
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
@@ -56,6 +63,16 @@ namespace AmazingTech.InternSystem.Services
             string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
             _emailService.SendMail(context,model.Email,subject);
 
+        }
+        public List<LichPhongVan> getLichPhongVanByIdNgPhongVan()
+        {
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (accountId == null)
+            {
+                throw new BadHttpRequestException("You need to login to create an interview schedule");
+            }
+             return  _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(accountId);
+            
         }
     }
 }

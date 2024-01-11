@@ -7,6 +7,7 @@ namespace AmazingTech.InternSystem.Repositories
     public interface ILichPhongVanRepository
     {
         public void addNewLichPhongVan(LichPhongVan entity);
+        public List<LichPhongVan> GetLichPhongVansByIdNgPhongVan(string id);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -24,5 +25,14 @@ namespace AmazingTech.InternSystem.Repositories
                 context.SaveChanges();
             }
         }
+        public List<LichPhongVan> GetLichPhongVansByIdNgPhongVan(string id)
+        {
+            using (var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan == id).ToList();
+                return list;
+            }
+        }
+
     }
 }
