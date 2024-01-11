@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
-    [Table("Role")]
-    public class Role
+    public class Role : IdentityRole
     {
         [Key]
         public string Id { get; set; }
@@ -12,12 +12,12 @@ namespace AmazingTech.InternSystem.Data.Entity
         public virtual ICollection<User> Users { get; set; } = new List<User>();
     }
 
-    public enum Roles
+    public class Roles
     {
-        Admin,
-        HR,
-        Mentor,
-        Intern,
-        School
+        public const string ADMIN = "Admin";
+        public const string HR = "Hr";
+        public const string SCHOOL = "School";
+        public const string MENTOR = "Mentor";
+        public const string INTERN = "Intern";
     }
 }
