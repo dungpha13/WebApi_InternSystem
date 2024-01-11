@@ -4,6 +4,6 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public interface IInternRepository
     {
-        void AddListIntern(List<InternInfo> list, string kiThucTapId);
+        void AddListIntern(List<InternInfo> list);
     }
 }

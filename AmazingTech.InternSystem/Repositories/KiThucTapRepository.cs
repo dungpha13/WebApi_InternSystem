@@ -11,7 +11,8 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int AddKiThucTap(KiThucTap ki)
         {
-            using (var context = new AppDbContext()) {
+            using (var context = new AppDbContext())
+            {
                 context.Set<KiThucTap>().Add(ki);
                 return context.SaveChanges();
             }
@@ -31,9 +32,12 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public KiThucTap GetKiThucTap(string id)
+        public KiThucTap? GetKiThucTap(string id)
         {
-            throw new NotImplementedException();
+            using (var context = new AppDbContext())
+            {
+                return context.KiThucTaps.FirstOrDefault(ktt => ktt.Id == id);
+            }
         }
 
         public int UpdateKiThucTap(KiThucTap kiThucTap)

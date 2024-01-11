@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
@@ -12,6 +13,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string IdTruong { get; set; }
         public TruongHoc TruongHoc { get; set; }
 
+        [JsonIgnore]
         public ICollection<InternInfo> InternInfos { get; set; }
     }
 }

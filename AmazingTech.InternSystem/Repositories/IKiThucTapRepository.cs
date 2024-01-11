@@ -4,7 +4,7 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public interface IKiThucTapRepository
     {
-        KiThucTap GetKiThucTap(string id);
+        KiThucTap? GetKiThucTap(string id);
         List<KiThucTap> GetAllKiThucTaps();
         int AddKiThucTap(KiThucTap kiThucTap);
         int UpdateKiThucTap(KiThucTap kiThucTap);

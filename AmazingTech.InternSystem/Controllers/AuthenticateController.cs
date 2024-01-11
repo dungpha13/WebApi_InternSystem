@@ -96,9 +96,11 @@ namespace AmazingTech.InternSystem.Controllers
                 return BadRequest(new ErrorResponse { Succeeded = false, Errors = "This current user doesn't have a role." });
             }
 
-            var identityUser = new User { 
-                UserName = user.UserName, 
-                Id = user.Id  };
+            var identityUser = new User
+            {
+                UserName = user.UserName,
+                Id = user.Id
+            };
             var jwtToken = _tokenRepository.CreateJwtToken(identityUser, roles.ToList());
 
             if (string.IsNullOrEmpty(jwtToken))

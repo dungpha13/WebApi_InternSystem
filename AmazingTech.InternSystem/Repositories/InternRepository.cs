@@ -12,23 +12,13 @@ namespace AmazingTech.InternSystem.Repositories
             _context = context;
         }
 
-        public void AddListIntern(List<InternInfo> list, string kiThucTapId)
+        public void AddListIntern(List<InternInfo> list)
         {
-            var kiThucTap = _context.KiThucTaps.FirstOrDefault(ktt => ktt.Id == kiThucTapId);
-
-            if (kiThucTap is not null)
+            foreach (var item in list)
             {
-                foreach (var item in list)
-                {
-                    item.User = new User();
-                    item.KiThucTap = kiThucTap;
-                    item.StartDate = kiThucTap.NgayBatDau;
-                    item.EndDate = kiThucTap.NgayKetThuc;
-                    _context.InternInfos.Add(item);
-                }
-                _context.SaveChanges();
+                _context.InternInfos.Add(item);
             }
-
+            _context.SaveChanges();
         }
 
     }
