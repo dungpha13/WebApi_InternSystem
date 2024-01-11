@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmazingTech.InternSystem.Data.Entity
@@ -7,15 +8,15 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string CreatedBy { get; set; }
-        public string LastUpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? LastUpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime CreatedTime { get; set; }
+        public DateTime? CreatedTime { get; set; } = DateTime.Now;
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime LastUpdatedTime { get; set; }
+        public DateTime? LastUpdatedTime { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? DeletedTime { get; set; }

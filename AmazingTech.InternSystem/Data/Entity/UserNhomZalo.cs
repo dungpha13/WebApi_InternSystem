@@ -6,7 +6,6 @@ namespace AmazingTech.InternSystem.Data.Entity
     [Table("UserNhomZalo")]
     public class UserNhomZalo : Entity
     {
-
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }
@@ -15,7 +14,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string IdNhomZalo { get; set; }
         public NhomZalo NhomZalo { get; set; }
 
-        public DateTime JoinedTime { get; set; }
+        public DateTime? JoinedTime { get; set; }
 
         public DateTime? LeftTime { get; set; }
     }
