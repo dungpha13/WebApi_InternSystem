@@ -18,7 +18,12 @@ namespace AmazingTech.InternSystem.Controllers
         {
             _lichPhongVanService = lichPhongVanService;
         }
-
+        [HttpGet]
+        public ActionResult<List<LichPhongVan>> GetLichPhongVans()
+        {
+            var lichPhongVans = _lichPhongVanService.GetLichPhongVans();
+            return Ok(lichPhongVans);
+        }
 
         // Thêm các phương thức API ở đây
         [HttpPost("AddLichPhongVan")]
@@ -33,7 +38,9 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 _lichPhongVanService.AddLichPhongVan(lichPhongVan);
-                return StatusCode(201, "Lịch phỏng vấn đã được thêm mới");
+                //return StatusCode(201, "Lịch phỏng vấn đã được thêm mới");
+                return CreatedAtAction(nameof(GetLichPhongVans), new { id = lichPhongVan.Id }, "Lịch phỏng vấn đã được thêm mới");
+
             }
             catch (Exception ex) 
             {
@@ -59,6 +66,13 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 return StatusCode(500, "Đã xảy ra lỗi khi cập nhật lịch phỏng vấn");
             }
+        }
+
+        [HttpDelete("IdLichPhongVan")]
+        public ActionResult DeleteLichPhongVan(string id)
+        {
+            _lichPhongVanService.DeleteLichPhongVan(id);
+            return Ok();
         }
     }
 

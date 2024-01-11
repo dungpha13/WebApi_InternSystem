@@ -25,5 +25,19 @@ namespace AmazingTech.InternSystem.Repositories
         {
             _context.LichPhongVans.Update(lichPhongVan);
         }
+
+        public void DeleteLichPhongVan(string id)
+        {
+            var lichPhongVan = _context.LichPhongVans.Find(id);
+
+            if (lichPhongVan != null)
+            {
+                _context.LichPhongVans.Remove(lichPhongVan);
+            }
+        }
+        public List<LichPhongVan> GetLichPhongVans()
+        {
+            return _context.LichPhongVans.ToList();
+        }
     }
 }

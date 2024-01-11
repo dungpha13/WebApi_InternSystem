@@ -37,12 +37,12 @@ namespace AmazingTech.InternSystem.Services
 
         public void UpdateLichPhongVan(LichPhongVan lichPhongVan)
         {
-            // Thực hiện logic kiểm tra nếu cần
+           
             var existingLichPhongVan = _lichPhongVanRepository.GetLichPhongVanById(lichPhongVan.Id);
 
             if (existingLichPhongVan != null)
             {
-                // Xử lý logic nghiệp vụ khi lịch phỏng vấn đã tồn tại
+                
                 existingLichPhongVan.ThoiGianPhongVan = lichPhongVan.ThoiGianPhongVan;
                 existingLichPhongVan.DiaDiemPhongVan = lichPhongVan.DiaDiemPhongVan;
                 existingLichPhongVan.DaXacNhanMail = lichPhongVan.DaXacNhanMail;
@@ -51,11 +51,20 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
+        public void DeleteLichPhongVan(string id)
+        {
+            _lichPhongVanRepository.DeleteLichPhongVan(id);
+        }
+        public List<LichPhongVan> GetLichPhongVans()
+        {
+            return _lichPhongVanRepository.GetLichPhongVans();
+        }
 
 
 
-        
-        
+
+
+
 
     }
 }
