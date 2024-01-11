@@ -12,6 +12,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public User Leader { get; set; }
         public DateTime ThoiGianBatDau { get; set; }
         public DateTime ThoiGianKetThuc { get; set; }
-        public ICollection<UserDuAn> UserDuAns { get; set; }
+        public ICollection<UserDuAn> InternDuAns { get; set; }
     }
 }
