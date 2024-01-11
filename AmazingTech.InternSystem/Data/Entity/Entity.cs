@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmazingTech.InternSystem.Data.Entity
@@ -12,7 +13,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? DeletedBy { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime CreatedTime { get; set; }
+        [DefaultValue("GETDATE()")]
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastUpdatedTime { get; set; }
