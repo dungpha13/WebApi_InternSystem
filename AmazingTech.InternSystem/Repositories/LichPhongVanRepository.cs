@@ -10,6 +10,8 @@ namespace AmazingTech.InternSystem.Repositories
 
         public List<LichPhongVan> GetLichPhongVanByIdNgPhongVan(String id);
         public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(String id);
+
+        public void DeleteLichPhongVanByIdNguoiDuocPhongVan(string id);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -43,6 +45,19 @@ namespace AmazingTech.InternSystem.Repositories
             {
                 var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == id).ToList();
                 return list;
+            }
+        }
+
+        public void DeleteLichPhongVanByIdNguoiDuocPhongVan(string id)
+        {
+            using (var context = new AppDbContext())
+            {
+                var lichPhongVan = context.Set<LichPhongVan>().FirstOrDefault(x => x.IdNguoiDuocPhongVan == id);
+                if (lichPhongVan != null)
+                {
+                    context.Set<LichPhongVan>().Remove(lichPhongVan);
+                    context.SaveChanges();
+                }
             }
         }
     }

@@ -10,6 +10,8 @@ namespace AmazingTech.InternSystem.Services
         public void AddLichPhongVan(LichPhongVanRequestModel model);
         public List<LichPhongVan> getLichPhongVanByIdNgPhongVan();
         public List<LichPhongVan> getLichPhongVanByIdNguoiDuocPhongVan();
+
+        public void DeleteLichPhongVanByIdNguoiDuocPhongVan(string id);
     }
     public class GuiLichPhongVanService : IGuiLichPhongVanService
     {
@@ -80,6 +82,10 @@ namespace AmazingTech.InternSystem.Services
             }
             return _lichPhongVanRepository.GetLichPhongVanByIdNguoiDuocPhongVan(accountId);
 
+        }
+        public void DeleteLichPhongVanByIdNguoiDuocPhongVan(string id)
+        {
+            _lichPhongVanRepository.DeleteLichPhongVanByIdNguoiDuocPhongVan(id);
         }
     }
 }
