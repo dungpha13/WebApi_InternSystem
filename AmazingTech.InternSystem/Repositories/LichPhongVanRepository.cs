@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories
@@ -8,6 +9,8 @@ namespace AmazingTech.InternSystem.Repositories
     {
         public void addNewLichPhongVan(LichPhongVan entity);
         public List<LichPhongVan> GetLichPhongVansByIdNgPhongVan(string id);
+        public void UpdateLichPhongVan(LichPhongVan lichPhongVan);
+        public LichPhongVan GetScheduleByInterviewerIdAndIntervieweeId(string interviewerid, string intervieweeid);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -33,6 +36,20 @@ namespace AmazingTech.InternSystem.Repositories
                 return list;
             }
         }
-
+        public void UpdateLichPhongVan(LichPhongVan lichPhongVan)
+        {
+            using (var context = new AppDbContext())
+            {
+                context.Set<LichPhongVan>().Update(lichPhongVan);
+                context.SaveChanges();
+            }
+        }
+        public LichPhongVan GetScheduleByInterviewerIdAndIntervieweeId(string interviewerid , string intervieweeid)
+        {
+            using(var context = new AppDbContext())
+            {
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == intervieweeid && x.IdNguoiPhongVan == interviewerid).SingleOrDefault();
+            }
+        }
     }
 }

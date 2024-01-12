@@ -26,8 +26,8 @@ namespace AmazingTech.InternSystem.Services
         }
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
-
-            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string accountId = "1";
+            //string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
@@ -45,8 +45,14 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This Mail is not exist in database");
             }
+            var ScheduleisExist = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
+            if(ScheduleisExist != null)
+            {
+                throw new BadHttpRequestException("This intern already has interview schedule");
+            }
             var NewLichPhongVan = new LichPhongVan()
             {
+                Id = Guid.NewGuid().ToString("N"),
                 CreatedBy = _userRepository.GetUserById(accountId).HoVaTen,
                 IdNguoiPhongVan = accountId,
                 IdNguoiDuocPhongVan = InternId,
@@ -55,15 +61,19 @@ namespace AmazingTech.InternSystem.Services
                 TrangThai = Data.Enum.Status.Not_Yet,
                 InterviewForm = model.interviewForm,
                 DaXacNhanMail = false,
-                CreatedTime = DateTime.UtcNow,
-                
+                LastUpdatedBy = _userRepository.GetUserById(accountId).HoVaTen,
+                LastUpdatedTime = DateTime.Now,
+                CreatedTime = DateTime.Now,  
             };
+            var x = NewLichPhongVan.LastUpdatedBy;
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
                 "\r\n\r\nChúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi. Chúng tôi gửi đến bạn một số thông tin và tài liệu cần thiết:\r\n\r\n" +
                 "Đây là lịch phỏng vấn của bạn\r\n\r\n " +
                 model.ThoiGianPhongVan + "\r\n\r\n Đây là địa chỉ phỏng vấn\r\n\r\n" +
-                model.DiaDiemPhongVan + "\r\n\r\n";
+                model.DiaDiemPhongVan + "\r\n\r\n Hình thức phỏng vấn\r\n\r\n" +
+                model.interviewForm.ToString()
+                ;
             string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
             _emailService.SendMail(context,model.Email,subject);
 
@@ -76,7 +86,8 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-             var lichphongvan=   _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(accountId);
+         
+            var lichphongvan=   _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(accountId);
             var lichphongvanList = new List<LichPhongVanResponseModel>();
             foreach (var item in lichphongvan)
             {
@@ -95,5 +106,18 @@ namespace AmazingTech.InternSystem.Services
             }
             return lichphongvanList;
         }
+        //public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request)
+        //{
+        //    string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //    string InternId = _userRepository.GetUserIdByEmail(request.Email);
+        //    if(accountId == null)
+        //    {
+        //        throw new BadHttpRequestException("You need to login to update schedule");
+        //    }
+        //    if(InternId == null)
+        //    {
+        //        throw new BadHttpRequestException("This intern doesn't have any interview schedule");
+        //    }
+        //}
     }
 }

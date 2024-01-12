@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AmazingTech.InternSystem.Migrations
 {
-    public partial class init2 : Migration
+    public partial class init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -172,8 +172,8 @@ namespace AmazingTech.InternSystem.Migrations
                     DiaDiemPhongVan = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DaXacNhanMail = table.Column<bool>(type: "bit", nullable: true),
                     InterviewForm = table.Column<int>(type: "int", nullable: false),
-                    TrangThai = table.Column<int>(type: "int", nullable: true),
-                    KetQua = table.Column<int>(type: "int", nullable: true),
+                    TrangThai = table.Column<int>(type: "int", nullable: false),
+                    KetQua = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -389,7 +389,7 @@ namespace AmazingTech.InternSystem.Migrations
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable:true),
                     DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>

@@ -6,6 +6,7 @@ using System.Xml.Linq;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
+    [Table("Users")]
     public class User : IdentityUser
     {
         public string HoVaTen { get; set; }
