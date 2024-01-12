@@ -7,6 +7,7 @@ namespace AmazingTech.InternSystem.Repositories
     public interface IUserRepository
     {
         public string GetUserIdByEmail(string email);
+        public User GetUserById(string id);
     }
     public class UserRepository : IUserRepository
     {
@@ -17,10 +18,10 @@ namespace AmazingTech.InternSystem.Repositories
         }
         public string GetUserIdByEmail(string email)
         {
-            using(var context = new AppDbContext())
+            using (var context = new AppDbContext())
             {
-                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email).FirstOrDefault();    
-                if(user == null)
+                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email).FirstOrDefault();
+                if (user == null)
                 {
                     return null;
                 }
@@ -29,6 +30,37 @@ namespace AmazingTech.InternSystem.Repositories
                     return user.Id;
                 }
             }
+        }
+        public string GetUserIdByUserName(string userName)
+        {
+            using (var context = new AppDbContext())
+            {
+                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == userName).FirstOrDefault();
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return user.Id;
+                }
+            }
+        }
+        public User GetUserById(string id)
+        {
+            using (var context = new AppDbContext())
+            {
+                var user = context.Set<User>().AsNoTracking().Where(x => x.Id == id).FirstOrDefault();
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return user;
+                }
+            }
+
         }
     }
 

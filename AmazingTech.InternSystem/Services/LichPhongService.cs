@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,8 @@ namespace AmazingTech.InternSystem.Services
         IActionResult GetLichPhongByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
 
         IActionResult GetLichPhongByIdNguoiPhongVan(string idNguoiPhongVan);
+
+       
     }
     public class LichPhongService : ILichPhongService
     {
@@ -36,5 +39,8 @@ namespace AmazingTech.InternSystem.Services
             List<LichPhongVan> lis = _lirepository.GetAllLichPhong().Where(u => u.IdNguoiDuocPhongVan.Equals(idNguoiPhongVan)).ToList();
             return new OkObjectResult(lis);
         }
+
+       
+        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories
@@ -12,7 +13,7 @@ namespace AmazingTech.InternSystem.Repositories
         int AddLichPhong(LichPhongVan lich);
         int UpdateLichPhong(LichPhongVan lich);
         int DeleteLichPhong(string id);
-
+        
     }
     public class LichPhongRepository :ILichPhongRepository
     {
@@ -52,5 +53,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             throw new NotImplementedException();
         }
+         
+    
     }
 }

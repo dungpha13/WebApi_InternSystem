@@ -71,5 +71,20 @@ namespace AmazingTech.InternSystem.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("api/[controller]/Get-Interview-Schedule-ViewModel")]
+        public IActionResult GetInterviewScheduleViewModel()
+        {
+            try
+            {
+                var result = _guiLichPhongVanService.GetLichPhongVanViewModel();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

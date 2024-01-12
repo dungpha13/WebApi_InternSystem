@@ -1,6 +1,6 @@
 ﻿namespace AmazingTech.InternSystem.Data.Enum
 {
-  
+
     public enum Enums
     {
 
@@ -15,4 +15,11 @@
         Success,
         Failed
     }
+    public enum InterviewForm
+    {
+        Online,
+        Offline
+
+    }
+
 }
