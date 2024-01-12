@@ -21,7 +21,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
         public virtual ICollection<ViTri> ViTris { get; set; } = new List<ViTri>();
         public ICollection<Comment> Comments { get; set; }
-        public InternInfo? InternInfo { get; set; }
+        //public InternInfo? InternInfo { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_PhongVan { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_DuocPhongVan { get; set; }
         public ICollection<ThongBao> ThongBao_NguoiGui { get; set; }

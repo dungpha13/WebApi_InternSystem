@@ -13,6 +13,11 @@ using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
 using AutoMapper;
+using AmazingTech.InternSystem.Models;
+using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Services;
+using Microsoft.Extensions.Configuration;
+using swp391_be.API.Services.Name;
 
 namespace AmazingTech.InternSystem
 {
@@ -39,9 +44,17 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<ITechRepo, TechRepository>();
             builder.Services.AddScoped<ITechService, TechService>();
 
+            builder.Services.AddScoped<ILichPhongVanRepository, LichPhongVanRepository>();
+            builder.Services.AddScoped<IGuiLichPhongVanService, LichPhongVanService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<INameService, NameService>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+          
+            EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
