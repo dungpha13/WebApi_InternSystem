@@ -57,7 +57,8 @@ namespace swp391_be.API.Repositories.Tokens
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("username", user.UserName),
-                    new Claim(ClaimTypes.Role, roles[0])
+                    new Claim(ClaimTypes.Role, roles[0]),
+                    new Claim("id",user.Id)
 
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
