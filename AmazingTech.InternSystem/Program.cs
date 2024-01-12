@@ -25,13 +25,16 @@ namespace AmazingTech.InternSystem
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
             builder.Services.AddDbContext<AppDbContext>();
-            builder.Services.AddScoped<IFileReaderService, FileReaderService>();
+            
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
 
             builder.Services.AddScoped<IKiThucTapService, KiThucTapService>();
             builder.Services.AddScoped<IKiThucTapRepository, KiThucTapRepository>();
+
+            builder.Services.AddScoped<IInternInfoService, InternInfoService>();
+            builder.Services.AddScoped<IInternInfoRepo, InternInfoRepository>();
 
             builder.Services.AddScoped<ITechRepo, TechRepository>();
             builder.Services.AddScoped<ITechService, TechService>();
@@ -46,7 +49,7 @@ namespace AmazingTech.InternSystem
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
             builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
