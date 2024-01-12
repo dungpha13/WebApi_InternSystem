@@ -33,7 +33,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public async Task<List<CongNghe>> GetAllCongNgheAsync()
         {
-            return await _context.CongNghes.ToListAsync();
+            return await _context.CongNghes.Where(x => x.DeletedBy == null).ToListAsync();
            
         }
 
