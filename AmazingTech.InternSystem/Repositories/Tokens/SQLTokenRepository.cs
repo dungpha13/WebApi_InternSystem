@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
 namespace swp391_be.API.Repositories.Tokens
@@ -53,7 +54,8 @@ namespace swp391_be.API.Repositories.Tokens
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("username", user.UserName),
-                    new Claim(ClaimTypes.Role, roles[0])
+                    new Claim(ClaimTypes.Role, roles[0]),
+                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
 
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),

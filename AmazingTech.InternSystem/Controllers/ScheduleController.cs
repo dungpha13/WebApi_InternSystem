@@ -41,5 +41,19 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok(ex.Message);
             }
         }
+        [HttpPut]
+        [Route("api/[controller]/Change-schudele")]
+        public IActionResult UpdateScheduel(LichPhongVanRequestModel model)
+        {
+            try
+            {
+                var result = _guiLichPhongVanService.UpdateSchedule(model);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
     }
 }

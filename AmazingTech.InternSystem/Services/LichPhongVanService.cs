@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Model;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Repositories;
@@ -10,6 +11,7 @@ namespace AmazingTech.InternSystem.Services
     {
         public void AddLichPhongVan(LichPhongVanRequestModel model);
         public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan();
+        public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request);
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -26,8 +28,8 @@ namespace AmazingTech.InternSystem.Services
         }
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
-            string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
-            //string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
@@ -65,7 +67,7 @@ namespace AmazingTech.InternSystem.Services
                 LastUpdatedTime = DateTime.Now,
                 CreatedTime = DateTime.Now,  
             };
-            var x = NewLichPhongVan.LastUpdatedBy;
+           
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
                 "\r\n\r\nChúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi. Chúng tôi gửi đến bạn một số thông tin và tài liệu cần thiết:\r\n\r\n" +
@@ -81,8 +83,8 @@ namespace AmazingTech.InternSystem.Services
         public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan()
 
         {
-            string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
-            //string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //string accountId = "1";
             if (accountId == null)
             {
@@ -108,18 +110,49 @@ namespace AmazingTech.InternSystem.Services
             }
             return lichphongvanList;
         }
-        //public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request)
-        //{
-        //    string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        //    string InternId = _userRepository.GetUserIdByEmail(request.Email);
-        //    if (accountId == null)
-        //    {
-        //        throw new BadHttpRequestException("You need to login to update schedule");
-        //    }
-        //    if (InternId == null)
-        //    {
-        //        throw new BadHttpRequestException("This intern doesn't have any interview schedule");
-        //    }
-        //}
+        public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request)
+        {
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string InternId = _userRepository.GetUserIdByEmail(request.Email);
+            if (accountId == null)
+            {
+                throw new BadHttpRequestException("You need to login to update schedule");
+            }
+            if (InternId == null)
+            {
+                throw new BadHttpRequestException("This intern doesn't exist in data");
+            }
+            var lichphongvan = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
+            if(lichphongvan == null)
+            {
+                throw new BadHttpRequestException("This intern doesn't have any interview schedule");
+            }
+            if(lichphongvan.IdNguoiPhongVan != accountId)
+            {
+                throw new BadHttpRequestException("You aren't the one who created this interview schedule");
+            }
+            lichphongvan.InterviewForm = request.interviewForm;
+            lichphongvan.LastUpdatedTime = DateTime.Now;
+            lichphongvan.ThoiGianPhongVan = request.ThoiGianPhongVan;
+            lichphongvan.DiaDiemPhongVan = request.DiaDiemPhongVan;
+            _lichPhongVanRepository.UpdateLichPhongVan(lichphongvan);
+            string content = "Kính gửi bạn "+_userRepository.GetUserById(InternId).HoVaTen+",\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành xin lỗi khi phải thông báo về việc dời lại lịch phỏng vấn. \r\nĐây là lịch phỏng vấn mới của bạn " +
+                request.ThoiGianPhongVan + "\r\n\r\n Hình thức phỏng vấn " + request.interviewForm.ToString() + "\r\n\r\n Địa điểm phỏng vấn " +
+                request.DiaDiemPhongVan + "\r\n\r\n Xin cảm ơn sự hiểu biết và sự linh hoạt của bạn trong việc xem xét yêu cầu của tôi. Xin vui lòng cho chúng tôi  biết nếu có bất kỳ điều gì cần được điều chỉnh hoặc có bất kỳ thông tin nào khác chúng tôi cần cung cấp.\r\n\r\nTrân trọng";
+            string subject = "[AMAZINGTECH - HR] THƯ THÔNG BÁO DỜI LỊCH PHỎNG VẤN";
+            _emailService.SendMail(content, request.Email,subject);
+            var lichphongvannew = new LichPhongVanResponseModel()
+            {
+                ID = lichphongvan.Id,
+                DiaDiemPhongVan = request.DiaDiemPhongVan,
+                NguoiDuocPhongVan = _userRepository.GetUserById(InternId).HoVaTen,
+                NguoiPhongVan = _userRepository.GetUserById(accountId).HoVaTen,
+                InterviewForm = request.interviewForm.ToString(),
+                ThoiGianPhongVan = request.ThoiGianPhongVan,
+                TrangThai = Status.Not_Yet.ToString(),
+            };
+            return lichphongvannew;
+
+        }
     }
 }
