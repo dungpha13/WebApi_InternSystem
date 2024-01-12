@@ -1,4 +1,3 @@
-using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
@@ -10,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using swp391_be.API.Repositories.Tokens;
 using System.Text;
+using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Services;
+using AutoMapper;
 
 namespace AmazingTech.InternSystem
 {
@@ -21,7 +24,10 @@ namespace AmazingTech.InternSystem
 
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
-            builder.Services.AddScoped<IFileReaderService, FileReaderService>();  // Register your ExcelReaderService
+            builder.Services.AddScoped<ICongNgheRepo, TechRepository>();
+            builder.Services.AddScoped<ITechService, TechService>();
+            builder.Services.AddDbContext<AppDbContext>();
+            builder.Services.AddScoped<IFileReaderService, FileReaderService>();
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
@@ -34,6 +40,8 @@ namespace AmazingTech.InternSystem
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+           
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -103,8 +111,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
-
+          
             app.MapControllers();
 
             app.Run();
