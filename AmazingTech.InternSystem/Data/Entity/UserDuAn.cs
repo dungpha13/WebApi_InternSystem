@@ -5,10 +5,10 @@ namespace AmazingTech.InternSystem.Data.Entity
     [Table("UserDuAn")]
     public class UserDuAn : Entity
     {
-        [ForeignKey("User")]
+        [ForeignKey("UserId")]
         public string UserId { get; set; }
 
-        [ForeignKey("DuAn")]
+        [ForeignKey("IdDuAn")]
         public string IdDuAn { get; set; }
         public string ViTri { get; set; }
         public User User { get; set; }

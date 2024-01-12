@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Model;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Repositories;
 using System.Security.Claims;
@@ -8,7 +9,7 @@ namespace AmazingTech.InternSystem.Services
     public interface IGuiLichPhongVanService
     {
         public void AddLichPhongVan(LichPhongVanRequestModel model);
-        public List<LichPhongVan> getLichPhongVanByIdNgPhongVan();
+        public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan();
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -46,13 +47,16 @@ namespace AmazingTech.InternSystem.Services
             }
             var NewLichPhongVan = new LichPhongVan()
             {
+                CreatedBy = _userRepository.GetUserById(accountId).HoVaTen,
                 IdNguoiPhongVan = accountId,
                 IdNguoiDuocPhongVan = InternId,
                 DiaDiemPhongVan = model.DiaDiemPhongVan,
                 ThoiGianPhongVan = model.ThoiGianPhongVan,
                 TrangThai = Data.Enum.Status.Not_Yet,
                 InterviewForm = model.interviewForm,
-                DaXacNhanMail = false
+                DaXacNhanMail = false,
+                CreatedTime = DateTime.UtcNow,
+                
             };
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
@@ -64,15 +68,32 @@ namespace AmazingTech.InternSystem.Services
             _emailService.SendMail(context,model.Email,subject);
 
         }
-        public List<LichPhongVan> getLichPhongVanByIdNgPhongVan()
+        public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan()
         {
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //string accountId = "1";
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-             return  _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(accountId);
-            
+             var lichphongvan=   _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(accountId);
+            var lichphongvanList = new List<LichPhongVanResponseModel>();
+            foreach (var item in lichphongvan)
+            {
+                var lichphongvanrespone = new LichPhongVanResponseModel
+                {
+                    ID = item.Id,
+                    DiaDiemPhongVan = item.DiaDiemPhongVan,
+                    InterviewForm = item.InterviewForm.ToString(),
+                    KetQua = item.KetQua.ToString(),
+                    NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
+                    ThoiGianPhongVan = item.ThoiGianPhongVan,
+                    TrangThai = item.TrangThai.ToString(),
+                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen
+                };
+                lichphongvanList.Add(lichphongvanrespone);
+            }
+            return lichphongvanList;
         }
     }
 }

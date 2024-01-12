@@ -7,7 +7,7 @@
     }
     public enum Status
     {
-        Not_Yet,
+        Not_Yet ,
         Done
     }
     public enum Result
@@ -20,4 +20,5 @@
         Offline
 
     }
+
 }

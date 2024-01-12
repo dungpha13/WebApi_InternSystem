@@ -103,6 +103,7 @@ namespace AmazingTech.InternSystem.Data
                 .WithMany(u => u.UserNhomZalos)
                 .HasForeignKey(zl => zl.IdNhomZalo)
                 .OnDelete(DeleteBehavior.NoAction);
+         
 
             base.OnModelCreating(modelBuilder);
         }
