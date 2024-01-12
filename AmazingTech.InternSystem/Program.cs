@@ -35,6 +35,9 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IKiThucTapService, KiThucTapService>();
             builder.Services.AddScoped<IKiThucTapRepository, KiThucTapRepository>();
 
+            builder.Services.AddScoped<IInternInfoService, InternInfoService>();
+            builder.Services.AddScoped<IInternInfoRepo, InternInfoRepository>();
+
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,7 +48,7 @@ namespace AmazingTech.InternSystem
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
             builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
