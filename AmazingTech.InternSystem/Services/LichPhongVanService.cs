@@ -73,6 +73,34 @@ namespace AmazingTech.InternSystem.Services
 
         }
 
+        public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan()
+        {
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //string accountId = "1";
+            if (accountId == null)
+            {
+                throw new BadHttpRequestException("You need to login to create an interview schedule");
+            }
+            var lichphongvan = _lichPhongVanRepository.GetLichPhongVanByIdNgPhongVan(accountId);
+            var lichphongvanList = new List<LichPhongVanResponseModel>();
+            foreach (var item in lichphongvan)
+            {
+                var lichphongvanrespone = new LichPhongVanResponseModel
+                {
+                    ID = item.Id,
+                    DiaDiemPhongVan = item.DiaDiemPhongVan,
+                    InterviewForm = item.InterviewForm.ToString(),
+                    KetQua = item.KetQua.ToString(),
+                    NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
+                    ThoiGianPhongVan = item.ThoiGianPhongVan,
+                    TrangThai = item.TrangThai.ToString(),
+                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen
+                };
+                lichphongvanList.Add(lichphongvanrespone);
+            }
+            return lichphongvanList;
+        }
+
 
         public List<LichPhongVanViewModel> getLichPhongVanByIdNguoiDuocPhongVan()
         {
@@ -129,32 +157,6 @@ namespace AmazingTech.InternSystem.Services
 
         
 
-        public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan()
-        {
-            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //string accountId = "1";
-            if (accountId == null)
-            {
-                throw new BadHttpRequestException("You need to login to create an interview schedule");
-            }
-            var lichphongvan = _lichPhongVanRepository.GetLichPhongVanByIdNgPhongVan(accountId);
-            var lichphongvanList = new List<LichPhongVanResponseModel>();
-            foreach (var item in lichphongvan)
-            {
-                var lichphongvanrespone = new LichPhongVanResponseModel
-                {
-                    ID = item.Id,
-                    DiaDiemPhongVan = item.DiaDiemPhongVan,
-                    InterviewForm = item.InterviewForm.ToString(),
-                    KetQua = item.KetQua.ToString(),
-                    NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
-                    ThoiGianPhongVan = item.ThoiGianPhongVan,
-                    TrangThai = item.TrangThai.ToString(),
-                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen
-                };
-                lichphongvanList.Add(lichphongvanrespone);
-            }
-            return lichphongvanList;
-        }
+        
     }
 }
