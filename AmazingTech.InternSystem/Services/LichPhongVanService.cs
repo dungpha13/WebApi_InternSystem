@@ -105,7 +105,7 @@ namespace AmazingTech.InternSystem.Services
         public List<LichPhongVanViewModel> getLichPhongVanByIdNguoiDuocPhongVan()
         {
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //string accountId = "1";
+           
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
