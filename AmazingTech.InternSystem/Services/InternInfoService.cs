@@ -146,10 +146,16 @@ namespace AmazingTech.InternSystem.Services
                     {
                         var worksheet = package.Workbook.Worksheets[0];
 
-                        // var start = worksheet.Dimension.Start;
-                        // var end = worksheet.Dimension.End;
+                        // worksheet.Cells["C2:C21"].Style.Numberformat.Format = "d-mmm-yy";
 
-                        IEnumerable<InternInfo> exportedPersons = worksheet.Cells["A1:O21"].ToCollectionWithMappings<InternInfo>(row =>
+                        var startRow = worksheet.Dimension.Start.Row;
+                        var startCol = worksheet.Dimension.Start.Column;
+                        var endRow = worksheet.Dimension.End.Row;
+                        var endCol = worksheet.Dimension.End.Row;
+
+                        var range = worksheet.Cells["A1:O21"];
+
+                        List<InternInfo> internList = range.ToCollectionWithMappings<InternInfo>(row =>
                         {
                             var intern = new InternInfo
                             {
@@ -175,7 +181,7 @@ namespace AmazingTech.InternSystem.Services
                             return intern;
                         }, options => options.HeaderRow = 0);
 
-                        return exportedPersons.ToList();
+                        return internList;
                     }
                 }
             }
