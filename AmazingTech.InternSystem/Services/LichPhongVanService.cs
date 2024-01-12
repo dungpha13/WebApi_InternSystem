@@ -110,11 +110,11 @@ namespace AmazingTech.InternSystem.Services
         //{
         //    string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         //    string InternId = _userRepository.GetUserIdByEmail(request.Email);
-        //    if(accountId == null)
+        //    if (accountId == null)
         //    {
         //        throw new BadHttpRequestException("You need to login to update schedule");
         //    }
-        //    if(InternId == null)
+        //    if (InternId == null)
         //    {
         //        throw new BadHttpRequestException("This intern doesn't have any interview schedule");
         //    }
