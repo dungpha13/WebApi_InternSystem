@@ -4,6 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Services
 {
+    public interface ILichPhongService
+    {
+        IActionResult GetAllLichPhong();
+        IActionResult GetLichPhongByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
+
+        IActionResult GetLichPhongByIdNguoiPhongVan(string idNguoiPhongVan);
+    }
     public class LichPhongService : ILichPhongService
     {
         private ILichPhongRepository _lirepository;

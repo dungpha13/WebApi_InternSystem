@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class LichPhongController : ControllerBase
     {
@@ -16,13 +16,14 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
+        [Route("api/[controller]/Get-Schedule")]
         public IActionResult GetAllLichPhong()
         {
             return _lichPhongService.GetAllLichPhong();
         }
 
         [HttpGet]
-        [Route("{idNguoiDuocPhongVan}")]
+        [Route("api/[controller]/GET-LICHBYIDNGPHONGVAN")]
 
         public IActionResult GetLichPhongByIdNguoiDuocPhongVan([FromRoute] string idNguoiDuocPhongVan) 
         {
@@ -30,7 +31,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Route("{idNguoiPhongVan}")]
+        [Route("api/[controller]/-LICHBYIDNGUOIDUOCPHONGVAN")]
 
         public IActionResult GetLichPhongByIdNguoiPhongVan([FromRoute] string idNguoiPhongVan)
         {

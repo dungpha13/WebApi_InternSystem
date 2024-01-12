@@ -78,7 +78,7 @@ namespace AmazingTech.InternSystem.Services
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (accountId == null)
             {
-                throw new BadHttpRequestException("You need to login to create an interview schedule");
+                throw new BadHttpRequestException("You chua login");
             }
             return _lichPhongVanRepository.GetLichPhongVanByIdNguoiDuocPhongVan(accountId);
 

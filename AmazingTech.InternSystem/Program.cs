@@ -19,6 +19,8 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddControllers();
+            builder.Services.AddScoped<ILichPhongRepository, LichPhongRepository>();
+            builder.Services.AddScoped<ILichPhongService, LichPhongService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
           
