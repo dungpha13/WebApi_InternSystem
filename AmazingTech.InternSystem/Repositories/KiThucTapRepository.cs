@@ -22,25 +22,17 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public int DeleteKiThucTap(string id)
+        public int DeleteKiThucTap(KiThucTap kiThucTap)
         {
-            var kiThucTap = _context.KiThucTaps.FirstOrDefault(ktt => ktt.Id == id);
-
-            if (kiThucTap is not null)
-            {
-                _context.KiThucTaps.Remove(kiThucTap);
-                return _context.SaveChanges();
-            }
-
-            return 0;
-
+            _context.KiThucTaps.Remove(kiThucTap);
+            return _context.SaveChanges();
         }
 
         public List<KiThucTap> GetAllKiThucTaps()
         {
             using (var context = new AppDbContext())
             {
-                var kis = context.Set<KiThucTap>().ToList();
+                var kis = context.Set<KiThucTap>().Include(ki => ki.TruongHoc).ToList();
                 return kis;
             }
         }
@@ -55,15 +47,8 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int UpdateKiThucTap(KiThucTap kiThucTap)
         {
-            var existingKiThuTap = _context.KiThucTaps.FirstOrDefault(ktt => ktt.Id == kiThucTap.Id);
-
-            if (existingKiThuTap is not null)
-            {
-                _context.Entry(existingKiThuTap).CurrentValues.SetValues(kiThucTap);
-                return _context.SaveChanges();
-            }
-
-            return 0;
+            _context.KiThucTaps.Update(kiThucTap);
+            return _context.SaveChanges();
         }
     }
 }

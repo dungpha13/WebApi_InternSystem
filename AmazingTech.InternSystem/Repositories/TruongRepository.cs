@@ -6,21 +6,26 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public class TruongRepository : ITruongRepository
     {
-        private DbSet<TruongHoc> _DbSet;
+        private readonly AppDbContext _context;
 
-        public TruongRepository() { }
+        public TruongRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public int AddTruong(TruongHoc truong)
         {
-            using (var context = new AppDbContext()) {
+            using (var context = new AppDbContext())
+            {
                 context.Set<TruongHoc>().Add(truong);
                 return context.SaveChanges();
             }
         }
 
-        public int DeleteTruong(string id)
+        public int DeleteTruong(TruongHoc truong)
         {
-            throw new NotImplementedException();
+            _context.TruongHocs.Remove(truong);
+            return _context.SaveChanges();
         }
 
         public List<TruongHoc> GetAllTruongs()
@@ -33,14 +38,15 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public TruongHoc GetTruong(string id)
+        public TruongHoc? GetTruong(string id)
         {
-            throw new NotImplementedException();
+            return _context.TruongHocs.FirstOrDefault(t => t.Id == id);
         }
 
         public int UpdateTruong(TruongHoc truong)
         {
-            throw new NotImplementedException();
+            _context.TruongHocs.Update(truong);
+            return _context.SaveChanges();
         }
     }
 }

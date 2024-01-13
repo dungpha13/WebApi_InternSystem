@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
@@ -7,6 +8,8 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         public string? Ten { get; set; }
         public int? SoTuanThucTap { get; set; }
+
+        [JsonIgnore]
         public ICollection<KiThucTap> KiThucTaps { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace AmazingTech.InternSystem.Repositories
         List<KiThucTap> GetAllKiThucTaps();
         int AddKiThucTap(KiThucTap kiThucTap);
         int UpdateKiThucTap(KiThucTap kiThucTap);
-        int DeleteKiThucTap(string id);
+        int DeleteKiThucTap(KiThucTap kiThucTap);
     }
 }
