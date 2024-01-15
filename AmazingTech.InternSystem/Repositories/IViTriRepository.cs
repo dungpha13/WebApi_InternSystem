@@ -1,6 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 
-namespace AmazingTech.InternSystem.Repo
+namespace AmazingTech.InternSystem.Repositories
 {
     public interface IViTriRepository 
     {

@@ -5,7 +5,7 @@ namespace AmazingTech.InternSystem.Service
 {
     public interface IViTriService
     {
-        List<ViTri> GetViTriList();
+        Task<List<ViTri>> GetViTriList();
 
     }
 }

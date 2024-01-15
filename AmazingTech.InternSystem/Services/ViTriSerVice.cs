@@ -16,9 +16,9 @@ namespace AmazingTech.InternSystem.Services
             _VitriRepo = serviceProvider.GetRequiredService<IViTriRepository>();
         }
 
-        public List<ViTri> GetViTriList()
+        public async Task<List<ViTri>> GetViTriList()
         {
-            List<ViTri> viTris = _VitriRepo.GetAllViTris();
+            List<ViTri> viTris = await _VitriRepo.GetAllViTriAsync();
             return viTris;
         }
     }

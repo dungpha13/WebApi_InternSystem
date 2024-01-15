@@ -1,8 +1,9 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data;
 using Microsoft.EntityFrameworkCore;
+using AmazingTech.InternSystem.Repositories;
 
-namespace AmazingTech.InternSystem.Repo
+namespace AmazingTech.InternSystem.Repositories
 {
     public class ViTriRepository : IViTriRepository
     {
