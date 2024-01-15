@@ -36,40 +36,40 @@ namespace AmazingTech.InternSystem.Repositories
             entity.DeletedTime = currentTime;
 
             return await _context.SaveChangesAsync();
-            
+
         }
 
         public async Task<List<InternInfo>> GetAllInternsInfoAsync()
         {
-                var interns = await _context.InternInfos!
-                    .Where(intern => intern.DeletedBy == null)
-                    .OrderByDescending(intern => intern.CreatedTime)
-                    .Include(intern => intern.User)
-                    .ThenInclude(user => user.ViTris)
-                    .ToListAsync();
-                return interns;
+            var interns = await _context.InternInfos!
+                .Where(intern => intern.DeletedBy == null)
+                .OrderByDescending(intern => intern.CreatedTime)
+                .Include(intern => intern.User)
+                .ThenInclude(user => user.ViTris)
+                .ToListAsync();
+            return interns;
         }
 
         public async Task<InternInfo> GetInternInfoAsync(string MSSV)
-            {
-           var intern = await _context.InternInfos
-                            .Include(intern => intern.User)
-                            .ThenInclude(user => user.ViTris)
-                            .FirstOrDefaultAsync(i => i.MSSV == MSSV); 
-           
-           return intern;
+        {
+            var intern = await _context.InternInfos
+                             .Include(intern => intern.User)
+                             .ThenInclude(user => user.ViTris)
+                             .FirstOrDefaultAsync(i => i.MSSV == MSSV);
+
+            return intern;
         }
 
         public async Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model)
         {
-            
-            var intern =  await _context.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
+
+            var intern = await _context.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
             if (intern == null)
             {
                 return 0;
             }
             intern.LastUpdatedBy = "Admin";
-     
+
             mapper.Map(model, intern);
 
             _context.InternInfos?.Update(intern);
@@ -85,5 +85,16 @@ namespace AmazingTech.InternSystem.Repositories
                         .Include(intern => intern.KiThucTap)
                     .FirstOrDefaultAsync();
         }
+
+        public Task<int> AddListInternInfoAsync(List<InternInfo> interns)
+        {
+            foreach (var intern in interns)
+            {
+                _context.InternInfos.Add(intern);
+            }
+
+            return _context.SaveChangesAsync();
+        }
+
     }
 }

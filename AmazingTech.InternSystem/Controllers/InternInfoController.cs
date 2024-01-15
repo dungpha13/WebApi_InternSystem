@@ -53,5 +53,12 @@ namespace AmazingTech.InternSystem.Controllers
         {
             return await _internInfoService.UpdateInternInfo(model, mssv);
         }
+
+        [HttpPost("list/{kiThucTapId}")]
+        public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
+        {
+            return await _internInfoService.AddListInternInfo(file, kiThucTapId);
+        }
+
     }
 }

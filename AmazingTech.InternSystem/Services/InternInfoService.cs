@@ -18,9 +18,10 @@ namespace AmazingTech.InternSystem.Services
     {
         private readonly IInternInfoRepo _internRepo;
         private readonly UserManager<User> _userManager;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IKiThucTapRepository _kiThucTapRepository;
+
         private readonly AppDbContext _dbContext;
 
         public InternInfoService(IInternInfoRepo internRepo,
@@ -31,51 +32,52 @@ namespace AmazingTech.InternSystem.Services
         {
             _dbContext = dbContext;
             _internRepo = internRepo;
-            this.mapper = mapper;
+            _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _dbContext = dbContext;
+            _kiThucTapRepository = kiThucTapRepository;
         }
 
         //Get all Intern
         public async Task<IActionResult> GetAllInternInfo()
         {
             List<InternInfo> interns = await _internRepo.GetAllInternsInfoAsync();
-            return new OkObjectResult(mapper.Map<List<InternInfoDTO>>(interns));
+            return new OkObjectResult(_mapper.Map<List<InternInfoDTO>>(interns));
         }
 
         //Get Intern by Id
         public async Task<IActionResult> GetInternInfo(string mssv)
-            {
+        {
             InternInfo intern = await _internRepo.GetInternInfoAsync(mssv);
-            if(intern == null)
+            if (intern == null)
             {
                 return new BadRequestObjectResult($"Khong tim thay Intern voi mssv: {mssv} !");
             }
-            return new OkObjectResult(mapper.Map<InternInfoDTO>(intern));
+            return new OkObjectResult(_mapper.Map<InternInfoDTO>(intern));
         }
 
         //Add new Intern
-        public async Task<IActionResult> AddInternInfo(AddInternInfoDTO model) 
-            {
-            var entity = mapper.Map<InternInfo>(model);
+        public async Task<IActionResult> AddInternInfo(AddInternInfoDTO model)
+        {
+            var entity = _mapper.Map<InternInfo>(model);
 
             var existIntern = await _internRepo.GetInternInfoAsync(entity.MSSV);
-            if(existIntern != null)
+            if (existIntern != null)
             {
                 return new BadRequestObjectResult("MSSV da ton tai trong danh sach!");
             }
 
 
-                // Tao tai khoan cho Intern
-                var account = new RegisterUserRequestDTO
-                {
+            // Tao tai khoan cho Intern
+            var account = new RegisterUserRequestDTO
+            {
                 HoVaTen = entity.HoTen,
                 Username = entity.EmailTruong,
                 Email = entity.EmailCaNhan,
-                    Password = "0123456789ooo",
+                Password = "0123456789ooo",
                 PhoneNumber = entity.Sdt,
-                };
+            };
             string userId = await RegisterIntern(account);
 
             if (userId == null)
@@ -86,11 +88,11 @@ namespace AmazingTech.InternSystem.Services
             entity.UserId = userId;
 
             int rs = await _internRepo.AddInternInfoAsync(entity);
-            
+
             if (rs == 0)
-                {
+            {
                 return new BadRequestObjectResult("Them sinh vien that bai!");
-                }
+            }
 
             return new OkObjectResult(entity);
         }
@@ -106,21 +108,21 @@ namespace AmazingTech.InternSystem.Services
 
             int rs = await _internRepo.DeleteInternInfoAsync(intern);
 
-            if(rs == 0)
+            if (rs == 0)
             {
                 return new BadRequestObjectResult($"Intern mssv: {mssv} da duoc xoa!");
             }
 
             return new OkObjectResult($"Xoa thanh cong Intern mssv: {mssv} !");
-            }
+        }
 
         //Update Intern
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
             var updateIntern = await _internRepo.UpdateInternInfoAsync(mssv, model);
-           
 
-            if(updateIntern == 0)
+
+            if (updateIntern == 0)
             {
                 return new BadRequestObjectResult($"Intern mssv: {mssv} cap nhat that bai!");
             }
@@ -128,9 +130,7 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult($"Cap nhat thanh cong Intern mssv: {mssv} !");
         }
 
-
-
-            public async Task<string> RegisterIntern(RegisterUserRequestDTO registerUserRequestDTO)
+        public async Task<string> RegisterIntern(RegisterUserRequestDTO registerUserRequestDTO)
         {
             var identityUser = CreateUserFromRequest(registerUserRequestDTO);
             var identityResult = await _userManager.CreateAsync(identityUser, registerUserRequestDTO.Password);
@@ -191,7 +191,7 @@ namespace AmazingTech.InternSystem.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public List<InternInfo> ReadFile(IFormFile file)
+        private List<InternInfo> ReadFile(IFormFile file)
         {
             try
             {
@@ -247,6 +247,47 @@ namespace AmazingTech.InternSystem.Services
                 Console.WriteLine(ex);
                 return new List<InternInfo>();
             }
+        }
+
+        public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
+        {
+            List<InternInfo> interns = ReadFile(file);
+
+            var existingKi = _kiThucTapRepository.GetKiThucTap(kiThucTapId);
+
+            if (existingKi is null)
+                return new BadRequestObjectResult("Khong tim thay ki thuc tap voi id: " + kiThucTapId);
+
+            foreach (var intern in interns)
+            {
+                var user = new RegisterUserRequestDTO
+                {
+                    Username = intern.EmailTruong,
+                    HoVaTen = intern.HoTen,
+                    PhoneNumber = intern.Sdt,
+                    Email = intern.EmailCaNhan,
+                    Password = "1111111111ooo"
+                };
+
+                var userId = await RegisterIntern(user);
+
+                if (userId is null)
+                {
+                    return new BadRequestObjectResult("User already exist!");
+                }
+
+                intern.KiThucTapId = existingKi.Id;
+                intern.UserId = userId;
+            }
+
+            var result = await _internRepo.AddListInternInfoAsync(interns);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Something went wrong!");
+            }
+
+            return new OkResult();
         }
     }
 }

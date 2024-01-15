@@ -10,8 +10,8 @@ namespace AmazingTech.InternSystem.Services
     {
         private IViTriRepository _VitriRepo;
         private readonly AppDbContext _context;
-        public ViTriService(IServiceProvider serviceProvider, AppDbContext context) 
-        { 
+        public ViTriService(IServiceProvider serviceProvider, AppDbContext context)
+        {
             _context = context;
             _VitriRepo = serviceProvider.GetRequiredService<IViTriRepository>();
         }
@@ -22,6 +22,4 @@ namespace AmazingTech.InternSystem.Services
             return viTris;
         }
     }
-
-
-// }
+}
