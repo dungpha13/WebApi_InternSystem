@@ -16,6 +16,7 @@ using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositorie
 using swp391_be.API.Services.Name;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
+using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 
 namespace AmazingTech.InternSystem
 {
@@ -41,6 +42,12 @@ namespace AmazingTech.InternSystem
 
             builder.Services.AddScoped<ITechRepo, TechRepository>();
             builder.Services.AddScoped<ITechService, TechService>();
+
+            builder.Services.AddScoped<IDuAnService, DuAnService>();
+            builder.Services.AddScoped<IDuAnRepo, DuAnRepository>();
+
+            builder.Services.AddScoped<INhomZaloService, NhomZaloService>();
+            builder.Services.AddScoped<INhomZaloRepo, NhomZaloRepository>();
 
             builder.Services.AddScoped<IViTriRepository, ViTriRepository>();
             builder.Services.AddScoped<IViTriService, ViTriService>();
