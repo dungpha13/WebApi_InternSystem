@@ -1,4 +1,7 @@
+using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
+using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Services;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Mapping;
 using AmazingTech.InternSystem.Repositories;
@@ -24,6 +27,13 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IInternInfoRepo, InternInfoRepository>();
             builder.Services.AddScoped<INameService, NameService>();
             builder.Services.AddScoped<IInternInfoService, InternInfoService>();
+            builder.Services.AddScoped<IFileReaderService, FileReaderService>();  // Register your ExcelReaderService
+
+            builder.Services.AddScoped<ITruongService, TruongService>();
+            builder.Services.AddScoped<ITruongRepository, TruongRepository>();
+
+            builder.Services.AddScoped<IKiThucTapService, KiThucTapService>();
+            builder.Services.AddScoped<IKiThucTapRepository, KiThucTapRepository>();
 
             builder.Services.AddControllers();
 
