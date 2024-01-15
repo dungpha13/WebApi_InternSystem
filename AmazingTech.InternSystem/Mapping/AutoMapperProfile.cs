@@ -1,4 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.Request.InternInfo;
+using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Models.Response.User;
 using AutoMapper;
 
@@ -9,6 +11,20 @@ namespace AmazingTech.InternSystem.Mapping
         public AutoMapperProfile()
         {
             CreateMap<User, ProfileResponseDTO>().ReverseMap();
+
+            CreateMap<InternInfo, InternInfoDTO>()
+            .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime.HasValue ? src.CreatedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
+            .ForMember(dest => dest.NgaySinh, opt => opt.MapFrom(src => src.NgaySinh.HasValue ? src.NgaySinh.Value.ToString("dd/MM/yyyy") : null))
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.HasValue ? src.StartDate.Value.ToString("dd/MM/yyyy") : null))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.HasValue ? src.EndDate.Value.ToString("dd/MM/yyyy") : null))
+            .ForMember(dest => dest.DeletedTime, opt => opt.MapFrom(src => src.DeletedTime.HasValue ? src.DeletedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
+            .ForMember(dest => dest.ViTri, opt => opt.MapFrom(src => src.User.ViTris.Select(x => x.Ten).ToArray()));
+
+            CreateMap<InternInfo, AddInternInfoDTO>().ReverseMap();
+
+            CreateMap<InternInfo, UpdateInternInfoDTO>().ReverseMap();
+            
+
 
         }
     }

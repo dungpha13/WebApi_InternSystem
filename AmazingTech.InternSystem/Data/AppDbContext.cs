@@ -37,6 +37,8 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<CongNgheDuAn> CongNgheDuAns { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
 
+        public DbSet<ViTri> ViTris { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var configuration = new ConfigurationBuilder()

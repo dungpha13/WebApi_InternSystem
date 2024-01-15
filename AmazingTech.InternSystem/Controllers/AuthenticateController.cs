@@ -65,7 +65,7 @@ namespace AmazingTech.InternSystem.Controllers
                     return BadRequest(new ErrorResponse { Succeeded = false, Errors = roleResult.Errors });
                 }
             }
-
+            
             identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
 
             if (!identityResult.Succeeded)

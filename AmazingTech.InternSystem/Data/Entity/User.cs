@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DefaultValue("GETDATE()")]
         public DateTime CreatedTime { get; set; } = DateTime.Now;
-        public DateTime? DeletedTime { get; set; }
+        public DateTime DeletedTime { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? LastUpdatedTime { get; set; }
         public string? ResetToken { get; set; }
@@ -22,7 +22,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
         public virtual ICollection<ViTri> ViTris { get; set; } = new List<ViTri>();
         public ICollection<Comment> Comments { get; set; }
-        public InternInfo? InternInfo { get; set; }
+        //public InternInfo? InternInfo { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_PhongVan { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_DuocPhongVan { get; set; }
         public ICollection<ThongBao> ThongBao_NguoiGui { get; set; }

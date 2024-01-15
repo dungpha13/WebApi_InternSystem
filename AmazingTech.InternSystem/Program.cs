@@ -1,11 +1,14 @@
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Mapping;
+using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using swp391_be.API.Repositories.Tokens;
+using swp391_be.API.Services.Name;
 using System.Text;
 
 namespace AmazingTech.InternSystem
@@ -18,6 +21,9 @@ namespace AmazingTech.InternSystem
 
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
+            builder.Services.AddScoped<IInternInfoRepo, InternInfoRepository>();
+            builder.Services.AddScoped<INameService, NameService>();
+            builder.Services.AddScoped<IInternInfoService, InternInfoService>();
 
             builder.Services.AddControllers();
 
@@ -27,7 +33,7 @@ namespace AmazingTech.InternSystem
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
             builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
