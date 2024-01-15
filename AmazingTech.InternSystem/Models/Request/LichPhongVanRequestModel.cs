@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
-namespace AmazingTech.InternSystem.Models
+namespace AmazingTech.InternSystem.Models.Request
 {
     public class LichPhongVanRequestModel
     {

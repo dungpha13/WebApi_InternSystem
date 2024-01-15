@@ -1,4 +1,4 @@
-﻿using AmazingTech.InternSystem.Models;
+﻿using AmazingTech.InternSystem.Models.Request;
 using AmazingTech.InternSystem.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

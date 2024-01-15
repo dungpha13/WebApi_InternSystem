@@ -1,6 +1,6 @@
-﻿using AmazingTech.InternSystem.Models;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Net;
+using AmazingTech.InternSystem.Models.DTO;
 
 namespace AmazingTech.InternSystem.Services
 {

@@ -2,7 +2,7 @@
 using AmazingTech.InternSystem.Data.Enum;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AmazingTech.InternSystem.Model
+namespace AmazingTech.InternSystem.Models.Response
 {
     public class LichPhongVanResponseModel
     {

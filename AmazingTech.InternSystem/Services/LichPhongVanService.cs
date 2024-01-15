@@ -1,6 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Model;
-using AmazingTech.InternSystem.Models;
+using AmazingTech.InternSystem.Models.Request;
+using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
 using System.Security.Claims;
 

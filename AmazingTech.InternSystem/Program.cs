@@ -9,15 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using swp391_be.API.Repositories.Tokens;
 using System.Text;
-using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
-using AmazingTech.InternSystem.Services;
-using AutoMapper;
-using AmazingTech.InternSystem.Models;
-using AmazingTech.InternSystem.Repositories;
-using AmazingTech.InternSystem.Services;
-using Microsoft.Extensions.Configuration;
 using swp391_be.API.Services.Name;
+using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Service;
 
 namespace AmazingTech.InternSystem
 {
@@ -43,6 +38,9 @@ namespace AmazingTech.InternSystem
 
             builder.Services.AddScoped<ITechRepo, TechRepository>();
             builder.Services.AddScoped<ITechService, TechService>();
+
+            builder.Services.AddScoped<IViTriRepository, ViTriRepository>();
+            builder.Services.AddScoped<IViTriService, ViTriService>();
 
             builder.Services.AddScoped<ILichPhongVanRepository, LichPhongVanRepository>();
             builder.Services.AddScoped<IGuiLichPhongVanService, LichPhongVanService>();
