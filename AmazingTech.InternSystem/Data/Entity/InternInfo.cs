@@ -10,7 +10,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         [ForeignKey("User")]
         public string? UserId { get; set; }
         public User? User { get; set; }
-
         public string HoTen { get; set; }
         public DateTime? NgaySinh { get; set; }
         public bool? GioiTinh { get; set; }

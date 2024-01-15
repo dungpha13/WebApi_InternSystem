@@ -3,8 +3,6 @@ using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Mapping;
-using AmazingTech.InternSystem.Repositories;
-using AmazingTech.InternSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +11,10 @@ using swp391_be.API.Repositories.Tokens;
 using swp391_be.API.Services.Name;
 using System.Text;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
-using swp391_be.API.Services.Name;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AmazingTech.InternSystem
 {
@@ -29,7 +27,7 @@ namespace AmazingTech.InternSystem
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
             builder.Services.AddDbContext<AppDbContext>();
-            
+
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
@@ -60,13 +58,13 @@ namespace AmazingTech.InternSystem
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-          
+
             EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
-           
+
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -106,21 +104,43 @@ namespace AmazingTech.InternSystem
                 options.User.RequireUniqueEmail = false;
 
             });
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(option =>
-    {
-        option.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(option =>
+            {
+                option.TokenValidationParameters = new TokenValidationParameters
+                {
+                    //ValidateIssuer = true,
+                    //ValidateAudience = true,
+                    //ValidateLifetime = true,
+                    //ValidateIssuerSigningKey = true,
+                    //ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    //ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("de455d3d7f83bf393eea5aef43f474f4aac57e3e8d75f9118e60d526453002dc"))
+                };
+
+                option.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var token = context.SecurityToken as JwtSecurityToken;
+                        if (token != null)
+                        {
+                            context.Fail("Token is invalid.");
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
 
 
@@ -135,8 +155,9 @@ namespace AmazingTech.InternSystem
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-          
+
             app.MapControllers();
 
             app.Run();

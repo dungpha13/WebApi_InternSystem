@@ -1,6 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.TruongHoc;
 using AmazingTech.InternSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Contracts;
@@ -19,6 +20,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetAllTruongs()
         {
             return _truongService.GetAllTruongs();

@@ -11,8 +11,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? HoVaTen { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DefaultValue("GETDATE()")]
-        public DateTime CreatedTime { get; set; } = DateTime.Now;
-        public DateTime DeletedTime { get; set; }
+        public DateTime? CreatedTime { get; set; } = DateTime.Now;
+        public DateTime? DeletedTime { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? LastUpdatedTime { get; set; }
         public string? ResetToken { get; set; }

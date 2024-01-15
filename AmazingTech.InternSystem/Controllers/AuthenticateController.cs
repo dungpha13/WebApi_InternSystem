@@ -14,7 +14,7 @@ using AmazingTech.InternSystem.Models.Enums;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
@@ -35,7 +35,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Route("Register")]
+        [Route("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserRequestDTO registerUserRequestDTO)
         {
             await Task.Delay(1000);
@@ -79,7 +79,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] SignInUserRequestDTO signInUserRequestDTO)
         {
             await Task.Delay(1000);
