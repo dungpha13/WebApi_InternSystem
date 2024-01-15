@@ -130,19 +130,19 @@ namespace AmazingTech.InternSystem
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("de455d3d7f83bf393eea5aef43f474f4aac57e3e8d75f9118e60d526453002dc"))
                 };
 
-                option.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        var token = context.SecurityToken as JwtSecurityToken;
-                        if (token != null)
-                        {
-                            context.Fail("Token is invalid.");
-                        }
+                //option.Events = new JwtBearerEvents
+                //{
+                //    OnTokenValidated = context =>
+                //    {
+                //        var token = context.SecurityToken as JwtSecurityToken;
+                //        if (token != null)
+                //        {
+                //            context.Fail("Token is invalid.");
+                //        }
 
-                        return Task.CompletedTask;
-                    }
-                };
+                //        return Task.CompletedTask;
+                //    }
+                //};
             });
 
 
@@ -157,8 +157,6 @@ namespace AmazingTech.InternSystem
             }
 
             app.UseHttpsRedirection();
-
-            app.UseAuthentication();
 
             app.UseAuthentication();
             app.UseAuthorization();
