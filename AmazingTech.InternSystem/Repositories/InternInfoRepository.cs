@@ -13,19 +13,19 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public class InternInfoRepository : IInternInfoRepo
     {
-        private readonly AppDbContext context;
+        private readonly AppDbContext _context;
         private readonly IMapper mapper;
 
         public InternInfoRepository(AppDbContext context, IMapper mapper)
         {
-            this.context = context;
+            _context = context;
             this.mapper = mapper;
         }
 
         public async Task<int> AddInternInfoAsync(InternInfo entity)
-        {         
-            context.InternInfos.Add(entity);
-            return await context.SaveChangesAsync();
+        {
+            _context.InternInfos.Add(entity);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> DeleteInternInfoAsync(InternInfo entity)
@@ -35,13 +35,13 @@ namespace AmazingTech.InternSystem.Repositories
             entity.DeletedBy = "Admin";
             entity.DeletedTime = currentTime;
 
-            return await context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
             
         }
 
         public async Task<List<InternInfo>> GetAllInternsInfoAsync()
         {
-                var interns = await context.InternInfos!
+                var interns = await _context.InternInfos!
                     .Where(intern => intern.DeletedBy == null)
                     .OrderByDescending(intern => intern.CreatedTime)
                     .Include(intern => intern.User)
@@ -51,8 +51,8 @@ namespace AmazingTech.InternSystem.Repositories
         }
 
         public async Task<InternInfo> GetInternInfoAsync(string MSSV)
-        {
-           var intern = await context.InternInfos
+            {
+           var intern = await _context.InternInfos
                             .Include(intern => intern.User)
                             .ThenInclude(user => user.ViTris)
                             .FirstOrDefaultAsync(i => i.MSSV == MSSV); 
@@ -63,7 +63,7 @@ namespace AmazingTech.InternSystem.Repositories
         public async Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model)
         {
             
-            var intern =  await context.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
+            var intern =  await _context.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
             if (intern == null)
             {
                 return 0;
@@ -72,10 +72,18 @@ namespace AmazingTech.InternSystem.Repositories
      
             mapper.Map(model, intern);
 
-            context.InternInfos?.Update(intern);
-            return await context.SaveChangesAsync();
-            
+            _context.InternInfos?.Update(intern);
+            return await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<InternInfo?> GetInternInfo(string id)
+        {
+            return await _context.InternInfos
+                    .Where(intern => intern.Id == id)
+                        .Include(intern => intern.KiThucTap)
+                    .FirstOrDefaultAsync();
         }
     }
 }

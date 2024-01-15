@@ -1,8 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.Enums;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,8 +20,6 @@ namespace swp391_be.API.Repositories.Tokens
             this.dbContext = dbContext;
             this._userManager = _userManager;
         }
-
-        
 
         public string CreateJwtToken(User user, List<string> roles)
         {

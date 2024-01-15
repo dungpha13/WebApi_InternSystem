@@ -23,6 +23,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? LastUpdatedTime { get; set; } 
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? DeletedTime { get; set; }
+        public DateTime? DeletedTime { get; set; } 
     }
 }
+ 

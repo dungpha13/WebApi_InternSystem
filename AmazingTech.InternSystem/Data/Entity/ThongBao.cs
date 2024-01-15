@@ -13,9 +13,9 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string IdNguoiGui { get; set; }
         public virtual User NguoiGui { get; set; }
 
-        public string TieuDe { get; set; }
+        public string? TieuDe { get; set; }
 
-        public string NoiDung { get; set; }
+        public string? NoiDung { get; set; }
 
         public bool TinhTrang { get; set; } // Da doc/chua doc
 

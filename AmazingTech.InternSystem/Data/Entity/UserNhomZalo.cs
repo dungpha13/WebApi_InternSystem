@@ -14,7 +14,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string IdNhomZalo { get; set; }
         public NhomZalo NhomZalo { get; set; }
 
-        public DateTime JoinedTime { get; set; }
+        public DateTime? JoinedTime { get; set; }
 
         public DateTime? LeftTime { get; set; }
     }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AmazingTech.InternSystem.Migrations
 {
-    public partial class Test : Migration
+    public partial class init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,15 +26,16 @@ namespace AmazingTech.InternSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Role",
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<int>(type: "int", nullable: false)
+                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Role", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,8 +45,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SoTuanThucTap = table.Column<int>(type: "int", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -62,19 +63,27 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     HoVaTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SdtXacNhan = table.Column<bool>(type: "bit", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ResetToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VerificationTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VerificationTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,8 +97,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LinkNhomZalo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -107,10 +116,9 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NgayBatDau = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NgayKetThuc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdTruong = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TruongHocId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdTruong = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -120,10 +128,11 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     table.PrimaryKey("PK_KiThucTap", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_KiThucTap_TruongHoc_TruongHocId",
-                        column: x => x.TruongHocId,
+                        name: "FK_KiThucTap_TruongHoc_IdTruong",
+                        column: x => x.IdTruong,
                         principalTable: "TruongHoc",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,8 +144,8 @@ namespace AmazingTech.InternSystem.Migrations
                     LeaderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ThoiGianBatDau = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ThoiGianKetThuc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -161,15 +170,16 @@ namespace AmazingTech.InternSystem.Migrations
                     IdNguoiDuocPhongVan = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ThoiGianPhongVan = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DiaDiemPhongVan = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DaXacNhanMail = table.Column<bool>(type: "bit", nullable: false),
-                    TrangThai = table.Column<bool>(type: "bit", nullable: false),
-                    KetQua = table.Column<bool>(type: "bit", nullable: false),
+                    DaXacNhanMail = table.Column<bool>(type: "bit", nullable: true),
+                    InterviewForm = table.Column<int>(type: "int", nullable: false),
+                    TrangThai = table.Column<int>(type: "int", nullable: false),
+                    KetQua = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -195,8 +205,8 @@ namespace AmazingTech.InternSystem.Migrations
                     TenNhom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LinkNhom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MentorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -223,8 +233,8 @@ namespace AmazingTech.InternSystem.Migrations
                     TieuDe = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NoiDung = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TinhTrang = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -256,35 +266,14 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     table.PrimaryKey("PK_UserRole", x => new { x.RolesId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_UserRole_Role_RolesId",
+                        name: "FK_UserRole_Roles_RolesId",
                         column: x => x.RolesId,
-                        principalTable: "Role",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRole_Users_UsersId",
                         column: x => x.UsersId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserTokens",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserTokens", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserTokens_Users_UserId",
-                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -297,8 +286,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdViTri = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -344,29 +333,29 @@ namespace AmazingTech.InternSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GioiTinh = table.Column<bool>(type: "bit", nullable: false),
+                    GioiTinh = table.Column<bool>(type: "bit", nullable: true),
                     MSSV = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailCaNhan = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Sdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SdtNguoiThan = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SdtNguoiThan = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiaChi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GPA = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GPA = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TrinhDoTiengAnh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ChungChi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LinkFacebook = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LinkCV = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NganhHoc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Round = table.Column<int>(type: "int", nullable: false),
-                    KiThucTapId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ChungChi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkFacebook = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkCV = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NganhHoc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Round = table.Column<int>(type: "int", nullable: true),
+                    KiThucTapId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -379,14 +368,12 @@ namespace AmazingTech.InternSystem.Migrations
                         name: "FK_InternInfo_KiThucTap_KiThucTapId",
                         column: x => x.KiThucTapId,
                         principalTable: "KiThucTap",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_InternInfo_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -395,29 +382,31 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdDuAn = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdDuAn = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ViTri = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DuAnId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable:true),
                     DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserDuAn", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserDuAn_DuAn_IdDuAn",
-                        column: x => x.IdDuAn,
+                        name: "FK_UserDuAn_DuAn_DuAnId",
+                        column: x => x.DuAnId,
                         principalTable: "DuAn",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_UserDuAn_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -429,8 +418,8 @@ namespace AmazingTech.InternSystem.Migrations
                     IdNhomZalo = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     JoinedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LeftTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -458,8 +447,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdCongNghe = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdDuAn = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -490,8 +479,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdNguoiDuocComment = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdNguoiComment = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -550,13 +539,12 @@ namespace AmazingTech.InternSystem.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_InternInfo_UserId",
                 table: "InternInfo",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_KiThucTap_TruongHocId",
+                name: "IX_KiThucTap_IdTruong",
                 table: "KiThucTap",
-                column: "TruongHocId");
+                column: "IdTruong");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LichPhongVan_IdNguoiPhongVan",
@@ -579,9 +567,9 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "IdNguoiNhan");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserDuAn_IdDuAn",
+                name: "IX_UserDuAn_DuAnId",
                 table: "UserDuAn",
-                column: "IdDuAn");
+                column: "DuAnId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserDuAn_UserId",
@@ -602,11 +590,6 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "IX_UserRole_UsersId",
                 table: "UserRole",
                 column: "UsersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTokens_UserId",
-                table: "UserTokens",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserViTri_ViTrisId",
@@ -641,9 +624,6 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "UserRole");
 
             migrationBuilder.DropTable(
-                name: "UserTokens");
-
-            migrationBuilder.DropTable(
                 name: "UserViTri");
 
             migrationBuilder.DropTable(
@@ -659,7 +639,7 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "NhomZalo");
 
             migrationBuilder.DropTable(
-                name: "Role");
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "KiThucTap");

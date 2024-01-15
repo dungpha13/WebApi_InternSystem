@@ -1,4 +1,3 @@
-using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
@@ -13,6 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 using swp391_be.API.Repositories.Tokens;
 using swp391_be.API.Services.Name;
 using System.Text;
+using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
+using swp391_be.API.Services.Name;
+using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Service;
 
 namespace AmazingTech.InternSystem
 {
@@ -24,10 +27,8 @@ namespace AmazingTech.InternSystem
 
             // Add services to the container.
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
-            builder.Services.AddScoped<IInternInfoRepo, InternInfoRepository>();
-            builder.Services.AddScoped<INameService, NameService>();
-            builder.Services.AddScoped<IInternInfoService, InternInfoService>();
-            builder.Services.AddScoped<IFileReaderService, FileReaderService>();  // Register your ExcelReaderService
+            builder.Services.AddDbContext<AppDbContext>();
+            
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
@@ -35,15 +36,34 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IKiThucTapService, KiThucTapService>();
             builder.Services.AddScoped<IKiThucTapRepository, KiThucTapRepository>();
 
+            builder.Services.AddScoped<IInternInfoService, InternInfoService>();
+            builder.Services.AddScoped<IInternInfoRepo, InternInfoRepository>();
+
+            builder.Services.AddScoped<ITechRepo, TechRepository>();
+            builder.Services.AddScoped<ITechService, TechService>();
+
+            builder.Services.AddScoped<IViTriRepository, ViTriRepository>();
+            builder.Services.AddScoped<IViTriService, ViTriService>();
+
+            builder.Services.AddScoped<ILichPhongVanRepository, LichPhongVanRepository>();
+            builder.Services.AddScoped<IGuiLichPhongVanService, LichPhongVanService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<INameService, NameService>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+          
+            EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+           
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
             builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
@@ -109,8 +129,7 @@ namespace AmazingTech.InternSystem
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
-
+          
             app.MapControllers();
 
             app.Run();

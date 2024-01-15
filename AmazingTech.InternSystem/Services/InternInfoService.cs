@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using swp391_be.API.Models.Request.Authenticate;
 
 namespace AmazingTech.InternSystem.Services
@@ -19,13 +20,16 @@ namespace AmazingTech.InternSystem.Services
         private readonly UserManager<User> _userManager;
         private readonly IMapper mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IKiThucTapRepository _kiThucTapRepository;
         private readonly AppDbContext _dbContext;
 
-        public InternInfoService(IInternInfoRepo internRepo, 
+        public InternInfoService(IInternInfoRepo internRepo,
             IMapper mapper, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
-            AppDbContext dbContext) 
+            IKiThucTapRepository kiThucTapRepository,
+            AppDbContext dbContext)
         {
+            _dbContext = dbContext;
             _internRepo = internRepo;
             this.mapper = mapper;
             _userManager = userManager;
@@ -42,7 +46,7 @@ namespace AmazingTech.InternSystem.Services
 
         //Get Intern by Id
         public async Task<IActionResult> GetInternInfo(string mssv)
-        {
+            {
             InternInfo intern = await _internRepo.GetInternInfoAsync(mssv);
             if(intern == null)
             {
@@ -53,7 +57,7 @@ namespace AmazingTech.InternSystem.Services
 
         //Add new Intern
         public async Task<IActionResult> AddInternInfo(AddInternInfoDTO model) 
-        {
+            {
             var entity = mapper.Map<InternInfo>(model);
 
             var existIntern = await _internRepo.GetInternInfoAsync(entity.MSSV);
@@ -63,15 +67,15 @@ namespace AmazingTech.InternSystem.Services
             }
 
 
-            // Tao tai khoan cho Intern
-            var account = new RegisterUserRequestDTO
-            {
+                // Tao tai khoan cho Intern
+                var account = new RegisterUserRequestDTO
+                {
                 HoVaTen = entity.HoTen,
                 Username = entity.EmailTruong,
                 Email = entity.EmailCaNhan,
-                Password = "0123456789ooo",
+                    Password = "0123456789ooo",
                 PhoneNumber = entity.Sdt,
-            };
+                };
             string userId = await RegisterIntern(account);
 
             if (userId == null)
@@ -84,9 +88,9 @@ namespace AmazingTech.InternSystem.Services
             int rs = await _internRepo.AddInternInfoAsync(entity);
             
             if (rs == 0)
-            {
+                {
                 return new BadRequestObjectResult("Them sinh vien that bai!");
-            }
+                }
 
             return new OkObjectResult(entity);
         }
@@ -108,7 +112,7 @@ namespace AmazingTech.InternSystem.Services
             }
 
             return new OkObjectResult($"Xoa thanh cong Intern mssv: {mssv} !");
-        }
+            }
 
         //Update Intern
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
@@ -185,6 +189,64 @@ namespace AmazingTech.InternSystem.Services
             }
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public List<InternInfo> ReadFile(IFormFile file)
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    file.CopyToAsync(stream);
+
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+
+                        // worksheet.Cells["C2:C21"].Style.Numberformat.Format = "d-mmm-yy";
+
+                        var startRow = worksheet.Dimension.Start.Row;
+                        var startCol = worksheet.Dimension.Start.Column;
+                        var endRow = worksheet.Dimension.End.Row;
+                        var endCol = worksheet.Dimension.End.Row;
+
+                        var range = worksheet.Cells["A1:O21"];
+
+                        List<InternInfo> internList = range.ToCollectionWithMappings<InternInfo>(row =>
+                        {
+                            var intern = new InternInfo
+                            {
+                                HoTen = row.GetText("HoVaTen"),
+                                NgaySinh = DateTime.FromOADate(row.GetValue<double>("NgaySinh")),
+                                GioiTinh = row.GetText("GioiTinh") == "Nam" ? true : false,
+                                MSSV = row.GetText("MSSV"),
+                                EmailTruong = row.GetText("EmailTruong"),
+                                EmailCaNhan = row.GetText("EmailCaNhan"),
+                                Sdt = row.GetText("SDT"),
+                                DiaChi = row.GetText("DiaChi"),
+                                SdtNguoiThan = row.GetText("SdtNguoiThan"),
+                                GPA = row.GetValue<decimal>("GPA"),
+                                TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
+                                NganhHoc = row.GetText("NganhHoc"),
+                                ChungChi = "a",
+                                LinkFacebook = row.GetText("LinkFacebook"),
+                                LinkCV = row.GetText("LinkCV"),
+                                Round = 0,
+                                Status = "true",
+                            };
+
+                            return intern;
+                        }, options => options.HeaderRow = 0);
+
+                        return internList;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<InternInfo>();
+            }
         }
     }
 }

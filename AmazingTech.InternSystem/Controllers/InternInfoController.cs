@@ -11,48 +11,46 @@ namespace AmazingTech.InternSystem.Controllers
     [ApiController]
     public class InternInfoController : ControllerBase
     {
-        private readonly IInternInfoRepo internRepo;
-        private readonly IInternInfoService internInfoService;
+        private readonly IInternInfoRepo _internRepo;
+        private readonly IInternInfoService _internInfoService;
 
         public InternInfoController(IInternInfoRepo internRepo, IInternInfoService internInfoService)
         {
-            this.internRepo = internRepo;
-            this.internInfoService = internInfoService;
+            this._internRepo = internRepo;
+            this._internInfoService = internInfoService;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> GetAllInternsInfo()
         {
           
-            return await internInfoService.GetAllInternInfo();
+            return await _internInfoService.GetAllInternInfo();
           
         }
 
         [HttpGet("{mssv}")]
         public async Task<IActionResult> GetInternInfo(string mssv)
         {
-
-            return await internInfoService.GetInternInfo(mssv);
-
+            return await _internInfoService.GetInternInfo(mssv);
         }
 
         [HttpPost("")]
         public async Task<IActionResult> AddNewInternInfo(AddInternInfoDTO model)
         {
 
-            return await internInfoService.AddInternInfo(model); 
+            return await _internInfoService.AddInternInfo(model); 
         }
 
         [HttpDelete("{mssv}")]
         public async Task<IActionResult> DeleteInternInfo(string mssv)
         {
-            return await internInfoService.DeleteInternInfo(mssv);
+            return await _internInfoService.DeleteInternInfo(mssv);
         }
 
         [HttpPut("{mssv}")]
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
-            return await internInfoService.UpdateInternInfo(model, mssv);
+            return await _internInfoService.UpdateInternInfo(model, mssv);
         }
     }
 }

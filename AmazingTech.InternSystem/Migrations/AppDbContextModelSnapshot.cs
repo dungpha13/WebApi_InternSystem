@@ -28,14 +28,12 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -55,10 +53,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
@@ -77,10 +74,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -95,16 +91,17 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
+                    b.Property<string>("ImgUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Ten")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -120,10 +117,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -143,10 +139,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
@@ -190,10 +185,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -205,10 +199,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
@@ -217,13 +210,12 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Ten")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ThoiGianBatDau")
+                    b.Property<DateTime?>("ThoiGianBatDau")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ThoiGianKetThuc")
+                    b.Property<DateTime?>("ThoiGianKetThuc")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -239,14 +231,12 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ChungChi")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -258,93 +248,77 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DiaChi")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailCaNhan")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailTruong")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("GPA")
+                    b.Property<decimal?>("GPA")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("GioiTinh")
+                    b.Property<bool?>("GioiTinh")
                         .HasColumnType("bit");
 
                     b.Property<string>("HoTen")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("KiThucTapId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LinkCV")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LinkFacebook")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MSSV")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NganhHoc")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("NgaySinh")
+                    b.Property<DateTime?>("NgaySinh")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Round")
+                    b.Property<int?>("Round")
                         .HasColumnType("int");
 
                     b.Property<string>("Sdt")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SdtNguoiThan")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrinhDoTiengAnh")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("KiThucTapId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("InternInfo");
                 });
@@ -355,10 +329,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -371,28 +344,24 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.Property<string>("IdTruong")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("NgayBatDau")
+                    b.Property<DateTime?>("NgayBatDau")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("NgayKetThuc")
+                    b.Property<DateTime?>("NgayKetThuc")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("TruongHocId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TruongHocId");
+                    b.HasIndex("IdTruong");
 
                     b.ToTable("KiThucTap");
                 });
@@ -406,10 +375,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -424,7 +392,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DiaDiemPhongVan")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Id")
@@ -434,14 +401,13 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ThoiGianPhongVan")
+                    b.Property<DateTime?>("ThoiGianPhongVan")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("TrangThai")
@@ -460,10 +426,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -475,15 +440,13 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LinkNhom")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MentorId")
@@ -491,7 +454,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("TenNhom")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -507,10 +469,23 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -530,19 +505,16 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NoiDung")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TieuDe")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TinhTrang")
@@ -563,10 +535,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -578,18 +549,16 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SoTuanThucTap")
+                    b.Property<int?>("SoTuanThucTap")
                         .HasColumnType("int");
 
                     b.Property<string>("Ten")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -609,7 +578,8 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
+                        .ValueGeneratedOnAdd()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -624,7 +594,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("HoVaTen")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastUpdatedTime")
@@ -695,10 +664,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -714,10 +682,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
@@ -726,7 +693,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ViTri")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -744,10 +710,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -762,14 +727,20 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("JoinedTime")
+                    b.Property<DateTime?>("JoinedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
@@ -795,10 +766,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedTime")
+                    b.Property<DateTime?>("CreatedTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
@@ -810,19 +780,16 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastUpdatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LinkNhomZalo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ten")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -902,7 +869,11 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
+                    b.Property<DateTime?>("LastUpdatedTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LinkNhomZalo")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -1070,15 +1041,11 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.KiThucTap", "KiThucTap")
                         .WithMany("InternInfos")
-                        .HasForeignKey("KiThucTapId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("KiThucTapId");
 
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.User", "User")
-                        .WithOne("InternInfo")
-                        .HasForeignKey("AmazingTech.InternSystem.Data.Entity.InternInfo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("KiThucTap");
 
@@ -1089,7 +1056,9 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.TruongHoc", "TruongHoc")
                         .WithMany("KiThucTaps")
-                        .HasForeignKey("TruongHocId");
+                        .HasForeignKey("IdTruong")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TruongHoc");
                 });
@@ -1225,6 +1194,12 @@ namespace AmazingTech.InternSystem.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1232,11 +1207,11 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UserViTri", b =>
                 {
-                    b.HasOne("AmazingTech.InternSystem.Data.Entity.Role", null)
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.User", null)
                         .WithMany()
-                        .HasForeignKey("RolesId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1251,7 +1226,7 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("ViTrisId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1290,8 +1265,6 @@ namespace AmazingTech.InternSystem.Migrations
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("InternInfo");
 
                     b.Navigation("LichPhongVans_DuocPhongVan");
 

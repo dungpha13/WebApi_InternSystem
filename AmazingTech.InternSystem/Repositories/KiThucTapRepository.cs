@@ -6,39 +6,49 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public class KiThucTapRepository : IKiThucTapRepository
     {
+        private readonly AppDbContext _context;
 
-        public KiThucTapRepository() { }
+        public KiThucTapRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public int AddKiThucTap(KiThucTap ki)
         {
-            using (var context = new AppDbContext()) {
+            using (var context = new AppDbContext())
+            {
                 context.Set<KiThucTap>().Add(ki);
                 return context.SaveChanges();
             }
         }
 
-        public int DeleteKiThucTap(string id)
+        public int DeleteKiThucTap(KiThucTap kiThucTap)
         {
-            throw new NotImplementedException();
+            _context.KiThucTaps.Remove(kiThucTap);
+            return _context.SaveChanges();
         }
 
         public List<KiThucTap> GetAllKiThucTaps()
         {
             using (var context = new AppDbContext())
             {
-                var kis = context.Set<KiThucTap>().ToList();
+                var kis = context.Set<KiThucTap>().Include(ki => ki.TruongHoc).ToList();
                 return kis;
             }
         }
 
-        public KiThucTap GetKiThucTap(string id)
+        public KiThucTap? GetKiThucTap(string id)
         {
-            throw new NotImplementedException();
+            using (var context = new AppDbContext())
+            {
+                return context.KiThucTaps.FirstOrDefault(ktt => ktt.Id == id);
+            }
         }
 
         public int UpdateKiThucTap(KiThucTap kiThucTap)
         {
-            throw new NotImplementedException();
+            _context.KiThucTaps.Update(kiThucTap);
+            return _context.SaveChanges();
         }
     }
 }

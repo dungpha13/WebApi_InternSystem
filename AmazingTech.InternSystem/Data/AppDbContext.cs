@@ -25,6 +25,7 @@ namespace AmazingTech.InternSystem.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<CongNghe> CongNghes { get; set; } = null!;
         public DbSet<NhomZalo> NhomZalos { get; set; }
         public DbSet<UserNhomZalo> UserNhomZalos { get; set; }
         public DbSet<LichPhongVan> LichPhongVans { get; set; }
@@ -51,6 +52,9 @@ namespace AmazingTech.InternSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Roles)
                 .WithMany(r => r.Users)

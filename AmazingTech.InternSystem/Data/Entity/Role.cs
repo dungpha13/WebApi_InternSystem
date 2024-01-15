@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,10 +9,12 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [Key]
         public string Id { get; set; }
+        [NotMapped]
         public Roles Name { get; set; }
         public virtual ICollection<User> Users { get; set; } = new List<User>();
     }
 
+    [Keyless]
     public class Roles
     {
         public const string ADMIN = "Admin";
