@@ -1,4 +1,4 @@
-﻿using AmazingTech.InternSystem.Data;
+using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Service;
@@ -23,5 +23,5 @@ namespace AmazingTech.InternSystem.Services
         }
     }
 
-   
-}
+
+// }

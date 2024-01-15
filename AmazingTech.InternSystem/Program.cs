@@ -29,6 +29,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddDbContext<AppDbContext>();
 
 
+
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
 
@@ -59,11 +60,13 @@ namespace AmazingTech.InternSystem
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
+
             EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 
 
             //Inject
@@ -156,7 +159,10 @@ namespace AmazingTech.InternSystem
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.MapControllers();
 

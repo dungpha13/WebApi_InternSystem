@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
