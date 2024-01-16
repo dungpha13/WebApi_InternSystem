@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
-    public abstract class Entity
+    public abstract class AbstractEntity
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
@@ -15,15 +15,12 @@ namespace AmazingTech.InternSystem.Data.Entity
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DefaultValue("GETDATE()")]
-        public DateTime? CreatedTime { get; set; } 
+        public DateTime? CreatedTime { get; set; }
 
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        
-        public DateTime? LastUpdatedTime { get; set; } 
+        // [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime? LastUpdatedTime { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? DeletedTime { get; set; } 
+        public DateTime? DeletedTime { get; set; }
     }
 }
- 

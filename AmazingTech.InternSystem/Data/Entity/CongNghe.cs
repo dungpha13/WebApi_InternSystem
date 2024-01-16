@@ -3,7 +3,7 @@
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("CongNghe")]
-    public class CongNghe : Entity
+    public class CongNghe : AbstractEntity
     {
         public string? Ten { get; set; }
 

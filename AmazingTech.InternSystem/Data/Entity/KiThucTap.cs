@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("KiThucTap")]
-    public class KiThucTap : Entity
+    public class KiThucTap : AbstractEntity
     {
         public DateTime? NgayBatDau { get; set; }
         public DateTime? NgayKetThuc { get; set; }

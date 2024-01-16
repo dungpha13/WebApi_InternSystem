@@ -203,8 +203,6 @@ namespace AmazingTech.InternSystem.Services
                     {
                         var worksheet = package.Workbook.Worksheets[0];
 
-                        // worksheet.Cells["C2:C21"].Style.Numberformat.Format = "d-mmm-yy";
-
                         var startRow = worksheet.Dimension.Start.Row;
                         var startCol = worksheet.Dimension.Start.Column;
                         var endRow = worksheet.Dimension.End.Row;
@@ -218,7 +216,7 @@ namespace AmazingTech.InternSystem.Services
                             {
                                 HoTen = row.GetText("HoVaTen"),
                                 NgaySinh = DateTime.FromOADate(row.GetValue<double>("NgaySinh")),
-                                GioiTinh = row.GetText("GioiTinh") == "Nam" ? true : false,
+                                GioiTinh = row.GetText("GioiTinh").ToUpper().Equals("NAM") ? true : false,
                                 MSSV = row.GetText("MSSV"),
                                 EmailTruong = row.GetText("EmailTruong"),
                                 EmailCaNhan = row.GetText("EmailCaNhan"),
