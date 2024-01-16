@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Request;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
@@ -11,6 +12,7 @@ namespace AmazingTech.InternSystem.Services
         public void AddLichPhongVan(LichPhongVanRequestModel model);
         public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan();
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request);
+        public void deleteSchedudle(string ScheduleId);
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -36,11 +38,11 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-            if (accountRole != Roles.HR)
-            {
-                throw new BadHttpRequestException("You don't have permission to create schedule");
-            }
-            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null)
+            //if (accountRole != Roles.HR)
+            //{
+            //    throw new BadHttpRequestException("You don't have permission to create schedule");
+            //}
+            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null|| TimeSpan.FromMinutes(model.TimeDuration)  <= new TimeSpan(0,0,0))
             {
                 throw new BadHttpRequestException("You need to fill all information");
             }
@@ -72,6 +74,7 @@ namespace AmazingTech.InternSystem.Services
                 LastUpdatedBy = _userRepository.GetUserById(accountId).HoVaTen,
                 LastUpdatedTime = DateTime.Now,
                 CreatedTime = DateTime.Now,
+                TimeDuration = TimeSpan.FromMinutes(model.TimeDuration)
             };
            
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
@@ -110,7 +113,8 @@ namespace AmazingTech.InternSystem.Services
                     NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
                     ThoiGianPhongVan = item.ThoiGianPhongVan,
                     TrangThai = item.TrangThai.ToString(),
-                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen
+                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen,
+                    TimeDuration = item.TimeDuration
                 };
                 lichphongvanList.Add(lichphongvanrespone);
             }
@@ -118,6 +122,10 @@ namespace AmazingTech.InternSystem.Services
         }
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request)
         {
+            if (request.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || request.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
+            {
+                throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
+            }
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             string InternId = _userRepository.GetUserIdByEmail(request.Email);
             if (accountId == null)
@@ -136,6 +144,10 @@ namespace AmazingTech.InternSystem.Services
             if(lichphongvan.IdNguoiPhongVan != accountId)
             {
                 throw new BadHttpRequestException("You aren't the one who created this interview schedule");
+            }
+            if (request.ThoiGianPhongVan == null || request.DiaDiemPhongVan.Length == 0 || request.Email == null || TimeSpan.FromMinutes(request.TimeDuration) <= new TimeSpan(0, 0, 0))
+            {
+                throw new BadHttpRequestException("You need to fill all information");
             }
             lichphongvan.InterviewForm = request.interviewForm;
             lichphongvan.LastUpdatedTime = DateTime.Now;
@@ -156,8 +168,27 @@ namespace AmazingTech.InternSystem.Services
                 InterviewForm = request.interviewForm.ToString(),
                 ThoiGianPhongVan = request.ThoiGianPhongVan,
                 TrangThai = Status.Not_Yet.ToString(),
+                TimeDuration = TimeSpan.FromMinutes(request.TimeDuration) ,
             };
             return lichphongvannew;
+        }
+        public void deleteSchedudle(string ScheduleId)
+        {
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (ScheduleId == null)
+            {
+                throw new BadHttpRequestException("Please, Enter the Id");
+            }
+            var schedule = _lichPhongVanRepository.GetScheduleById(ScheduleId);
+            if(schedule == null)
+            {
+                throw new BadHttpRequestException("This schedule is not existed");
+            }
+            if(schedule.IdNguoiPhongVan != accountId)
+            {
+                throw new BadHttpRequestException("You don't have the permission to delete this schedule");
+            }
+            _lichPhongVanRepository.DeleteLichPhongVan(schedule);
 
         }
     }
