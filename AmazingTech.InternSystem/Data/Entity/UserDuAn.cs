@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
@@ -11,6 +12,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         [ForeignKey("DuAn")]
         public string IdDuAn { get; set; }
         public string? ViTri { get; set; }
+        [JsonIgnore]
         public User User { get; set; }
         public DuAn DuAn { get; set; }
     }

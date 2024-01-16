@@ -18,7 +18,10 @@ namespace AmazingTech.InternSystem.Mapping
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.HasValue ? src.StartDate.Value.ToString("dd/MM/yyyy") : null))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.HasValue ? src.EndDate.Value.ToString("dd/MM/yyyy") : null))
             .ForMember(dest => dest.DeletedTime, opt => opt.MapFrom(src => src.DeletedTime.HasValue ? src.DeletedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
-            .ForMember(dest => dest.ViTri, opt => opt.MapFrom(src => src.User.ViTris.Select(x => x.Ten).ToArray()));
+            .ForMember(dest => dest.ViTri, opt => opt.MapFrom(src => src.User.UserViTris.Select(x => x.ViTri.Ten).ToArray()))
+            .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.User.UserNhomZalos.Select(x => x.NhomZalo.TenNhom).ToArray()))
+            .ForMember(dest => dest.DuAn, opt => opt.MapFrom(src => src.User.UserDuAns.Select(x => x.DuAn.Ten).ToArray()))
+            .ForMember(dest => dest.GioiTinh, opt => opt.MapFrom(src => src.GioiTinh ? "Nam" : "Nữ"));
 
             CreateMap<InternInfo, AddInternInfoDTO>().ReverseMap();
 

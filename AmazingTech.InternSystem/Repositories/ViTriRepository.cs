@@ -20,7 +20,7 @@ namespace AmazingTech.InternSystem.Repositories
                 Id = Guid.NewGuid().ToString("N"),
                     Ten = viTriModel.Ten,
                     LinkNhomZalo = viTriModel.LinkNhomZalo,
-                    Users = viTriModel.Users,
+                    UserViTris = viTriModel.UserViTris,
                     CreatedBy = viTriModel.CreatedBy,
                     LastUpdatedBy = viTriModel.LastUpdatedBy,
                     LastUpdatedTime = viTriModel.LastUpdatedTime,
@@ -47,7 +47,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public async Task<ViTri> GetViTriByIdAsync(string vitriId)
         {
-            var vitri = await _context.ViTris.Include(c => c.Users).FirstOrDefaultAsync(c => c.Id == vitriId);
+            var vitri = await _context.ViTris.Include(c => c.UserViTris).FirstOrDefaultAsync(c => c.Id == vitriId);
             return vitri;
         }
 

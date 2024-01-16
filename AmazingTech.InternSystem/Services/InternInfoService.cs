@@ -61,6 +61,7 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> AddInternInfo(AddInternInfoDTO model)
         {
             var entity = _mapper.Map<InternInfo>(model);
+   
 
             var existIntern = await _internRepo.GetInternInfoAsync(entity.MSSV);
             if (existIntern != null)
@@ -71,7 +72,7 @@ namespace AmazingTech.InternSystem.Services
 
             // Tao tai khoan cho Intern
             var account = new RegisterUserRequestDTO
-            {
+            {  
                 HoVaTen = entity.HoTen,
                 Username = entity.EmailTruong,
                 Email = entity.EmailCaNhan,
@@ -86,6 +87,44 @@ namespace AmazingTech.InternSystem.Services
             }
 
             entity.UserId = userId;
+
+            //Add UserViTri
+            foreach (var viTriId in model.ViTrisId)
+            {
+                var userViTri = new UserViTri
+                {
+                    UsersId = userId,
+                    ViTrisId = viTriId
+                };
+
+                _dbContext.UserViTris.Add(userViTri);
+            }
+
+            //Add NhomZalo
+            foreach(var nhomZaloId in model.IdNhomZalo)
+            {
+                var userNhomZalo = new UserNhomZalo
+                {
+                    UserId = userId,
+                    IdNhomZalo = nhomZaloId
+                };
+
+                _dbContext.UserNhomZalos.Add(userNhomZalo);
+            }
+
+
+            //Add UserDuAn
+            foreach(var duAnId in model.IdDuAn)
+            {
+                var userDuAn = new UserDuAn
+                {
+                    UserId = userId,
+                    IdDuAn = duAnId
+                };
+
+                _dbContext.InternDuAns.Add(userDuAn);
+            }
+
 
             int rs = await _internRepo.AddInternInfoAsync(entity);
 
@@ -119,6 +158,8 @@ namespace AmazingTech.InternSystem.Services
         //Update Intern
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
+
+
             var updateIntern = await _internRepo.UpdateInternInfoAsync(mssv, model);
 
 

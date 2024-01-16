@@ -20,7 +20,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? VerificationToken { get; set; }
         public DateTime? VerificationTokenExpires { get; set; }
         public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
-        public virtual ICollection<ViTri> ViTris { get; set; } = new List<ViTri>();
+       // public virtual ICollection<ViTri> ViTris { get; set; } = new List<ViTri>();
         public ICollection<Comment> Comments { get; set; }
         //public InternInfo? InternInfo { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_PhongVan { get; set; }
@@ -28,6 +28,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public ICollection<ThongBao> ThongBao_NguoiGui { get; set; }
         public ICollection<ThongBao> ThongBao_NguoiNhan { get; set; }
         public ICollection<UserDuAn> UserDuAns { get; set; }
-        public ICollection<UserNhomZalo> UserNhomZalos { get; set; } = new List<UserNhomZalo>();
+
+        public ICollection<UserViTri> UserViTris { get; set; }
+        public ICollection<UserNhomZalo> UserNhomZalos { get; set; }
     }
 }
