@@ -1,17 +1,19 @@
-﻿using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models;
-using AmazingTech.InternSystem.Models.Request.DuAn;
+﻿using AmazingTech.InternSystem.Models.Request.DuAn;
+using AmazingTech.InternSystem.Models.Request.KiThucTap;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Services
 {
     public interface IDuAnService
     {
-        public Task<List<DuAnModel>> GetAllDuAnsAsync();
-        public Task<DuAnModel> GetDuAnByIdAsync(string id);
-        public Task CreateDuAnAsync(DuAnModel createDuAn);
-        public Task UpdateDuAnAsync(string id, DuAnModel updatedDuAn);
-        public Task DeleteDuAnAsync(string id, DuAnModel deleteDuAn);
-        public Task<List<DuAnModel>> SearchProjectsAsync(DuAnFilterCriteria criteria);
-        //public Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds);
+        IActionResult SearchProject(DuAnFilterCriteria criteria);
+        IActionResult GetAllDuAns();
+        IActionResult GetDuAnById(string id);
+        IActionResult CreateDuAn(AddDuAnModel createDuAn);
+        IActionResult UpdateDuAn(UpdateDuAnModel updatedDuAn);
+        IActionResult DeleteDuAn(string id);
+        // Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds);
     }
 }

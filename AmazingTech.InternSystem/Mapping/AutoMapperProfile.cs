@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Models.Response.User;
@@ -26,9 +27,15 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<InternInfo, AddInternInfoDTO>().ReverseMap();
 
             CreateMap<InternInfo, UpdateInternInfoDTO>().ReverseMap();
-            
 
+            CreateMap<DuAn, DuAnResponseDTO>()
+            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.HoVaTen))
+            .ForMember(dest => dest.ThoiGianBatDau, opt => opt.MapFrom(src => src.ThoiGianBatDau.HasValue ? src.ThoiGianBatDau.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
+            .ForMember(dest => dest.ThoiGianKetThuc, opt => opt.MapFrom(src => src.ThoiGianKetThuc.HasValue ? src.ThoiGianKetThuc.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null));
 
+            CreateMap<DuAn, AddDuAnModel>().ReverseMap();
+
+            CreateMap<DuAn, UpdateDuAnModel>().ReverseMap();
         }
     }
 }

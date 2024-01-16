@@ -1,9 +1,13 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Repositories;
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2016.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Services
 {
@@ -18,93 +22,85 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public async Task<List<DuAnModel>> GetAllDuAnsAsync()
+        public IActionResult SearchProject(DuAnFilterCriteria criteria)
         {
-            try
-            {
-                var duAns = await _duAnRepo.GetAllDuAnsAsync();
-                return _mapper.Map<List<DuAnModel>>(duAns);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in DuAnService.GetAllDuAnsAsync");
-                throw;
-            }
+            var duAns = _duAnRepo.SearchProject(criteria);
+            var duAnModels = _mapper.Map<List<DuAnModel>>(duAns);
+            return new OkObjectResult(duAnModels);
         }
 
-        public async Task<DuAnModel> GetDuAnByIdAsync(string id)
+        public IActionResult GetAllDuAns()
         {
-            try
-            {
-                var duAn = await _duAnRepo.GetDuAnByIdAsync(id);
-                return _mapper.Map<DuAnModel>(duAn);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"Error in DuAnService.GetDuAnByIdAsync for ID: {id}");
-                throw;
-            }
+            //List<DuAn> duAns = _duAnRepo.GetAllDuAns();
+            //return new OkObjectResult(duAns);
+            var duAns = _duAnRepo.GetAllDuAns();
+            var duAnResponseDTOs = _mapper.Map<List<DuAnResponseDTO>>(duAns);
+            var formattedResponse = new { value = duAnResponseDTOs };
+            return new OkObjectResult(formattedResponse);
         }
 
-        public async Task<List<DuAnModel>> SearchProjectsAsync(DuAnFilterCriteria criteria)
+        public IActionResult GetDuAnById(string id)
         {
-            try
+            //var duAn = _duAnRepo.GetDuAnById(id);
+            //return new OkObjectResult(duAn);
+            var duAn = _duAnRepo.GetDuAnById(id);
+
+            if (duAn == null)
             {
-                var duAns = await _duAnRepo.SearchProjectsAsync(criteria);
-                return _mapper.Map<List<DuAnModel>>(duAns);
+                return new NotFoundResult();
             }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in DuAnService.SearchProjectsAsync");
-                throw;
-            }
+
+            var duAnResponseDTO = _mapper.Map<DuAnResponseDTO>(duAn);
+            return new OkObjectResult(duAnResponseDTO);
         }
 
-        public async Task CreateDuAnAsync(DuAnModel createDuAn)
+        public IActionResult CreateDuAn(AddDuAnModel createDuAn)
         {
-            try
+            var duAn = _mapper.Map<DuAn>(createDuAn);
+
+            DuAn duan = new DuAn()
             {
-                DuAn duAn = _mapper.Map<DuAn>(createDuAn);
-                await _duAnRepo.CreateDuAnAsync(duAn);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in DuAnService.CreateDuAnAsync");
-                throw;
-            }
+                Ten = createDuAn.Ten,
+                LeaderId = createDuAn.LeaderId,
+                ThoiGianBatDau = createDuAn.ThoiGianBatDau,
+                ThoiGianKetThuc = createDuAn.ThoiGianKetThuc,
+            };
+            _duAnRepo.CreateDuAn(duAn);
+            return new OkResult();
         }
 
-        public async Task UpdateDuAnAsync(string id, DuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn(UpdateDuAnModel updatedDuAn)
         {
-            try
+            var existDuAn = _duAnRepo.GetDuAnById(updatedDuAn.Id);
+
+            if (existDuAn is null)
             {
-                DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
-                await _duAnRepo.UpdateDuAnAsync(id, duAn);
+                return new BadRequestObjectResult("Id null!");
             }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in DuAnService.UpdateDuAnAsync");
-                throw;
-            }
+
+            existDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
+            existDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
+
+            _duAnRepo.UpdateDuAn(existDuAn);
+            return new NoContentResult();
         }
 
-        public async Task DeleteDuAnAsync(string id, DuAnModel deleteDuAn)
+        public IActionResult DeleteDuAn(string id)
         {
-            try
+            var existDuAn = _duAnRepo.GetDuAnById(id);
+
+            if (existDuAn is not null)
             {
-                DuAn duAn = _mapper.Map<DuAn>(deleteDuAn);
-                await _duAnRepo.DeleteDuAnAsync(id, duAn);
+                _duAnRepo.DeleteDuAn(existDuAn);
             }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in DuAnService.DeleteDuAnAsync");
-                throw;
-            }
+
+            return new NoContentResult();
         }
 
         //public Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds)
         //{
-        //    return _duAnRepo.ExportProjectsToExcelAsync(duAnIds);
+        //    // Implement the logic for exporting projects to Excel.
+        //    // Example: return _duAnRepo.ExportProjectsToExcelAsync(duAnIds);
         //}
     }
 }

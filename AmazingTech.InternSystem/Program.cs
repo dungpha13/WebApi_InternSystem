@@ -15,6 +15,8 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
+using AmazingTech.InternSystem.Models.Request.DuAn;
 
 namespace AmazingTech.InternSystem
 {
@@ -144,8 +146,6 @@ namespace AmazingTech.InternSystem
                 //    }
                 //};
             });
-
-
 
             var app = builder.Build();
 

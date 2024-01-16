@@ -1,8 +1,10 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Services;
+using AutoMapper;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -23,51 +26,104 @@ namespace AmazingTech.InternSystem.Controllers
     {
         private readonly IDuAnService _duAnService;
         private readonly AppDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public DuAnController(IDuAnService duAnService, AppDbContext dbContext)
+        public DuAnController(IDuAnService duAnService, AppDbContext dbContext, IMapper mapper)
         {
             _duAnService = duAnService;
             _dbContext = dbContext;
+            _mapper = mapper;
+
         }
 
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllDuAnsAsync()
+        //public IActionResult GetAllDuAns()
+        //{
+        //    var duAns = _duAnService.GetAllDuAns();
+
+        //    if (duAns != null)
+        //    {
+        //        var duAnResponseDTOs = _mapper.Map<List<DuAnResponseDTO>>(duAns);
+
+        //        var formattedOutput = duAnResponseDTOs.Select(duAn => new
+        //        {
+        //            id = duAn.Id,
+        //            ten = duAn.Ten,
+        //            leaderId = duAn.LeaderId,
+        //            leaderName = duAn.LeaderName,
+        //            thoiGianBatDau = duAn.ThoiGianBatDau,
+        //            thoiGianKetThuc = duAn.ThoiGianKetThuc
+        //        }).ToList();
+
+        //        return Ok(formattedOutput);
+        //    }
+        //    return duAns;
+        //}
+        public IActionResult GetAllDuAns()
         {
-            try
+            var result = _duAnService.GetAllDuAns();
+
+            if (result is OkObjectResult okResult)
             {
-                var duAns = await _duAnService.GetAllDuAnsAsync();
-                return Ok(duAns);
+                var duAnList = okResult.Value as List<DuAn>;
+
+                if (duAnList != null)
+                {
+                    var formattedResponse = new
+                    {
+                        value = duAnList.Select(duAn => new
+                        {
+                            id = duAn.Id,
+                            ten = duAn.Ten,
+                            leaderId = duAn.LeaderId,
+                            leaderName = duAn.Leader?.HoVaTen,
+                            thoiGianBatDau = duAn.ThoiGianBatDau,
+                            thoiGianKetThuc = duAn.ThoiGianKetThuc
+                        })
+                    };
+
+                    return Ok(formattedResponse);
+                }
+
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            return result;
         }
 
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetDuAnByIdAsync(string id)
+        //public IActionResult GetDuAnById(string id)
+        //{
+        //    try
+        //    {
+        //        var duAn = _duAnService.GetDuAnById(id);
+
+        //        if (duAn == null)
+        //            return NotFound("DuAn not found");
+
+        //        var duAnResponseDTO = _mapper.Map<DuAnResponseDTO>(duAn);
+
+        //        return Ok(new { value = new List<DuAnResponseDTO> { duAnResponseDTO } });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
+        public IActionResult GetDuAnById(string id)
         {
-            try
-            {
-                var duAn = await _duAnService.GetDuAnByIdAsync(id);
+            var duAn = _duAnService.GetDuAnById(id);
 
-                if (duAn == null)
-                    return NotFound("DuAn not found");
+            if (duAn == null)
+                return NotFound("DuAn not found");
 
-                return Ok(duAn);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            return Ok(duAn);
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchProjectsAsync([FromBody] DuAnFilterCriteria criteria)
+        public IActionResult SearchProject([FromBody] DuAnFilterCriteria criteria)
         {
             try
             {
-                var duAns = await _duAnService.SearchProjectsAsync(criteria);
+                var duAns = _duAnService.SearchProject(criteria);
                 return Ok(duAns);
             }
             catch (Exception ex)
@@ -77,11 +133,11 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateDuAnAsync([FromBody] DuAnModel createDuAn)
+        public IActionResult CreateDuAn([FromBody] AddDuAnModel createDuAn)
         {
             try
             {
-                await _duAnService.CreateDuAnAsync(createDuAn);
+                _duAnService.CreateDuAn(createDuAn);
                 return Ok("DuAn created successfully");
             }
             catch (Exception ex)
@@ -91,26 +147,25 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateDuAnAsync(string id, [FromBody] DuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn([FromBody] UpdateDuAnModel updatedDuAn)
         {
             try
             {
-                await _duAnService.UpdateDuAnAsync(id, updatedDuAn);
+                _duAnService.UpdateDuAn(updatedDuAn);
                 return Ok("DuAn updated successfully");
             }
             catch (Exception ex)
             {
-                // Log the exception
                 return StatusCode(500, "Internal Server Error");
             }
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteDuAnAsync(string id, [FromBody] DuAnModel deleteDuAn)
+        public IActionResult DeleteDuAn(string id)
         {
             try
             {
-                await _duAnService.DeleteDuAnAsync(id, deleteDuAn);
+                _duAnService.DeleteDuAn(id);
                 return Ok("DuAn deleted successfully");
             }
             catch (Exception ex)

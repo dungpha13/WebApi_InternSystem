@@ -8,12 +8,12 @@ namespace AmazingTech.InternSystem.Repositories
     public interface IDuAnRepo
     {
         // DuAn methods
-        public Task<List<DuAn>> GetAllDuAnsAsync();
-        public Task<DuAn> GetDuAnByIdAsync(string id);
-        public Task<List<DuAn>> SearchProjectsAsync(DuAnFilterCriteria criteria);
-        public Task CreateDuAnAsync(DuAn createDuAn);
-        public Task UpdateDuAnAsync(string id, DuAn updatedDuAn);
-        public Task DeleteDuAnAsync(string id, DuAn deleteDuAn);
+        List<DuAn> GetAllDuAns();
+        DuAn GetDuAnById(string id);
+        List<DuAn> SearchProject(DuAnFilterCriteria criteria);
+        int CreateDuAn(DuAn createDuAn);
+        int UpdateDuAn(DuAn updatedDuAn);
+        int DeleteDuAn(DuAn deleteDuAn);
         // Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds);
 
         //// DuAn in ZaloGroup methods
