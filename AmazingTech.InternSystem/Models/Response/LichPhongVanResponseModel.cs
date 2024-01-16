@@ -11,7 +11,7 @@ namespace AmazingTech.InternSystem.Models.Response
 
         public string NguoiDuocPhongVan { get; set; }
         public DateTime? ThoiGianPhongVan { get; set; }
-
+        public TimeSpan TimeDuration { get; set; }
         public string DiaDiemPhongVan { get; set; }
 
         public string InterviewForm { get; set; }

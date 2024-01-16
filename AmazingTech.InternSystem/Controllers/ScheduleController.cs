@@ -58,5 +58,18 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok(ex.Message);
             }
         }
+        [HttpDelete]
+        [Route("api/[controller]/Delete-schedule")]
+        public IActionResult DeleteSchedule(string scheduleId)
+        {
+            try
+            {
+                _guiLichPhongVanService.deleteSchedudle(scheduleId);
+                return Ok("Delete Succesful");
+
+            }catch(Exception ex ) 
+            {
+            return Ok(ex.Message);}
+             }
     }
 }

@@ -23,6 +23,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public InterviewForm InterviewForm { get; set; }
 
         public Status TrangThai { get; set; } // Chua PV/Da PV
+        public TimeSpan TimeDuration { get; set; }
 
         public Result KetQua { get; set; } // Passed/Failed
 
