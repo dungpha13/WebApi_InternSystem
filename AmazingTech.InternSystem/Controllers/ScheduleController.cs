@@ -17,7 +17,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
-        [Route("api/[controller]/Send-Interview-Schedule")]
+        [Route("api/lich-phong-vans/Send-Interview-Schedule")]
         public IActionResult SendInterviewSchedule([FromBody]LichPhongVanRequestModel model)
         {
             try
@@ -32,7 +32,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpGet]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
-        [Route("api/[controller]/Get-Schedule-By-InterviewerLogin")]
+        [Route("api/lich-phong-vans/Get-Schedule-By-InterviewerLogin")]
         public IActionResult GetScheduleByInterviewerLogin()
         {
             try
@@ -45,7 +45,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpPut]
-        [Route("api/[controller]/Change-schudele")]
+        [Route("api/lich-phong-vans/Change-schudele")]
         public IActionResult UpdateScheduel(LichPhongVanRequestModel model)
         {
             try

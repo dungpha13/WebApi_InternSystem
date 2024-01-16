@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/truong")]
+    [Route("api/truongs")]
     [ApiController]
     public class TruongController : ControllerBase
     {

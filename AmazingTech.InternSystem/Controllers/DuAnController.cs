@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/du-ans")]
     [ApiController]
     public class DuAnController : ControllerBase
     {
@@ -58,7 +58,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("")]
         public async Task<ActionResult> CreateDuAnAsync([FromBody] CreateDuAnRequest request)
         {
             try
@@ -72,7 +72,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPost("update/{id}")]
+        [HttpPost("{id}")]
         public async Task<ActionResult> UpdateDuAnAsync(string id, [FromBody] UpdateDuAnRequest request)
         {
             try
@@ -86,7 +86,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteDuAnAsync(string id)
         {
             try
@@ -100,7 +100,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("get-for-edit/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<DuAn>> GetDuAnForEditAsync(string id)
         {
             try
@@ -118,7 +118,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("ExportExcel")]
+        [HttpGet("excel-export")]
         public async Task<ActionResult> ExportProjectsToExcelAsync()
         {
             try

@@ -12,7 +12,7 @@ using swp391_be.API.Services.Name;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {

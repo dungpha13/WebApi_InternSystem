@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/kithuctaps")]
+    [Route("api/ki-thuc-taps")]
     [ApiController]
     public class KiThucTapController : ControllerBase
     {
@@ -42,7 +42,7 @@ namespace AmazingTech.InternSystem.Controllers
             return _kiThucTapService.AddKiThucTap(request);
         }
 
-        [HttpPost("update")]
+        [HttpPost("{id}")]
         public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki)
         {
             return _kiThucTapService.UpdateKiThucTap(ki);

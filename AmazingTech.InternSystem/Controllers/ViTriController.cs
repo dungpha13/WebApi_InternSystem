@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Controller
 {
-    [Route("api/viTris")]
+    [Route("api/vi-tris")]
     [ApiController]
     public class ViTriController : ControllerBase
     {

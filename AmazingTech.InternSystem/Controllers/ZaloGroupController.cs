@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/group-zalos")]
     [ApiController]
     public class ZaloGroupController : ControllerBase
     {
