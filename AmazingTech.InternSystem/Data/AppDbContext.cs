@@ -135,9 +135,7 @@ namespace AmazingTech.InternSystem.Data
             modelBuilder.Entity<CongNghe>()
                 .Property(e => e.CreatedTime)
                 .ValueGeneratedOnAdd();
-            modelBuilder.Entity<CongNghe>()
-                .Property(e => e.LastUpdatedTime)
-                .ValueGeneratedOnAddOrUpdate();
+
 
             modelBuilder.Entity<CongNgheDuAn>()
                 .Property(e => e.CreatedTime)
