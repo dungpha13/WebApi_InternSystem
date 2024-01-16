@@ -13,5 +13,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? ThoiGianBatDau { get; set; }
         public DateTime? ThoiGianKetThuc { get; set; }
         public ICollection<UserDuAn> UserDuAns { get; set; }
+        public ICollection<ViTri> ViTris { get; set; }
+        public ICollection<CongNgheDuAn> CongNgheDuAn { get; set; }
+
     }
 }

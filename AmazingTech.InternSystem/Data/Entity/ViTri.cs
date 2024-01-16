@@ -7,6 +7,8 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         public string? Ten { get; set; }
         public string? LinkNhomZalo { get; set; }
-        public ICollection<User> Users { get; set; }
+        //public virtual ICollection<User> Users { get; set; }
+
+        public ICollection<UserViTri> UserViTris { get; set; }
     }
 }

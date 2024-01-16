@@ -13,7 +13,7 @@ namespace AmazingTech.InternSystem.Data.Entity
 
         public string HoTen { get; set; }
         public DateTime? NgaySinh { get; set; }
-        public bool? GioiTinh { get; set; }
+        public bool GioiTinh { get; set; }
         public string? MSSV { get; set; }
         public string? EmailTruong { get; set; } = null;
         public string? EmailCaNhan { get; set; }

@@ -4,6 +4,8 @@ namespace swp391_be.API.Models.Request.Authenticate
 {
     public class RegisterUserRequestDTO
     {
+        
+
         [Required(ErrorMessage = "HoVaTen is required"), MinLength(2), MaxLength(30)]
         public string HoVaTen { get; set; }
         

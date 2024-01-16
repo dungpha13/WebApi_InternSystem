@@ -1,4 +1,6 @@
-﻿namespace AmazingTech.InternSystem.Models.Request.InternInfo
+﻿using System.Text.Json.Serialization;
+
+namespace AmazingTech.InternSystem.Models.Request.InternInfo
 {
     public class AddInternInfoDTO
     {
@@ -7,12 +9,14 @@
         public DateTime NgaySinh { get; set; }
         public string Sdt { get; set; }
         public string DiaChi { get; set; }
-        public string EmailCaNhan { get; set; }
+        public bool GioiTinh { get; set; }
         public string EmailTruong { get; set; }
         public string LinkCV { get; set; }
         public string TrinhDoTiengAnh { get; set; }
-        public string[] IdViTris{ get; set; }
 
-        public bool GioiTinh { get; set; }
+        [JsonPropertyName("idViTri")]
+        public string[] ViTrisId{ get; set; }
+        public string[] IdDuAn { get; set; }
+        public string[] IdNhomZalo { get; set; } 
     }
 }

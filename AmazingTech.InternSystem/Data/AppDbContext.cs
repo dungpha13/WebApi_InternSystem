@@ -37,8 +37,9 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<DuAn> DuAns { get; set; }
         public DbSet<CongNgheDuAn> CongNgheDuAns { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
-
         public DbSet<ViTri> ViTris { get; set; }
+
+        public DbSet<UserViTri> UserViTris { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -52,8 +53,6 @@ namespace AmazingTech.InternSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Roles)
@@ -123,11 +122,36 @@ namespace AmazingTech.InternSystem.Data
                 .HasForeignKey(zl => zl.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            //Add moi bang UserViTri
+            modelBuilder.Entity<UserViTri>()
+               .HasOne(zl => zl.User)
+               .WithMany(u => u.UserViTris)
+               .HasForeignKey(zl => zl.UsersId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserViTri>()
+               .HasOne(zl => zl.ViTri)
+               .WithMany(u => u.UserViTris)
+               .HasForeignKey(zl => zl.ViTrisId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CongNgheDuAn>()
+            .HasOne(lp => lp.DuAn)
+            .WithMany(u => u.CongNgheDuAn)
+            .HasForeignKey(lp => lp.IdDuAn)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CongNgheDuAn>()
+               .HasOne(lp => lp.CongNghe)
+               .WithMany(u => u.CongNgheDuAns)
+               .HasForeignKey(lp => lp.IdCongNghe)
+               .OnDelete(DeleteBehavior.NoAction);
+
             // Auto generate when inserted/updated
 
             modelBuilder.Entity<Comment>()
                 .Property(e => e.CreatedTime)
-        .       ValueGeneratedOnAdd();
+        .ValueGeneratedOnAdd();
             modelBuilder.Entity<Comment>()
                 .Property(e => e.LastUpdatedTime)
                 .ValueGeneratedOnAddOrUpdate();
@@ -215,7 +239,7 @@ namespace AmazingTech.InternSystem.Data
             modelBuilder.Entity<ThongBao>()
                 .Property(e => e.LastUpdatedTime)
                 .ValueGeneratedOnAddOrUpdate();
-            
+
             modelBuilder.Entity<NhomZalo>()
                 .Property(e => e.CreatedTime)
                 .ValueGeneratedOnAdd();
