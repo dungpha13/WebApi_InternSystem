@@ -28,6 +28,8 @@ namespace AmazingTech.InternSystem.Services
         
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
+
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             // string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (accountId == null)
