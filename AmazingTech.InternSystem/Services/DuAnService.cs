@@ -2,46 +2,104 @@
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Repositories;
+using AutoMapper;
+using Serilog;
 
 namespace AmazingTech.InternSystem.Services
 {
     public class DuAnService : IDuAnService
     {
         private readonly IDuAnRepo _duAnRepo;
+        private readonly IMapper _mapper;
 
-        public DuAnService(IDuAnRepo duAnRepo)
+        public DuAnService(IDuAnRepo duAnRepo, IMapper mapper)
         {
             _duAnRepo = duAnRepo;
+            _mapper = mapper;
         }
 
-        public Task<List<DuAn>> SearchProjectsAsync(DuAnFilterCriteria criteria)
+        public async Task<List<DuAnModel>> GetAllDuAnsAsync()
         {
-            return _duAnRepo.SearchProjectsAsync(criteria);
+            try
+            {
+                var duAns = await _duAnRepo.GetAllDuAnsAsync();
+                return _mapper.Map<List<DuAnModel>>(duAns);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in DuAnService.GetAllDuAnsAsync");
+                throw;
+            }
         }
 
-        public Task CleanFiltersAsync()
+        public async Task<DuAnModel> GetDuAnByIdAsync(string id)
         {
-            return _duAnRepo.CleanFiltersAsync();
+            try
+            {
+                var duAn = await _duAnRepo.GetDuAnByIdAsync(id);
+                return _mapper.Map<DuAnModel>(duAn);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in DuAnService.GetDuAnByIdAsync for ID: {id}");
+                throw;
+            }
         }
 
-        public Task<string> CreateDuAnAsync(DuAn duAn, List<string> viTriIds, List<string> congNgheIds, List<string> leaderUserIds)
+        public async Task<List<DuAnModel>> SearchProjectsAsync(DuAnFilterCriteria criteria)
         {
-            return _duAnRepo.CreateDuAnAsync(duAn, viTriIds, congNgheIds, leaderUserIds);
+            try
+            {
+                var duAns = await _duAnRepo.SearchProjectsAsync(criteria);
+                return _mapper.Map<List<DuAnModel>>(duAns);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in DuAnService.SearchProjectsAsync");
+                throw;
+            }
         }
 
-        public Task UpdateDuAnAsync(string id, DuAn updatedDuAn, List<string> viTriIds, List<string> congNgheIds, List<string> leaderUserIds)
+        public async Task CreateDuAnAsync(DuAnModel createDuAn)
         {
-            return _duAnRepo.UpdateDuAnAsync(id, updatedDuAn, viTriIds, congNgheIds, leaderUserIds);
+            try
+            {
+                DuAn duAn = _mapper.Map<DuAn>(createDuAn);
+                await _duAnRepo.CreateDuAnAsync(duAn);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in DuAnService.CreateDuAnAsync");
+                throw;
+            }
         }
 
-        public Task DeleteDuAnAsync(string id)
+        public async Task UpdateDuAnAsync(string id, DuAnModel updatedDuAn)
         {
-            return _duAnRepo.DeleteDuAnAsync(id);
+            try
+            {
+                DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
+                await _duAnRepo.UpdateDuAnAsync(id, duAn);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in DuAnService.UpdateDuAnAsync");
+                throw;
+            }
         }
 
-        public Task<DuAn?> GetDuAnForEditAsync(string id)
+        public async Task DeleteDuAnAsync(string id, DuAnModel deleteDuAn)
         {
-            return _duAnRepo.GetDuAnForEditAsync(id);
+            try
+            {
+                DuAn duAn = _mapper.Map<DuAn>(deleteDuAn);
+                await _duAnRepo.DeleteDuAnAsync(id, duAn);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in DuAnService.DeleteDuAnAsync");
+                throw;
+            }
         }
 
         //public Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds)

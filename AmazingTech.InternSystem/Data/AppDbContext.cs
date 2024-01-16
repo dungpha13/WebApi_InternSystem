@@ -52,8 +52,16 @@ namespace AmazingTech.InternSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
+            modelBuilder.Entity<CongNgheDuAn>()
+                .HasOne(lp => lp.DuAn)
+                .WithMany(u => u.CongNgheDuAns)
+                .HasForeignKey(lp => lp.IdDuAn)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<CongNgheDuAn>()
+               .HasOne(lp => lp.CongNghe)
+               .WithMany(u => u.CongNgheDuAns)
+               .HasForeignKey(lp => lp.IdCongNghe)
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Roles)
@@ -127,7 +135,7 @@ namespace AmazingTech.InternSystem.Data
 
             modelBuilder.Entity<Comment>()
                 .Property(e => e.CreatedTime)
-        .       ValueGeneratedOnAdd();
+        .ValueGeneratedOnAdd();
             modelBuilder.Entity<Comment>()
                 .Property(e => e.LastUpdatedTime)
                 .ValueGeneratedOnAddOrUpdate();
@@ -213,7 +221,7 @@ namespace AmazingTech.InternSystem.Data
             modelBuilder.Entity<ThongBao>()
                 .Property(e => e.LastUpdatedTime)
                 .ValueGeneratedOnAddOrUpdate();
-            
+
             modelBuilder.Entity<NhomZalo>()
                 .Property(e => e.CreatedTime)
                 .ValueGeneratedOnAdd();
