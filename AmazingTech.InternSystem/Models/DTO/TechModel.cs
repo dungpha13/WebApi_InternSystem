@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmazingTech.InternSystem.Models.DTO
 {
-    public class TechModel : Entity
+    public class TechModel 
     {
         public string Ten { get; set; }
         public string IdViTri { get; set; }
