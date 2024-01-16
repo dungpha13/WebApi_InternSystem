@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("DuAn")]
-    public class DuAn : Entity
+    public class DuAn : AbstractEntity
     {
         public string? Ten { get; set; }
 

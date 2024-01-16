@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
-    public abstract class Entity
+    public abstract class AbstractEntity
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
@@ -22,4 +22,3 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? DeletedTime { get; set; } 
     }
 }
- 

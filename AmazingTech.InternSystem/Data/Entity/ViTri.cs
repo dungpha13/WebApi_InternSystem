@@ -3,7 +3,7 @@
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("ViTri")]
-    public class ViTri : Entity
+    public class ViTri : AbstractEntity
     {
         public string? Ten { get; set; }
         public string? LinkNhomZalo { get; set; }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("UserDuAn")]
-    public class UserDuAn : Entity
+    public class UserDuAn : AbstractEntity
     {
         [ForeignKey("User")]
         public string UserId { get; set; }

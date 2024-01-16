@@ -20,7 +20,6 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public IActionResult GetAllTruongs()
         {
             return _truongService.GetAllTruongs();

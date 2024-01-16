@@ -3,7 +3,7 @@
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("ThongBao")]
-    public class ThongBao : Entity
+    public class ThongBao : AbstractEntity
     {
         [ForeignKey("NguoiNhan")]
         public string IdNguoiNhan { get; set; }
