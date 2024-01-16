@@ -19,20 +19,26 @@ namespace AmazingTech.InternSystem.Services
         private readonly ILichPhongVanRepository _lichPhongVanRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailService _emailService;
-        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository , IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService)
+        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService)
         {
             _emailService = emailService;
             _userRepository = userRepository;
-            _lichPhongVanRepository = lichPhongVanRepository;  
+            _lichPhongVanRepository = lichPhongVanRepository;
             _httpContextAccessor = httpContextAccessor;
         }
+        
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
-            //string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
-            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
+            }
+            if (accountRole != Roles.HR)
+            {
+                throw new BadHttpRequestException("You don't have permission to create schedule");
             }
             if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null)
             {

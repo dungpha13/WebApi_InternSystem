@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace AmazingTech.InternSystem.Controllers
             _guiLichPhongVanService = guiLichPhongVanService;
         }
         [HttpPost]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/[controller]/Send-Interview-Schedule")]
         public IActionResult SendInterviewSchedule([FromBody]LichPhongVanRequestModel model)
         {
@@ -29,6 +31,7 @@ namespace AmazingTech.InternSystem.Controllers
            
         }
         [HttpGet]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/[controller]/Get-Schedule-By-InterviewerLogin")]
         public IActionResult GetScheduleByInterviewerLogin()
         {

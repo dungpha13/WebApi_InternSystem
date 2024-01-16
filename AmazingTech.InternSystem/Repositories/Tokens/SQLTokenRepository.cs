@@ -55,7 +55,7 @@ namespace swp391_be.API.Repositories.Tokens
                 {
                     new Claim("username", user.UserName),
                     new Claim(ClaimTypes.Role, roles[0]),
-                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier,user.Id),
 
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
