@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Request;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
