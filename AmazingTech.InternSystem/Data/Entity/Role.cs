@@ -18,7 +18,7 @@ namespace AmazingTech.InternSystem.Data.Entity
     public class Roles
     {
         public const string ADMIN = "Admin";
-        public const string HR = "Hr";
+        public const string HR = "HR";
         public const string SCHOOL = "School";
         public const string MENTOR = "Mentor";
         public const string INTERN = "Intern";
