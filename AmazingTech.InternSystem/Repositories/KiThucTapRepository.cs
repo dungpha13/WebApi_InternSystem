@@ -41,7 +41,9 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                return context.KiThucTaps.FirstOrDefault(ktt => ktt.Id == id);
+                return context.KiThucTaps
+                        .Include(ktt => ktt.InternInfos)
+                        .FirstOrDefault(ktt => ktt.Id == id);
             }
         }
 
