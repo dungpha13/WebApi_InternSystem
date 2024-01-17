@@ -65,5 +65,33 @@ namespace swp391_be.API.Repositories.Tokens
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        private static List<InvalidToken> InvalidTokens = new List<InvalidToken>();
+
+        public static void InvalidateToken(string token)
+        {
+            InvalidTokens.Add(new InvalidToken { Token = token, InvalidatedAt = DateTime.UtcNow });
+        }
+
+        public static bool IsTokenValid(string token)
+        {
+            // Clear expired tokens before checking validity
+            ClearExpiredTokens();
+
+            return !InvalidTokens.Any(t => t.Token == token);
+        }
+
+        private static void ClearExpiredTokens()
+        {
+            var expirationThreshold = DateTime.UtcNow.AddHours(-1); // Set your expiration duration
+
+            InvalidTokens.RemoveAll(t => t.InvalidatedAt < expirationThreshold);
+        }
+
+        private class InvalidToken
+        {
+            public string Token { get; set; }
+            public DateTime InvalidatedAt { get; set; }
+        }
     }
 }

@@ -11,6 +11,7 @@ using swp391_be.API.Repositories.Tokens;
 using swp391_be.API.Services.Token;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -144,6 +145,23 @@ namespace AmazingTech.InternSystem.Controllers
             }
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        [Authorize]
+        public IActionResult Logout([FromHeader(Name = "Authorization")] string authorizationHeader)
+        {
+            if (!string.IsNullOrEmpty(authorizationHeader))
+            {
+                if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    string token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                    SQLTokenRepository.InvalidateToken(token);
+                    return Ok(new { message = "Log out successfully" });
+                }
+            }
+            return BadRequest();
         }
     }
 

@@ -17,6 +17,7 @@ using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using AmazingTech.InternSystem.Models.Request.DuAn;
+using Microsoft.Extensions.Options;
 
 namespace AmazingTech.InternSystem
 {
@@ -132,19 +133,19 @@ namespace AmazingTech.InternSystem
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("de455d3d7f83bf393eea5aef43f474f4aac57e3e8d75f9118e60d526453002dc"))
                 };
 
-                //option.Events = new JwtBearerEvents
-                //{
-                //    OnTokenValidated = context =>
-                //    {
-                //        var token = context.SecurityToken as JwtSecurityToken;
-                //        if (token != null)
-                //        {
-                //            context.Fail("Token is invalid.");
-                //        }
+                option.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var token = context.SecurityToken as JwtSecurityToken;
+                        if (token != null && !SQLTokenRepository.IsTokenValid(token.RawData))
+                        {
+                            context.Fail("Token is invalid.");
+                        }
 
-                //        return Task.CompletedTask;
-                //    }
-                //};
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             var app = builder.Build();
