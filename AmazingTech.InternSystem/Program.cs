@@ -18,6 +18,7 @@ using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace AmazingTech.InternSystem
 {
@@ -95,6 +96,7 @@ namespace AmazingTech.InternSystem
 
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
+                .AddSignInManager()
                 .AddTokenProvider<DataProtectorTokenProvider<User>>("Kong")
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
@@ -115,6 +117,7 @@ namespace AmazingTech.InternSystem
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
             .AddJwtBearer(option =>
             {
@@ -146,6 +149,11 @@ namespace AmazingTech.InternSystem
                         return Task.CompletedTask;
                     }
                 };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Google:ClientID"];
+                options.ClientSecret = builder.Configuration["Google:ClientSecret"];
             });
 
             var app = builder.Build();
@@ -156,6 +164,8 @@ namespace AmazingTech.InternSystem
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 

@@ -6,12 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using swp391_be.API.Models.Request.Authenticate;
-using swp391_be.API.Models.Response.Jwt;
 using swp391_be.API.Repositories.Tokens;
 using swp391_be.API.Services.Token;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -23,16 +25,19 @@ namespace AmazingTech.InternSystem.Controllers
         private readonly ITokenRepository _tokenRepository;
         private readonly AppDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
         public AuthenticateController(UserManager<User> userManager,
             ITokenRepository tokenRepository,
             AppDbContext dbContext,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _tokenRepository = tokenRepository;
             _dbContext = dbContext;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
@@ -51,7 +56,7 @@ namespace AmazingTech.InternSystem.Controllers
 
             var roleExists = await _roleManager.RoleExistsAsync(registerUserRequestDTO.Role);
 
-            if (!registerUserRequestDTO.Role.Equals("Intern") && !registerUserRequestDTO.Role.Equals("School"))
+            if (!registerUserRequestDTO.Role.Equals("Intern") && !registerUserRequestDTO.Role.Equals("School") && !registerUserRequestDTO.Role.Equals("HR"))
             {
                 return BadRequest(new ErrorResponse { Errors = "No role with that name" });
             }
@@ -115,7 +120,7 @@ namespace AmazingTech.InternSystem.Controllers
                 return BadRequest(new ErrorResponse { Succeeded = false, Errors = "Failed to generate JWT token." });
             }
 
-            return Ok(new JwtResponseDTo { Jwt = jwtToken, Role = roles[0], UserId = user.Id });
+            return Ok(new { accessToken = jwtToken });
         }
 
         private User CreateUserFromRequest(RegisterUserRequestDTO registerUserRequestDTO)
@@ -168,6 +173,96 @@ namespace AmazingTech.InternSystem.Controllers
                 }
             }
             return BadRequest();
+        }
+
+        //Login with google
+        [HttpGet]
+        [Route("login-with-google")]
+        public IActionResult LoginWithGoogle()
+        {
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", "/api/auth/external-login-callback");
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet]
+        [Route("external-login-callback")]
+        public async Task<IActionResult> ExternalLoginCallback()
+        {
+            // Handle the callback from Google and sign in the user
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            // Your logic to create or sign in the user using the external login info
+            if (info == null)
+            {
+                return BadRequest("Failed");
+            }
+
+            // Check if the user is already registered
+            var existingUser = await _userManager.FindByEmailAsync(info.Principal.FindFirstValue(ClaimTypes.Email)!);
+
+            if (existingUser != null)
+            {
+                // If the user is already registered, sign in the user
+                var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+                if (signInResult.Succeeded)
+                {
+                    // Return with Token after logged in
+                    var roles = await _userManager.GetRolesAsync(existingUser);
+                    var jwtToken = _tokenRepository.CreateJwtToken(existingUser, roles.ToList());
+
+                    return Ok(new
+                    {
+                        accessToken = jwtToken,
+
+                    });
+                }
+                else
+                {
+                    // Handle sign-in failure
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                // If the user is not registered, create a new user
+                var user = new User
+                {
+                    UserName = info.Principal.FindFirstValue(ClaimTypes.Email)!,
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)!,
+                    // Set other properties as needed
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+
+                if (createResult.Succeeded)
+                {
+                    // Add claims if needed
+                    // ...
+
+                    // Sign in the new user
+                    await _userManager.AddLoginAsync(user, info);
+
+                    await _userManager.AddToRoleAsync(user, Roles.INTERN);
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // Return with Token after logged in
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var jwtToken = _tokenRepository.CreateJwtToken(user, roles.ToList());
+
+                    return Ok(new
+                    {
+                        accessToken = jwtToken,
+
+                    });
+                }
+                else
+                {
+                    // Handle user creation failure
+                    return RedirectToAction("ExternalLoginFailure");
+                }
+            }
         }
     }
 
