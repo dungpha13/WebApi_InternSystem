@@ -48,6 +48,24 @@ namespace AmazingTech.InternSystem.Controllers
             }
 
             var identityUser = CreateUserFromRequest(registerUserRequestDTO);
+
+            var roleExists = await _roleManager.RoleExistsAsync(registerUserRequestDTO.Role);
+
+            if (!registerUserRequestDTO.Role.Equals("Intern") && !registerUserRequestDTO.Role.Equals("School"))
+            {
+                return BadRequest(new ErrorResponse { Errors = "No role with that name" });
+            }
+
+            if (!roleExists)
+            {
+                var roleResult = await _roleManager.CreateAsync(new IdentityRole(registerUserRequestDTO.Role));
+                
+                if (!roleResult.Succeeded)
+                {
+                    return BadRequest(new ErrorResponse { Succeeded = false, Errors = roleResult.Errors });
+                }
+            }
+
             var identityResult = await _userManager.CreateAsync(identityUser, registerUserRequestDTO.Password);
 
             if (!identityResult.Succeeded)
@@ -55,19 +73,7 @@ namespace AmazingTech.InternSystem.Controllers
                 return BadRequest(new ErrorResponse { Succeeded = false, Errors = identityResult.Errors });
             }
 
-            var roleExists = await _roleManager.RoleExistsAsync(Roles.INTERN);
-
-            if (!roleExists)
-            {
-                var roleResult = await _roleManager.CreateAsync(new IdentityRole(Roles.INTERN));
-
-                if (!roleResult.Succeeded)
-                {
-                    return BadRequest(new ErrorResponse { Succeeded = false, Errors = roleResult.Errors });
-                }
-            }
-            
-            identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
+            identityResult = await _userManager.AddToRoleAsync(identityUser, registerUserRequestDTO.Role);
 
             if (!identityResult.Succeeded)
             {

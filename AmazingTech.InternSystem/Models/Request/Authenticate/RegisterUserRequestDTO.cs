@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AmazingTech.InternSystem.Data.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace swp391_be.API.Models.Request.Authenticate
 {
@@ -23,5 +24,8 @@ namespace swp391_be.API.Models.Request.Authenticate
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Required]
+        public string Role { get; set; }
     }
 }
