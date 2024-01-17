@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -180,12 +181,16 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("login-with-google")]
         public IActionResult LoginWithGoogle()
         {
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", "/api/auth/external-login-callback");
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = "https//localhost:7078/signin-google",
+                Items = { { "scheme", "Google" } }
+            };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
         [HttpGet]
-        [Route("external-login-callback")]
+        [Route("/signin-google")]
         public async Task<IActionResult> ExternalLoginCallback()
         {
             // Handle the callback from Google and sign in the user
