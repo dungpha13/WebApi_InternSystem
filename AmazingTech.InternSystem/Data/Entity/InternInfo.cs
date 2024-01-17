@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
@@ -31,6 +32,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<Comment>? Comments { get; set; }
+        [JsonIgnore]
         public KiThucTap? KiThucTap { get; set; }
     }
 }
