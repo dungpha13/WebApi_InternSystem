@@ -24,31 +24,31 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Route("truong/{idTruong}")]
+        [Route("get-by-truong/{idTruong}")]
         public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
         {
             return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         public IActionResult GetKiThucTap(string id)
         {
             return _kiThucTapService.GetKiThucTap(id);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public IActionResult AddKiThucTap(AddKiThucTapDTO request)
         {
             return _kiThucTapService.AddKiThucTap(request);
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("update/{id}")]
         public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki)
         {
             return _kiThucTapService.UpdateKiThucTap(ki);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult DeleteKiThucTap(string id)
         {
             return _kiThucTapService.DeleteKiThucTap(id);

@@ -31,7 +31,7 @@ namespace AmazingTech.InternSystem.Controllers
             this._dBUtils = _dBUtils;
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<IActionResult> GetUser()
         {
             Thread.Sleep(700);
@@ -49,7 +49,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("get/{id:Guid}")]
         //[Authorize(Roles = Roles.ADMIN)]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
@@ -68,7 +68,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("create")]
         [Authorize(Roles = Roles.ADMIN)]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDTO createUserRequestDTO)
         {
@@ -170,7 +170,7 @@ namespace AmazingTech.InternSystem.Controllers
         //}
 
         [HttpPost]
-        [Route("Update/role/{email}/{role}")]
+        [Route("update/role/{email}/{role}")]
         [Authorize(Roles = Roles.ADMIN)]
         public async Task<IActionResult> UpdateUserRole([FromRoute] string role, [FromRoute] string email)
         {
@@ -206,7 +206,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpDelete]
-        [Route("{email}")]
+        [Route("delete/{email}")]
         public async Task<IActionResult> RemoveUser([FromRoute] string username)
         {
             if (string.IsNullOrEmpty(username))

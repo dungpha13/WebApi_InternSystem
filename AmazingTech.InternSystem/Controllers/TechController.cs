@@ -27,7 +27,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Authorize]
-        [Route("")]
+        [Route("get")]
         public async Task<IActionResult> GetAllTech()
         {
             var tech = await _service.getAllTech();
@@ -36,7 +36,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        [Route("")]
+        [Route("create")]
         public async Task<IActionResult> CreateTech([FromBody] TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -46,7 +46,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpPut]
         [Authorize]
-        [Route("{id}")]
+        [Route("update/{id}")]
         public async Task<IActionResult> UpdateTech(string id, TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -56,7 +56,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpDelete]
         [Authorize]
-        [Route("{id}")]
+        [Route("delete/{id}")]
         public async Task<IActionResult> DeleteTech(string id)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);

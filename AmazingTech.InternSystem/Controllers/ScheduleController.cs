@@ -59,7 +59,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpDelete]
-        [Route("api/[controller]/Delete-schedule")]
+        [Route("api/lich-phong-vans/Delete-schedule")]
         public IActionResult DeleteSchedule(string scheduleId)
         {
             try

@@ -36,7 +36,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         }
 
-        [HttpGet("get-all")]
+        [HttpGet("get")]
         //public IActionResult GetAllDuAns()
         //{
         //    var duAns = _duAnService.GetAllDuAns();

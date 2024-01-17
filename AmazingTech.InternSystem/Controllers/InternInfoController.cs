@@ -21,7 +21,7 @@ namespace AmazingTech.InternSystem.Controllers
             this._internInfoService = internInfoService;
         }
 
-        [HttpGet("")]
+        [HttpGet("get")]
         public async Task<IActionResult> GetAllInternsInfo()
         {
           
@@ -29,26 +29,26 @@ namespace AmazingTech.InternSystem.Controllers
           
         }
 
-        [HttpGet("{mssv}")]
+        [HttpGet("get/{mssv}")]
         public async Task<IActionResult> GetInternInfo(string mssv)
         {
             return await _internInfoService.GetInternInfo(mssv);
         }
 
-        [HttpPost("")]
+        [HttpPost("create")]
         public async Task<IActionResult> AddNewInternInfo(AddInternInfoDTO model)
         {
 
             return await _internInfoService.AddInternInfo(model); 
         }
 
-        [HttpDelete("{mssv}")]
+        [HttpDelete("delete/{mssv}")]
         public async Task<IActionResult> DeleteInternInfo(string mssv)
         {
             return await _internInfoService.DeleteInternInfo(mssv);
         }
 
-        [HttpPut("{mssv}")]
+        [HttpPut("update/{mssv}")]
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
             return await _internInfoService.UpdateInternInfo(model, mssv);

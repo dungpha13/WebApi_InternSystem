@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Controller
         {
             _viTriService = viTriService;
         }
-        [HttpGet]
+        [HttpGet("get")]
         public IActionResult GetViTriList()
         {
             return Ok(_viTriService.GetViTriList()) ;
