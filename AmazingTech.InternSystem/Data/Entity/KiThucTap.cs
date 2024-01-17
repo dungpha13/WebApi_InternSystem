@@ -12,8 +12,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         [ForeignKey("TruongHoc")]
         public string IdTruong { get; set; }
         public TruongHoc TruongHoc { get; set; }
-
-        [JsonIgnore]
         public ICollection<InternInfo> InternInfos { get; set; }
     }
 }
