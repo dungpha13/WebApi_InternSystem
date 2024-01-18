@@ -15,6 +15,7 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.IdentityModel.Tokens.Jwt;
+<<<<<<< Updated upstream
 using AutoMapper;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using Microsoft.Extensions.Options;
@@ -22,6 +23,9 @@ using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+=======
+using Microsoft.OpenApi.Models;
+>>>>>>> Stashed changes
 
 namespace AmazingTech.InternSystem
 {
@@ -103,7 +107,32 @@ namespace AmazingTech.InternSystem
                 .AddTokenProvider<DataProtectorTokenProvider<User>>("Kong")
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+            builder.Services.AddSwaggerGen(c =>
+                                            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                                            {
+                                                In = ParameterLocation.Header,
+                                                Description = "Insert JWT Token",
+                                                Name = "Authorization",
+                                                Type = SecuritySchemeType.Http,
+                                                BearerFormat = "JWT",
+                                                Scheme = "bearer",
+                                            }));
+            builder.Services.AddSwaggerGen(W =>
+                     W.AddSecurityRequirement(
+                         new OpenApiSecurityRequirement {
+                 {
+                     new OpenApiSecurityScheme
+                     {
+                         Reference = new OpenApiReference
+                         {
+                             Type = ReferenceType.SecurityScheme,
+                             Id = "Bearer"
+                         }
+                     },
 
+                     new String[]{}
+                 }
+                         }));
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;

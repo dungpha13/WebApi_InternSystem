@@ -4,6 +4,7 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
@@ -15,11 +16,11 @@ namespace AmazingTech.InternSystem.Services
 
         Task<List<CongNghe>> getAllTech();
 
-        Task CreateTech(TechModel tech, string user);
+        Task<int> CreateTech(TechModel tech, string user);
 
-        Task UpdateTech(string user, string id, TechModel tech);
+        Task<int> UpdateTech(string user, string id, TechModel tech);
 
-        Task DeleteTech(string user, string id);
+        Task<int> DeleteTech(string user, string id);
 
 
     }
@@ -43,23 +44,23 @@ namespace AmazingTech.InternSystem.Services
             return congNghe;
         }
 
-        public async Task CreateTech(TechModel tech, string user)
+        public async Task<int> CreateTech(TechModel tech, string user)
         {
            CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-           await _congNgheRepo.CreateCongNgheAsync(user, congNghe);
+           return  await _congNgheRepo.CreateCongNgheAsync(user, congNghe);          
         }
 
-        public async Task UpdateTech(string user, string id, TechModel tech)
+        
+
+        public async Task<int> UpdateTech(string user, string id, TechModel tech)
         {
             CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-            await _congNgheRepo.UpdateCongNgheAsync(user,id, congNghe);
+            return await _congNgheRepo.UpdateCongNgheAsync(user,id, congNghe);
         }
 
-        public async Task DeleteTech(string user, string id)
-        {
-            
-            await _congNgheRepo.DeleteCongNgheAsync(user, id);
-
+        public async Task<int> DeleteTech(string user, string id)
+        {            
+            return   await _congNgheRepo.DeleteCongNgheAsync(user, id);
         }
 
 
