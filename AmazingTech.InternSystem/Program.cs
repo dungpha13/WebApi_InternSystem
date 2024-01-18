@@ -15,6 +15,7 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.OpenApi.Models;
 
 namespace AmazingTech.InternSystem
 {
@@ -56,6 +57,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<INameService, NameService>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -64,7 +66,36 @@ namespace AmazingTech.InternSystem
             EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat ="JWT",
+                    Scheme = "Bearer"
+                });
+
+            });
+            builder.Services.AddSwaggerGen(w =>
+            {
+                w.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { } 
+                    }
+                });
+            });
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 
