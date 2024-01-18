@@ -37,7 +37,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-               var result =  _guiLichPhongVanService.getLichPhongVanByIdNgPhongVan();
+               var result =  _guiLichPhongVanService.getmyInterviewSchedule();
                 return Ok(result);
             }catch(Exception ex)
             {
@@ -45,6 +45,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpPut]
+        [Authorize]
         [Route("api/lich-phong-vans/Change-schudele")]
         public IActionResult UpdateScheduel(LichPhongVanRequestModel model)
         {
@@ -59,7 +60,12 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpDelete]
+<<<<<<< HEAD
         [Route("api/lich-phong-vans/Delete-schedule")]
+=======
+        [Authorize]
+        [Route("api/[controller]/Delete-schedule")]
+>>>>>>> phungdny
         public IActionResult DeleteSchedule(string scheduleId)
         {
             try
@@ -70,6 +76,6 @@ namespace AmazingTech.InternSystem.Controllers
             }catch(Exception ex ) 
             {
             return Ok(ex.Message);}
-             }
+            }
     }
 }

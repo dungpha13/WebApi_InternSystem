@@ -14,7 +14,7 @@ namespace AmazingTech.InternSystem.Models.Request
         public DateTime ThoiGianPhongVan { get; set; }
         public InterviewForm interviewForm { get; set; }
         public int TimeDuration { get; set; }
-
+        public string HoVaTenNgPhongVan { get;set; }
         public string DiaDiemPhongVan { get; set; }
     }
 }
