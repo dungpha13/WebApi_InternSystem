@@ -4,10 +4,10 @@ namespace AmazingTech.InternSystem.Models.Request.TruongHoc
 {
     public class AddTruongHocDTO
     {
-        [Required(ErrorMessage = "Name cannot be empty")]
+        [Required(ErrorMessage = "Ten khong duoc trong")]
         public string Ten { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "The number of internship weeks must be a positive integer")]
+        [Range(1, int.MaxValue, ErrorMessage = "SoTuanThucTap khong duoc am")]
         public int SoTuanThucTap { get; set; }
     }
 }

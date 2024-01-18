@@ -23,7 +23,7 @@ namespace AmazingTech.InternSystem.Services
 
             if (existingTruong is null)
             {
-                return new BadRequestObjectResult("Truong khong ton tai!");
+                return new BadRequestObjectResult($"Truong voi id {request.IdTruong} ton tai");
             }
 
             KiThucTap ki = new KiThucTap()
@@ -33,20 +33,33 @@ namespace AmazingTech.InternSystem.Services
                 IdTruong = existingTruong.Id
             };
 
-            _kiRepository.AddKiThucTap(ki);
-            return new OkResult();
+            var result = _kiRepository.AddKiThucTap(ki);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Unsuccess");
+            }
+
+            return new OkObjectResult("Success");
         }
 
         public IActionResult DeleteKiThucTap(string id)
         {
             var existingKi = _kiRepository.GetKiThucTap(id);
 
-            if (existingKi is not null)
+            if (existingKi is null)
             {
-                _kiRepository.DeleteKiThucTap(existingKi);
+                return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            return new NoContentResult();
+            var result = _kiRepository.DeleteKiThucTap(existingKi);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Unsuccess");
+            }
+
+            return new OkObjectResult("Success");
         }
 
         public IActionResult GetAllKiThucTaps()
@@ -58,6 +71,12 @@ namespace AmazingTech.InternSystem.Services
         public IActionResult GetKiThucTap(string id)
         {
             var ki = _kiRepository.GetKiThucTap(id);
+
+            if (ki is null)
+            {
+                return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
+            }
+
             return new OkObjectResult(ki);
         }
 
@@ -73,14 +92,20 @@ namespace AmazingTech.InternSystem.Services
 
             if (existingKi is null)
             {
-                return new BadRequestObjectResult("Id null!");
+                return new BadRequestObjectResult($"KiThucTap voi id {ki.Id} khong ton tai");
             }
 
             existingKi.NgayBatDau = ki.NgayBatDau;
             existingKi.NgayKetThuc = ki.NgayKetThuc;
 
-            _kiRepository.UpdateKiThucTap(existingKi);
-            return new NoContentResult();
+            var result = _kiRepository.UpdateKiThucTap(existingKi);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Unsuccess");
+            }
+
+            return new OkObjectResult("Success");
         }
     }
 }
