@@ -22,7 +22,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? DiaChi { get; set; }
         public decimal? GPA { get; set; }
         public string? TrinhDoTiengAnh { get; set; }
-        public string? ChungChi { get; set; }
+        // public string? ChungChi { get; set; }
         public string? LinkFacebook { get; set; }
         public string? LinkCV { get; set; }
         public string? NganhHoc { get; set; }
