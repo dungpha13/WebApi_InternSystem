@@ -15,7 +15,6 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.IdentityModel.Tokens.Jwt;
-<<<<<<< Updated upstream
 using AutoMapper;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using Microsoft.Extensions.Options;
@@ -23,9 +22,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-=======
 using Microsoft.OpenApi.Models;
->>>>>>> Stashed changes
 
 namespace AmazingTech.InternSystem
 {
