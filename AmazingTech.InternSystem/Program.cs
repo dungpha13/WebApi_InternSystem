@@ -15,6 +15,13 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
+using AmazingTech.InternSystem.Models.Request.DuAn;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.Google;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 
 namespace AmazingTech.InternSystem
@@ -123,6 +130,7 @@ namespace AmazingTech.InternSystem
 
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
+                .AddSignInManager()
                 .AddTokenProvider<DataProtectorTokenProvider<User>>("Kong")
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
@@ -141,8 +149,8 @@ namespace AmazingTech.InternSystem
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(option =>
             {
@@ -161,22 +169,28 @@ namespace AmazingTech.InternSystem
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("de455d3d7f83bf393eea5aef43f474f4aac57e3e8d75f9118e60d526453002dc"))
                 };
 
-                //option.Events = new JwtBearerEvents
-                //{
-                //    OnTokenValidated = context =>
-                //    {
-                //        var token = context.SecurityToken as JwtSecurityToken;
-                //        if (token != null)
-                //        {
-                //            context.Fail("Token is invalid.");
-                //        }
+                option.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var token = context.SecurityToken as JwtSecurityToken;
+                        if (token != null && !SQLTokenRepository.IsTokenValid(token.RawData))
+                        {
+                            context.Fail("Token is invalid.");
+                        }
 
-                //        return Task.CompletedTask;
-                //    }
-                //};
+                        return Task.CompletedTask;
+                    }
+                };
+            })
+            .AddCookie()
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
+                options.ClientId = builder.Configuration["Google:ClientID"];
+                options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+                //options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
-
-
 
             var app = builder.Build();
 
@@ -186,6 +200,8 @@ namespace AmazingTech.InternSystem
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 

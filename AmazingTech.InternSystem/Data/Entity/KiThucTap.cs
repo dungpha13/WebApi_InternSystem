@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("KiThucTap")]
-    public class KiThucTap : Entity
+    public class KiThucTap : AbstractEntity
     {
         public DateTime? NgayBatDau { get; set; }
         public DateTime? NgayKetThuc { get; set; }
@@ -12,8 +12,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         [ForeignKey("TruongHoc")]
         public string IdTruong { get; set; }
         public TruongHoc TruongHoc { get; set; }
-
-        [JsonIgnore]
         public ICollection<InternInfo> InternInfos { get; set; }
     }
 }

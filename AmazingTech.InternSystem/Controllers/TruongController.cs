@@ -19,20 +19,19 @@ namespace AmazingTech.InternSystem.Controllers
             _truongService = truongService;
         }
 
-        [HttpGet]
-        [Authorize]
+        [HttpGet("get")]
         public IActionResult GetAllTruongs()
         {
             return _truongService.GetAllTruongs();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         public IActionResult GetTruong(string id)
         {
             return _truongService.GetTruong(id);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public IActionResult AddTruong(AddTruongHocDTO truong)
         {
             return _truongService.AddTruong(truong);
@@ -44,7 +43,7 @@ namespace AmazingTech.InternSystem.Controllers
             return _truongService.UpdateTruong(truong);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult DeleteTruong(string id)
         {
             return _truongService.DeleteTruong(id);

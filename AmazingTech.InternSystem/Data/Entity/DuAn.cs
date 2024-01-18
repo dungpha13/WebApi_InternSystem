@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("DuAn")]
-    public class DuAn : Entity
+    public class DuAn : AbstractEntity
     {
         public string? Ten { get; set; }
 
@@ -14,6 +14,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? ThoiGianKetThuc { get; set; }
         public ICollection<UserDuAn> UserDuAns { get; set; }
         public ICollection<ViTri> ViTris { get; set; }
-        public ICollection<CongNghe> CongNghes { get; set; }
+        public ICollection<CongNgheDuAn> CongNgheDuAns { get; set; }
     }
 }

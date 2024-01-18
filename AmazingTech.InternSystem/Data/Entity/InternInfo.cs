@@ -1,18 +1,19 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("InternInfo")]
-    public class InternInfo : Entity
+    public class InternInfo : AbstractEntity
     {
-        
+
 
         [ForeignKey("User")]
         public string? UserId { get; set; }
         public User? User { get; set; }
         public string HoTen { get; set; }
         public DateTime? NgaySinh { get; set; }
-        public bool? GioiTinh { get; set; }
+        public bool GioiTinh { get; set; }
         public string? MSSV { get; set; }
         public string? EmailTruong { get; set; } = null;
         public string? EmailCaNhan { get; set; }
@@ -31,6 +32,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<Comment>? Comments { get; set; }
+        [JsonIgnore]
         public KiThucTap? KiThucTap { get; set; }
     }
 }

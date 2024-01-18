@@ -13,12 +13,14 @@ namespace AmazingTech.InternSystem.Services
     public interface ITechService
     {
 
-        Task<List<TechModel>> getAllTech();
-        Task CreateTech(TechModel tech);
+        Task<List<CongNghe>> getAllTech();
 
-        Task UpdateTech(String id, TechModel tech);
+        Task CreateTech(TechModel tech, string user);
 
-        Task DeleteTech(String id, TechModel tech);
+        Task UpdateTech(string user, string id, TechModel tech);
+
+        Task DeleteTech(string user, string id);
+
 
     }
 
@@ -34,29 +36,29 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public async Task<List<TechModel>> getAllTech()
+        public async Task<List<CongNghe>> getAllTech()
         {
             List<CongNghe> congNghe = await _congNgheRepo.GetAllCongNgheAsync();
-            List<TechModel> tech = _mapper.Map<List<TechModel>>(congNghe);
-            return tech;
+            
+            return congNghe;
         }
 
-        public async Task CreateTech(TechModel tech)
+        public async Task CreateTech(TechModel tech, string user)
         {
            CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-           await _congNgheRepo.CreateCongNgheAsync(congNghe);
+           await _congNgheRepo.CreateCongNgheAsync(user, congNghe);
         }
 
-        public async Task UpdateTech(String id, TechModel tech)
+        public async Task UpdateTech(string user, string id, TechModel tech)
         {
             CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-            await _congNgheRepo.UpdateCongNgheAsync(id, congNghe);
+            await _congNgheRepo.UpdateCongNgheAsync(user,id, congNghe);
         }
 
-        public async Task DeleteTech(String id, TechModel tech)
+        public async Task DeleteTech(string user, string id)
         {
-            CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-            await _congNgheRepo.DeleteCongNgheAsync(id, congNghe);
+            
+            await _congNgheRepo.DeleteCongNgheAsync(user, id);
 
         }
 

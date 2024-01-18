@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
     [Table("UserNhomZalo")]
-    public class UserNhomZalo : Entity
+    public class UserNhomZalo : AbstractEntity
     {
         [ForeignKey("User")]
         public string UserId { get; set; }
+        [JsonIgnore]
         public User User { get; set; }
 
         [ForeignKey("NhomZalo")]

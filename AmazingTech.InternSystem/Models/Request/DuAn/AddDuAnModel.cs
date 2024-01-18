@@ -1,8 +1,10 @@
-﻿namespace AmazingTech.InternSystem.Models.Request.DuAn
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AmazingTech.InternSystem.Models.Request.DuAn
 {
-    public class DuAnFilterCriteria
+    public class AddDuAnModel
     {
-        public string Id { get; set; }
+        [Required(ErrorMessage = "The 'Ten' field is required.")]
         public string? Ten { get; set; }
         public string LeaderId { get; set; }
         public DateTime? ThoiGianBatDau { get; set; }

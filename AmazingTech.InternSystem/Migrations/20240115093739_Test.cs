@@ -30,8 +30,8 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     HoVaTen = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -90,25 +90,6 @@ namespace AmazingTech.InternSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TruongHoc", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ViTri",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Ten = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LinkNhomZalo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ViTri", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -252,9 +233,10 @@ namespace AmazingTech.InternSystem.Migrations
                     IdNguoiDuocPhongVan = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ThoiGianPhongVan = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DiaDiemPhongVan = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DaXacNhanMail = table.Column<bool>(type: "bit", nullable: false),
-                    TrangThai = table.Column<bool>(type: "bit", nullable: false),
-                    KetQua = table.Column<bool>(type: "bit", nullable: false),
+                    DaXacNhanMail = table.Column<bool>(type: "bit", nullable: true),
+                    InterviewForm = table.Column<int>(type: "int", nullable: false),
+                    TrangThai = table.Column<int>(type: "int", nullable: false),
+                    KetQua = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -285,7 +267,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TenNhom = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LinkNhom = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MentorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdMentor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MentorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -300,8 +283,7 @@ namespace AmazingTech.InternSystem.Migrations
                         name: "FK_NhomZalo_AspNetUsers_MentorId",
                         column: x => x.MentorId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -387,56 +369,6 @@ namespace AmazingTech.InternSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CongNghe",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Ten = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdViTri = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CongNghe", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CongNghe_ViTri_IdViTri",
-                        column: x => x.IdViTri,
-                        principalTable: "ViTri",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserViTri",
-                columns: table => new
-                {
-                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ViTrisId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserViTri", x => new { x.UsersId, x.ViTrisId });
-                    table.ForeignKey(
-                        name: "FK_UserViTri_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserViTri_ViTri_ViTrisId",
-                        column: x => x.ViTrisId,
-                        principalTable: "ViTri",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserDuAn",
                 columns: table => new
                 {
@@ -465,6 +397,31 @@ namespace AmazingTech.InternSystem.Migrations
                         principalTable: "DuAn",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ViTri",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Ten = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkNhomZalo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DuAnId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ViTri", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ViTri_DuAn_DuAnId",
+                        column: x => x.DuAnId,
+                        principalTable: "DuAn",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -503,10 +460,10 @@ namespace AmazingTech.InternSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    HoTen = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    GioiTinh = table.Column<bool>(type: "bit", nullable: false),
+                    GioiTinh = table.Column<bool>(type: "bit", nullable: true),
                     MSSV = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailCaNhan = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -538,8 +495,7 @@ namespace AmazingTech.InternSystem.Migrations
                         name: "FK_InternInfo_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_InternInfo_KiThucTap_KiThucTapId",
                         column: x => x.KiThucTapId,
@@ -548,12 +504,13 @@ namespace AmazingTech.InternSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CongNgheDuAn",
+                name: "CongNghe",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdCongNghe = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdDuAn = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Ten = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdViTri = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -563,19 +520,42 @@ namespace AmazingTech.InternSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CongNgheDuAn", x => x.Id);
+                    table.PrimaryKey("PK_CongNghe", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CongNgheDuAn_CongNghe_IdCongNghe",
-                        column: x => x.IdCongNghe,
-                        principalTable: "CongNghe",
+                        name: "FK_CongNghe_ViTri_IdViTri",
+                        column: x => x.IdViTri,
+                        principalTable: "ViTri",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserViTri",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ViTrisId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserViTri", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CongNgheDuAn_DuAn_IdDuAn",
-                        column: x => x.IdDuAn,
-                        principalTable: "DuAn",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_UserViTri_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserViTri_ViTri_ViTrisId",
+                        column: x => x.ViTrisId,
+                        principalTable: "ViTri",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -605,6 +585,35 @@ namespace AmazingTech.InternSystem.Migrations
                         name: "FK_Comment_InternInfo_IdNguoiDuocComment",
                         column: x => x.IdNguoiDuocComment,
                         principalTable: "InternInfo",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CongNgheDuAn",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdCongNghe = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdDuAn = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CongNgheDuAn", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CongNgheDuAn_CongNghe_IdCongNghe",
+                        column: x => x.IdCongNghe,
+                        principalTable: "CongNghe",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CongNgheDuAn_DuAn_IdDuAn",
+                        column: x => x.IdDuAn,
+                        principalTable: "DuAn",
                         principalColumn: "Id");
                 });
 
@@ -685,8 +694,7 @@ namespace AmazingTech.InternSystem.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_InternInfo_UserId",
                 table: "InternInfo",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KiThucTap_IdTruong",
@@ -739,9 +747,19 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "UsersId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserViTri_UsersId",
+                table: "UserViTri",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserViTri_ViTrisId",
                 table: "UserViTri",
                 column: "ViTrisId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViTri_DuAnId",
+                table: "ViTri",
+                column: "DuAnId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -795,9 +813,6 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "CongNghe");
 
             migrationBuilder.DropTable(
-                name: "DuAn");
-
-            migrationBuilder.DropTable(
                 name: "NhomZalo");
 
             migrationBuilder.DropTable(
@@ -810,10 +825,13 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "ViTri");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "TruongHoc");
 
             migrationBuilder.DropTable(
-                name: "TruongHoc");
+                name: "DuAn");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

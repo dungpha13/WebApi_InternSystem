@@ -15,11 +15,13 @@ namespace AmazingTech.InternSystem.Repositories
         public interface ITechRepo
         {
             Task<List<CongNghe>> GetAllCongNgheAsync();
-            Task<CongNghe> GetCongNgheByIdAsync(string congNgheId);
-            Task CreateCongNgheAsync(CongNghe CongNgheModel);
-            Task UpdateCongNgheAsync(string congNgheId, CongNghe updatedCongNghe);
+            Task CreateCongNgheAsync(string user, CongNghe CongNgheModel);
 
-            Task DeleteCongNgheAsync(string congNgheId, CongNghe techdelete);
+            Task UpdateCongNgheAsync(string user, string congNgheId, CongNghe updatedCongNghe);
+
+            Task DeleteCongNgheAsync(string congNgheId, string user);
+
+
         }
     }
     public class TechRepository : ITechRepo
@@ -46,22 +48,16 @@ namespace AmazingTech.InternSystem.Repositories
             return congNghe;
         }
 
-        public async Task CreateCongNgheAsync(CongNghe CongNgheModel)
+        public async Task CreateCongNgheAsync(string user, CongNghe CongNgheModel)
         {
-            var congNgheEntity = new CongNghe
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                Ten = CongNgheModel.Ten,
-                IdViTri = CongNgheModel.IdViTri,
-                ImgUrl = CongNgheModel.ImgUrl,
-                CreatedBy = CongNgheModel.CreatedBy,
-                LastUpdatedBy = CongNgheModel.CreatedBy,
-        };         
-            _context.CongNghes.Add(congNgheEntity);
+            CongNgheModel.CreatedBy = user;
+            CongNgheModel.LastUpdatedBy = user;
+            CongNgheModel.LastUpdatedTime = DateTime.Now;
+            _context.CongNghes.Add(CongNgheModel);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateCongNgheAsync(string congNgheId, CongNghe updatedCongNghe)
+        public async Task UpdateCongNgheAsync(string user, string congNgheId, CongNghe updatedCongNghe)
         {
             var existingCongNghe = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId);
            
@@ -71,18 +67,19 @@ namespace AmazingTech.InternSystem.Repositories
                 if (updatedCongNghe.Ten != null) existingCongNghe.Ten = updatedCongNghe.Ten;
                 if (updatedCongNghe.IdViTri != null) existingCongNghe.IdViTri = updatedCongNghe.IdViTri;
                 if (updatedCongNghe.ImgUrl != null) existingCongNghe.ImgUrl = updatedCongNghe.ImgUrl;
-                existingCongNghe.LastUpdatedBy = updatedCongNghe.LastUpdatedBy;                
+                existingCongNghe.LastUpdatedBy = user;
+                existingCongNghe.LastUpdatedTime = DateTime.Now;
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task DeleteCongNgheAsync(string congNgheId, CongNghe techdelete)
+        public async Task DeleteCongNgheAsync(string user,  string congNgheId )
         {
             var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId);
 
             if (congNgheToDelete != null)
             {
-                congNgheToDelete.DeletedBy = techdelete.DeletedBy;
+                congNgheToDelete.DeletedBy = user;
                 congNgheToDelete.DeletedTime = DateTime.Now;
                 await _context.SaveChangesAsync();
             }

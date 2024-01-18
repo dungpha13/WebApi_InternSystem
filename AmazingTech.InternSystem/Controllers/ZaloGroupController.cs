@@ -20,7 +20,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         // Manage ZaloGroup
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<ActionResult<List<NhomZalo>>> GetAllZaloGroupsAsync()
         {
             try
@@ -35,7 +35,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         public async Task<ActionResult<NhomZalo>> GetZaloGroupByIdAsync(string id)
         {
             try
@@ -54,7 +54,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult> CreateZaloGroupAsync([FromBody] NhomZalo zalo)
         {
             try
@@ -69,7 +69,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public async Task<ActionResult> UpdateZaloGroupAsync(string id, [FromBody] NhomZalo zalo)
         {
             try
@@ -84,7 +84,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteZaloGroupAsync(string id)
         {
             try
@@ -100,7 +100,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         // Manage User in ZaloGroup methods
-        [HttpGet("{nhomZaloId}/users")]
+        [HttpGet("get/{nhomZaloId}/users")]
         public async Task<ActionResult<List<UserNhomZalo>>> GetUsersInZaloGroupAsync(string nhomZaloId)
         {
             try
@@ -115,7 +115,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPost("{nhomZaloId}/users")]
+        [HttpPost("add-user-to-zalo/{nhomZaloId}/users")]
         public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZalo user)
         {
             try
@@ -130,7 +130,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("{nhomZaloId}/users/{userId}")]
+        [HttpGet("get-user-in-zalo-group/{nhomZaloId}/users/{userId}")]
         public async Task<ActionResult<UserNhomZalo>> GetUserInZaloGroupAsync(string nhomZaloId, string userId)
         {
             try
@@ -149,7 +149,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPut("{nhomZaloId}/users")]
+        [HttpPut("update-user-in-zalo-group/{nhomZaloId}/users")]
         public async Task<ActionResult> UpdateUserInZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZalo updatedUser)
         {
             try
@@ -164,7 +164,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("{nhomZaloId}/users/{userId}")]
+        [HttpDelete("delete-user-in-zalo-group{nhomZaloId}/users/{userId}")]
         public async Task<ActionResult> RemoveUserFromZaloGroupAsync(string nhomZaloId, string userId)
         {
             try

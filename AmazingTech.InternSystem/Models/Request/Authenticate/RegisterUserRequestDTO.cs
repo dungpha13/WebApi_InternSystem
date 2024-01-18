@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AmazingTech.InternSystem.Data.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace swp391_be.API.Models.Request.Authenticate
 {
     public class RegisterUserRequestDTO
     {
+        
+
         [Required(ErrorMessage = "HoVaTen is required"), MinLength(2), MaxLength(30)]
         public string HoVaTen { get; set; }
         
@@ -21,5 +24,8 @@ namespace swp391_be.API.Models.Request.Authenticate
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Required]
+        public string Role { get; set; }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Services;
+using AutoMapper;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -23,98 +26,152 @@ namespace AmazingTech.InternSystem.Controllers
     {
         private readonly IDuAnService _duAnService;
         private readonly AppDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public DuAnController(IDuAnService duAnService, AppDbContext dbContext)
+        public DuAnController(IDuAnService duAnService, AppDbContext dbContext, IMapper mapper)
         {
             _duAnService = duAnService;
             _dbContext = dbContext;
+            _mapper = mapper;
+
+        }
+
+        [HttpGet("get")]
+        //public IActionResult GetAllDuAns()
+        //{
+        //    var duAns = _duAnService.GetAllDuAns();
+
+        //    if (duAns != null)
+        //    {
+        //        var duAnResponseDTOs = _mapper.Map<List<DuAnResponseDTO>>(duAns);
+
+        //        var formattedOutput = duAnResponseDTOs.Select(duAn => new
+        //        {
+        //            id = duAn.Id,
+        //            ten = duAn.Ten,
+        //            leaderId = duAn.LeaderId,
+        //            leaderName = duAn.LeaderName,
+        //            thoiGianBatDau = duAn.ThoiGianBatDau,
+        //            thoiGianKetThuc = duAn.ThoiGianKetThuc
+        //        }).ToList();
+
+        //        return Ok(formattedOutput);
+        //    }
+        //    return duAns;
+        //}
+        public IActionResult GetAllDuAns()
+        {
+            var result = _duAnService.GetAllDuAns();
+
+            if (result is OkObjectResult okResult)
+            {
+                var duAnList = okResult.Value as List<DuAn>;
+
+                if (duAnList != null)
+                {
+                    var formattedResponse = new
+                    {
+                        value = duAnList.Select(duAn => new
+                        {
+                            id = duAn.Id,
+                            ten = duAn.Ten,
+                            leaderId = duAn.LeaderId,
+                            leaderName = duAn.Leader?.HoVaTen,
+                            thoiGianBatDau = duAn.ThoiGianBatDau,
+                            thoiGianKetThuc = duAn.ThoiGianKetThuc
+                        })
+                    };
+
+                    return Ok(formattedResponse);
+                }
+
+            }
+            return result;
+        }
+
+        [HttpGet("get/{id}")]
+        //public IActionResult GetDuAnById(string id)
+        //{
+        //    try
+        //    {
+        //        var duAn = _duAnService.GetDuAnById(id);
+
+        //        if (duAn == null)
+        //            return NotFound("DuAn not found");
+
+        //        var duAnResponseDTO = _mapper.Map<DuAnResponseDTO>(duAn);
+
+        //        return Ok(new { value = new List<DuAnResponseDTO> { duAnResponseDTO } });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
+        public IActionResult GetDuAnById(string id)
+        {
+            var duAn = _duAnService.GetDuAnById(id);
+
+            if (duAn == null)
+                return NotFound("DuAn not found");
+
+            return Ok(duAn);
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<List<DuAn>>> SearchProjectsAsync([FromQuery] DuAnFilterCriteria criteria)
+        public IActionResult SearchProject([FromBody] DuAnFilterCriteria criteria)
         {
             try
             {
-                var projects = await _duAnService.SearchProjectsAsync(criteria);
-                return Ok(projects);
+                var duAns = _duAnService.SearchProject(criteria);
+                return Ok(duAns);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while searching for projects.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
-        [HttpPost("clean-filters")]
-        public async Task<ActionResult> CleanFiltersAsync()
+        [HttpPost("create")]
+        public IActionResult CreateDuAn([FromBody] AddDuAnModel createDuAn)
         {
             try
             {
-                await _duAnService.CleanFiltersAsync();
-                return Ok();
+                _duAnService.CreateDuAn(createDuAn);
+                return Ok("DuAn created successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while cleaning filters.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
-        [HttpPost("")]
-        public async Task<ActionResult> CreateDuAnAsync([FromBody] CreateDuAnRequest request)
+        [HttpPut("update/{id}")]
+        public IActionResult UpdateDuAn([FromBody] UpdateDuAnModel updatedDuAn)
         {
             try
             {
-                var createdDuAnId = await _duAnService.CreateDuAnAsync(request.CreatedDuAn, request.ViTriIds, request.CongNgheIds, request.LeaderUserIds);
-                return CreatedAtAction(nameof(CreateDuAnAsync), new { id = createdDuAnId }, new { Id = createdDuAnId });
+                _duAnService.UpdateDuAn(updatedDuAn);
+                return Ok("DuAn updated successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while creating the project.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
-        [HttpPost("{id}")]
-        public async Task<ActionResult> UpdateDuAnAsync(string id, [FromBody] UpdateDuAnRequest request)
+        [HttpDelete("delete/{id}")]
+        public IActionResult DeleteDuAn(string id)
         {
             try
             {
-                await _duAnService.UpdateDuAnAsync(id, request.UpdatedDuAn, request.ViTriIds, request.CongNgheIds, request.LeaderUserIds);
-                return Ok("Project updated successfully");
+                _duAnService.DeleteDuAn(id);
+                return Ok("DuAn deleted successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while updating the project.");
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteDuAnAsync(string id)
-        {
-            try
-            {
-                await _duAnService.DeleteDuAnAsync(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while deleting the project with ID {id}.");
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DuAn>> GetDuAnForEditAsync(string id)
-        {
-            try
-            {
-                var duAn = await _duAnService.GetDuAnForEditAsync(id);
-                if (duAn == null)
-                {
-                    return NotFound($"Project with ID {id} not found.");
-                }
-                return Ok(duAn);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while getting project details for editing with ID {id}.");
+                // Log the exception
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -125,7 +182,7 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 var projects = await _dbContext.DuAns
                     .Include(d => d.ViTris)
-                    .Include(d => d.CongNghes)
+                    .Include(d => d.CongNgheDuAns)
                     .Include(d => d.Leader)
                     .ToListAsync();
 
@@ -163,7 +220,7 @@ namespace AmazingTech.InternSystem.Controllers
                     sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
                     sheet1.Row(1).Style.Font.Italic = true;
 
-                    sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+                    sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.Black;
 
                     using (MemoryStream ms = new MemoryStream())
                     {
