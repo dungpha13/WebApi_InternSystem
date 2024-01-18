@@ -4,7 +4,7 @@ namespace AmazingTech.InternSystem.Models.Request.DuAn
 {
     public class AddDuAnModel
     {
-        [Required]
+        [Required(ErrorMessage = "The 'Ten' field is required.")]
         public string? Ten { get; set; }
         public string LeaderId { get; set; }
         public DateTime? ThoiGianBatDau { get; set; }
