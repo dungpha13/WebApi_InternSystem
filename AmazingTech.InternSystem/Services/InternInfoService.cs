@@ -267,7 +267,6 @@ namespace AmazingTech.InternSystem.Services
                                 GPA = row.GetValue<decimal>("GPA"),
                                 TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
                                 NganhHoc = row.GetText("NganhHoc"),
-                                ChungChi = "a",
                                 LinkFacebook = row.GetText("LinkFacebook"),
                                 LinkCV = row.GetText("LinkCV"),
                                 Round = 0,
