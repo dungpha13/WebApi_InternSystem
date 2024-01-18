@@ -19,6 +19,9 @@ using AutoMapper;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.Google;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AmazingTech.InternSystem
 {
@@ -115,9 +118,8 @@ namespace AmazingTech.InternSystem
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(option =>
             {
@@ -150,10 +152,13 @@ namespace AmazingTech.InternSystem
                     }
                 };
             })
-            .AddGoogle(options =>
+            .AddCookie()
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
             {
                 options.ClientId = builder.Configuration["Google:ClientID"];
                 options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+                //options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
 
             var app = builder.Build();

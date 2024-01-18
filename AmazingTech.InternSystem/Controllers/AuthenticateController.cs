@@ -15,6 +15,8 @@ using System.Security.Claims;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -51,6 +53,12 @@ namespace AmazingTech.InternSystem.Controllers
             if (existingUser != null)
             {
                 return BadRequest(new ErrorResponse { Succeeded = false, Errors = "Username already exists." });
+            }
+
+            var existingUserMail = await _userManager.FindByEmailAsync(registerUserRequestDTO.Email);
+            if (existingUserMail != null)
+            {
+                return BadRequest(new ErrorResponse { Succeeded = false, Errors = "Email already exists." });
             }
 
             var identityUser = CreateUserFromRequest(registerUserRequestDTO);
@@ -183,91 +191,85 @@ namespace AmazingTech.InternSystem.Controllers
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = "https//localhost:7078/signin-google",
-                Items = { { "scheme", "Google" } }
+                RedirectUri = "api/auth/redirect-google",
+                Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
         [HttpGet]
-        [Route("/signin-google")]
-        public async Task<IActionResult> ExternalLoginCallback()
+        [Route("redirect-google")] // Redirect
+        public async Task<IActionResult> GoogleLoginRedirect()
         {
-            // Handle the callback from Google and sign in the user
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Your logic to create or sign in the user using the external login info
-            if (info == null)
+            if (!result.Succeeded)
             {
-                return BadRequest("Failed");
+                // Handle failed authentication
+                return BadRequest("Failed to authenticate");
             }
 
-            // Check if the user is already registered
-            var existingUser = await _userManager.FindByEmailAsync(info.Principal.FindFirstValue(ClaimTypes.Email)!);
+            // Retrieve user information from claims
+            var userId = result.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userEmail = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var userName = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+            var userPhone = result.Principal.FindFirst(ClaimTypes.MobilePhone)?.Value;
 
+            // Next
+            var existingUser = await _userManager.FindByEmailAsync(userEmail);
             if (existingUser != null)
             {
-                // If the user is already registered, sign in the user
-                var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-
-                if (signInResult.Succeeded)
-                {
-                    // Return with Token after logged in
-                    var roles = await _userManager.GetRolesAsync(existingUser);
-                    var jwtToken = _tokenRepository.CreateJwtToken(existingUser, roles.ToList());
-
-                    return Ok(new
-                    {
-                        accessToken = jwtToken,
-
-                    });
-                }
-                else
-                {
-                    // Handle sign-in failure
-                    return BadRequest();
-                }
+                return await GenerateJwt(existingUser);
             }
-            else
+
+            var identityUser = CreateUserFromRequest(new RegisterUserRequestDTO
             {
-                // If the user is not registered, create a new user
-                var user = new User
-                {
-                    UserName = info.Principal.FindFirstValue(ClaimTypes.Email)!,
-                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)!,
-                    // Set other properties as needed
-                };
+                HoVaTen = userName,
+                Email = userEmail,
+                Username = userEmail,
+                PhoneNumber = userPhone,
+                Role = Roles.INTERN
+            });
 
-                var createResult = await _userManager.CreateAsync(user);
+            var identityResult = await _userManager.CreateAsync(identityUser);
 
-                if (createResult.Succeeded)
-                {
-                    // Add claims if needed
-                    // ...
-
-                    // Sign in the new user
-                    await _userManager.AddLoginAsync(user, info);
-
-                    await _userManager.AddToRoleAsync(user, Roles.INTERN);
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    // Return with Token after logged in
-                    var roles = await _userManager.GetRolesAsync(user);
-                    var jwtToken = _tokenRepository.CreateJwtToken(user, roles.ToList());
-
-                    return Ok(new
-                    {
-                        accessToken = jwtToken,
-
-                    });
-                }
-                else
-                {
-                    // Handle user creation failure
-                    return RedirectToAction("ExternalLoginFailure");
-                }
+            if (!identityResult.Succeeded)
+            {
+                return BadRequest(new ErrorResponse { Succeeded = false, Errors = identityResult.Errors });
             }
+
+            identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
+
+            if (!identityResult.Succeeded)
+            {
+                return BadRequest(new ErrorResponse { Succeeded = false, Errors = identityResult.Errors });
+            }
+
+            await SaveUserToken(identityUser);
+
+            return await GenerateJwt(await _userManager.FindByEmailAsync(userEmail));
+        }
+
+        private async Task<IActionResult> GenerateJwt(User existingUser)
+        {
+            var roles = await _userManager.GetRolesAsync(existingUser);
+            if (roles == null || !roles.Any())
+            {
+                return BadRequest(new ErrorResponse { Succeeded = false, Errors = "This current user doesn't have a role." });
+            }
+
+            var jwtToken = _tokenRepository.CreateJwtToken(new User
+            {
+                UserName = existingUser.UserName,
+                Id = existingUser.Id
+            }, roles.ToList());
+
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                return BadRequest(new ErrorResponse { Succeeded = false, Errors = "Failed to generate JWT token." });
+            }
+
+            return Ok(new { accessToken = jwtToken });
         }
     }
 
