@@ -25,27 +25,47 @@ namespace AmazingTech.InternSystem.Repositories
 
         public List<DuAn> GetAllDuAns()
         {
-            using (var context = new AppDbContext())
-            {
-                var duAns = context.Set<DuAn>().Include(duAn => duAn.Leader).ToList();
-                return duAns;
-            }
+            //using (var context = new AppDbContext())
+            //{
+            //    var duAns = context.Set<DuAn>().Include(duAn => duAn.Leader).ToList();
+            //    return duAns;
+            //}
+            var duAns = _dbContext.DuAns
+                .Include(duAn => duAn.Leader)
+                .ToList();
+
+            return duAns;
         }
 
         public DuAn? GetDuAnById(string id)
         {
             //var duAn = await _dbContext.DuAns
-            //    //.Include(d => d.Leader)
-            //    //.Include(d => d.UserDuAns)
-            //    //    .ThenInclude(uda => uda.User)
-            //    //.Include(d => d.CongNgheDuAns)
-            //    //    .ThenInclude(cnda => cnda.CongNghe)
-            //    .FirstOrDefaultAsync(c => c.Id == id);
+                //.Include(d => d.Leader)
+                //.Include(d => d.UserDuAns)
+                //    .ThenInclude(uda => uda.User)
+                //.Include(d => d.CongNgheDuAns)
+                //    .ThenInclude(cnda => cnda.CongNghe)
+                //.FirstOrDefaultAsync(c => c.Id == id);
 
             //return duAn;
             using (var context = new AppDbContext())
             {
-                return context.DuAns.FirstOrDefault(duan => duan.Id == id);
+                //return context.DuAns.FirstOrDefault(duan => duan.Id == id);
+                //return context.DuAns.Include(d => d.Leader)
+                //                    .Include(d => d.UserDuAns)
+                //                        .ThenInclude(uda => uda.User)
+                //                    .Include(d => d.CongNgheDuAns)
+                //                        .ThenInclude(cnda => cnda.CongNghe)
+                //                    .FirstOrDefault(c => c.Id == id);
+                var duAn = _dbContext.DuAns
+                .Include(d => d.Leader)
+                .Include(d => d.UserDuAns)
+                    .ThenInclude(uda => uda.User)
+                .Include(d => d.CongNgheDuAns)
+                    .ThenInclude(cnda => cnda.CongNghe)
+                .FirstOrDefault(c => c.Id == id);
+
+                return duAn;
             }
         }
 
@@ -53,14 +73,17 @@ namespace AmazingTech.InternSystem.Repositories
         {
             var query = _dbContext.DuAns
                 .Include(d => d.Leader)
-                .Include(d => d.UserDuAns)
-                    .ThenInclude(uda => uda.User)
-                .Include(d => d.CongNgheDuAns)
-                    .ThenInclude(cnda => cnda.CongNghe)
+                //.Include(d => d.UserDuAns)
+                //    .ThenInclude(uda => uda.User)
+                //.Include(d => d.CongNgheDuAns)
+                //    .ThenInclude(cnda => cnda.CongNghe)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(criteria.Ten))
-                query = query.Where(d => d.LeaderId.Contains(criteria.Ten));
+                query = query.Where(d => d.Ten.Contains(criteria.Ten));
+
+            if (!string.IsNullOrEmpty(criteria.LeaderId))
+                query = query.Where(d => d.LeaderId.Contains(criteria.LeaderId));
 
             if (criteria.ThoiGianBatDau != null)
                 query = query.Where(d => d.ThoiGianBatDau >= criteria.ThoiGianBatDau);
@@ -88,11 +111,8 @@ namespace AmazingTech.InternSystem.Repositories
             //};
             //_dbContext.DuAns.Add(duAn);
             //await _dbContext.SaveChangesAsync();
-            using (var context = new AppDbContext())
-            {
-                context.Set<DuAn>().Add(createDuAn);
-                return context.SaveChanges();
-            }
+            _dbContext.Set<DuAn>().Add(createDuAn);
+            return _dbContext.SaveChanges();
         }
 
         public int UpdateDuAn(DuAn updatedDuAn)
