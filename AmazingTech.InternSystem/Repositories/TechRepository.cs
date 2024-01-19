@@ -63,8 +63,8 @@ namespace AmazingTech.InternSystem.Repositories
         public async Task<int> UpdateCongNgheAsync(string user, string congNgheId, CongNghe updatedCongNghe)
         {
            
-           var existingCongNghe = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId);
-           if (existingCongNghe != null) {  return 0;}           
+           var existingCongNghe = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId && c.DeletedBy == null);
+           if (existingCongNghe == null) {  return 0;}           
            if (updatedCongNghe.Ten != null) existingCongNghe.Ten = updatedCongNghe.Ten;
            var check = _context.CongNghes.Where(x => x.Ten == existingCongNghe.Ten && x.DeletedBy == null).FirstOrDefault();
            if (check != null) { throw new Exception("Tech has been existed"); }
@@ -78,7 +78,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public async Task<int> DeleteCongNgheAsync(string user,  string congNgheId )
         {
-            var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId);
+            var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId && c.DeletedBy == null);
             if (congNgheToDelete == null) { return 0; }
             
              congNgheToDelete.DeletedBy = user;
