@@ -15,8 +15,8 @@ namespace AmazingTech.InternSystem.Data.Entity
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DefaultValue("GETDATE()")]
-        public DateTime? CreatedTime { get; set; } 
-      
+        public DateTime? CreatedTime { get; set; } = DateTime.Now;
+
         public DateTime? LastUpdatedTime { get; set; } 
 
         public DateTime? DeletedTime { get; set; } 

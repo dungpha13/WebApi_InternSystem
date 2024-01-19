@@ -17,6 +17,7 @@ namespace AmazingTech.InternSystem.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "6.0.25")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -63,7 +64,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("IdNguoiDuocComment");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNghe", b =>
@@ -104,7 +105,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("IdViTri");
 
-                    b.ToTable("CongNghe");
+                    b.ToTable("CongNghe", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNgheDuAn", b =>
@@ -145,7 +146,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("IdDuAn");
 
-                    b.ToTable("CongNgheDuAn");
+                    b.ToTable("CongNgheDuAn", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.Dashboard", b =>
@@ -170,7 +171,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Dashboard");
+                    b.ToTable("Dashboard", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.DuAn", b =>
@@ -214,16 +215,13 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("LeaderId");
 
-                    b.ToTable("DuAn");
+                    b.ToTable("DuAn", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ChungChi")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -311,7 +309,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("InternInfo");
+                    b.ToTable("InternInfo", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.KiThucTap", b =>
@@ -348,11 +346,14 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<DateTime?>("NgayKetThuc")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Ten")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdTruong");
 
-                    b.ToTable("KiThucTap");
+                    b.ToTable("KiThucTap", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.LichPhongVan", b =>
@@ -410,7 +411,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("IdNguoiPhongVan");
 
-                    b.ToTable("LichPhongVan");
+                    b.ToTable("LichPhongVan", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.NhomZalo", b =>
@@ -453,7 +454,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("MentorId");
 
-                    b.ToTable("NhomZalo");
+                    b.ToTable("NhomZalo", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.ThongBao", b =>
@@ -503,7 +504,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("IdNguoiNhan");
 
-                    b.ToTable("ThongBao");
+                    b.ToTable("ThongBao", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.TruongHoc", b =>
@@ -538,7 +539,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TruongHoc");
+                    b.ToTable("TruongHoc", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.User", b =>
@@ -629,7 +630,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserDuAn", b =>
@@ -673,7 +674,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDuAn");
+                    b.ToTable("UserDuAn", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserNhomZalo", b =>
@@ -720,7 +721,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNhomZalo");
+                    b.ToTable("UserNhomZalo", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserViTri", b =>
@@ -761,7 +762,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("ViTrisId");
 
-                    b.ToTable("UserViTri");
+                    b.ToTable("UserViTri", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.ViTri", b =>
@@ -801,7 +802,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("DuAnId");
 
-                    b.ToTable("ViTri");
+                    b.ToTable("ViTri", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -832,7 +833,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "dbo");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
@@ -859,7 +860,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -884,7 +885,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -906,7 +907,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -921,7 +922,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -940,7 +941,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "dbo");
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -955,7 +956,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("RoleUser");
+                    b.ToTable("RoleUser", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.Role", b =>

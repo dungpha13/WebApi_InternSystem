@@ -6,17 +6,20 @@ using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Repositories;
 using AutoMapper;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using swp391_be.API.Models.Request.Authenticate;
+using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Services
 {
     public class InternInfoService : IInternInfoService
     {
         private readonly IInternInfoRepo _internRepo;
+        private readonly ICommentRepository _commentRepo;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -25,6 +28,7 @@ namespace AmazingTech.InternSystem.Services
         private readonly AppDbContext _dbContext;
 
         public InternInfoService(IInternInfoRepo internRepo,
+            ICommentRepository commentRepo,
             IMapper mapper, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
             IKiThucTapRepository kiThucTapRepository,
@@ -32,6 +36,7 @@ namespace AmazingTech.InternSystem.Services
         {
             _dbContext = dbContext;
             _internRepo = internRepo;
+            _commentRepo = commentRepo;
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -58,10 +63,10 @@ namespace AmazingTech.InternSystem.Services
         }
 
         //Add new Intern
-        public async Task<IActionResult> AddInternInfo(AddInternInfoDTO model)
+        public async Task<IActionResult> AddInternInfo(string user, AddInternInfoDTO model)
         {
             var entity = _mapper.Map<InternInfo>(model);
-   
+            
 
             var existIntern = await _internRepo.GetInternInfoAsync(entity.MSSV);
             if (existIntern != null)
@@ -87,6 +92,8 @@ namespace AmazingTech.InternSystem.Services
             }
 
             entity.UserId = userId;
+
+
 
             //Add UserViTri
             foreach (var viTriId in model.ViTrisId)
@@ -125,8 +132,7 @@ namespace AmazingTech.InternSystem.Services
                 _dbContext.InternDuAns.Add(userDuAn);
             }
 
-
-            int rs = await _internRepo.AddInternInfoAsync(entity);
+            int rs = await _internRepo.AddInternInfoAsync(user, entity);
 
             if (rs == 0)
             {
@@ -159,17 +165,132 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
 
+            var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
+            if (intern == null)
+            {
+                return new BadRequestObjectResult($"Intern voi MSSV: '{mssv}' khong ton tai!");
+            }
 
+
+            //Update UserViTri
+            var existUserViTri = await _dbContext.UserViTris
+                   .Where(uv => uv.UsersId == intern.UserId)
+                   .ToListAsync();
+            _dbContext.UserViTris.RemoveRange(existUserViTri);
+
+            foreach (var viTriId in model.ViTrisId)
+            {
+                // Kiểm tra nếu viTriId tồn tại trong CSDL
+                var isViTriExist = await _dbContext.ViTris.AnyAsync(vt => vt.Id == viTriId);
+
+                if (isViTriExist)
+                {
+
+                    var userViTri = new UserViTri
+                    {
+                        UsersId = intern.UserId!,
+                        ViTrisId = viTriId
+                    };
+
+                    _dbContext.UserViTris.Add(userViTri);
+                }
+                else
+                {
+                    return new BadRequestObjectResult($"Vi tri voi id: '{viTriId}' khong ton tai!");
+                }
+            }
+
+
+            //Update UserNhomZalo
+            var existUserNhomZalo = await _dbContext.UserNhomZalos
+                  .Where(unz => unz.UserId == intern.UserId)
+                  .ToListAsync();
+            _dbContext.UserNhomZalos.RemoveRange(existUserNhomZalo);
+
+            foreach (var nhomZaloId in model.IdNhomZalo)
+            {
+                var isNhomZaloExist = await _dbContext.NhomZalos.AnyAsync(nz => nz.Id == nhomZaloId);
+
+                if (isNhomZaloExist)
+                {
+                    var userNhomZalo = new UserNhomZalo
+                    {
+                        UserId = intern.UserId!,
+                        IdNhomZalo = nhomZaloId
+                    };
+
+                    _dbContext.UserNhomZalos.Add(userNhomZalo);
+                }
+                else
+                {
+                    return new BadRequestObjectResult($"Nhom Zalo voi id '{nhomZaloId}' khong ton tai!");
+                }
+            }
+
+
+            //Update UserDuAn
+            var existUserDuAn = await _dbContext.InternDuAns
+                    .Where(uda => uda.UserId == intern.UserId)
+                    .ToListAsync();
+            _dbContext.InternDuAns.RemoveRange(existUserDuAn);
+
+            foreach (var duAnId in model.IdDuAn)
+            {
+                var isDuAnExist = await _dbContext.DuAns.AnyAsync(da => da.Id == duAnId);
+
+                if (isDuAnExist)
+                {
+                    var userDuAn = new UserDuAn
+                    {
+                        UserId = intern.UserId!,
+                        IdDuAn = duAnId
+                    };
+
+                    _dbContext.InternDuAns.Add(userDuAn);
+                }
+                else
+                {
+                    return new BadRequestObjectResult($"Du an voi id '{duAnId}' khong ton tai!");
+                }
+            }
+
+            
             var updateIntern = await _internRepo.UpdateInternInfoAsync(mssv, model);
 
 
-            if (updateIntern == 0)
+                if (updateIntern == 0)
+                {
+                    return new BadRequestObjectResult($"Intern mssv: {mssv} cap nhat that bai!");
+                }
+
+                return new OkObjectResult($"Cap nhat thanh cong Intern mssv: {mssv} !");
+            
+        }
+
+
+        //Comment on Intern
+        public async Task<IActionResult> AddCommentInternInfo(CommentInternInfoDTO comment, string idCommentor, string mssv)
+        {
+           
+
+            var entity = _mapper.Map<Comment>(comment);
+            int rs = await _commentRepo.AddCommentIntern(entity, idCommentor, mssv);
+
+            if (rs == 0)
             {
-                return new BadRequestObjectResult($"Intern mssv: {mssv} cap nhat that bai!");
+                return new BadRequestObjectResult("Them Comment that bai!");
             }
 
-            return new OkObjectResult($"Cap nhat thanh cong Intern mssv: {mssv} !");
+            return new OkObjectResult($"Them moi Comment cho MSSV: '{mssv}' thanh cong!");
         }
+
+        //Get Comments of Intern by MSSV
+        public async Task<IActionResult> GetCommentsByMssv(string mssv)
+        {
+            InternInfo intern = await _internRepo.GetCommentByMssv(mssv);
+            return new OkObjectResult(_mapper.Map<InternCommentDTO>(intern));
+        }
+
 
         public async Task<string> RegisterIntern(RegisterUserRequestDTO registerUserRequestDTO)
         {
@@ -267,7 +388,6 @@ namespace AmazingTech.InternSystem.Services
                                 GPA = row.GetValue<decimal>("GPA"),
                                 TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
                                 NganhHoc = row.GetText("NganhHoc"),
-                                ChungChi = "a",
                                 LinkFacebook = row.GetText("LinkFacebook"),
                                 LinkCV = row.GetText("LinkCV"),
                                 Round = 0,

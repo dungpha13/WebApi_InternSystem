@@ -17,7 +17,7 @@ namespace AmazingTech.InternSystem.Controllers
             _kiThucTapService = kiThucTapService;
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public IActionResult GetAllKiThucTaps()
         {
             return _kiThucTapService.GetAllKiThucTaps();
