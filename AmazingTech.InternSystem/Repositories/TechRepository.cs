@@ -78,7 +78,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public async Task<int> DeleteCongNgheAsync(string user,  string congNgheId )
         {
-            var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId);
+            var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId && c.DeletedBy == null);
             if (congNgheToDelete == null) { return 0; }
             
              congNgheToDelete.DeletedBy = user;
