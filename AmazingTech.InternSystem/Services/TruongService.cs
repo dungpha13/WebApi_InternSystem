@@ -22,20 +22,33 @@ namespace AmazingTech.InternSystem.Services
                 SoTuanThucTap = request.SoTuanThucTap
             };
 
-            _truongRepository.AddTruong(truong);
-            return new OkResult();
+            var result = _truongRepository.AddTruong(truong);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Unsuccess");
+            }
+
+            return new OkObjectResult("Success");
         }
 
         public IActionResult DeleteTruong(string id)
         {
             var existingTruong = _truongRepository.GetTruong(id);
 
-            if (existingTruong is not null)
+            if (existingTruong is null)
             {
-                _truongRepository.DeleteTruong(existingTruong);
+                return new BadRequestObjectResult($"Truong voi id {id} khong ton tai");
             }
 
-            return new NoContentResult();
+            var result = _truongRepository.DeleteTruong(existingTruong);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Unsuccess");
+            }
+
+            return new OkObjectResult("Success");
         }
 
         public IActionResult GetAllTruongs()
@@ -47,6 +60,12 @@ namespace AmazingTech.InternSystem.Services
         public IActionResult GetTruong(string id)
         {
             var truong = _truongRepository.GetTruong(id);
+
+            if (truong is null)
+            {
+                return new BadRequestObjectResult($"Truong voi id {id} khong ton tai");
+            }
+
             return new OkObjectResult(truong);
         }
 
@@ -56,14 +75,20 @@ namespace AmazingTech.InternSystem.Services
 
             if (existingTruong is null)
             {
-                return new BadRequestObjectResult("Truong doesn't exist!");
+                return new BadRequestObjectResult($"Truong voi id {truong.Id} khong ton tai");
             }
 
             existingTruong.Ten = truong.Ten;
             existingTruong.SoTuanThucTap = truong.SoTuanThucTap;
 
-            _truongRepository.UpdateTruong(existingTruong);
-            return new NoContentResult();
+            var result = _truongRepository.UpdateTruong(existingTruong);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Unsuccess");
+            }
+
+            return new OkObjectResult("Success");
         }
 
     }

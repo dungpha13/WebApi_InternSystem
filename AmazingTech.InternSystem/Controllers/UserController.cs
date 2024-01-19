@@ -169,83 +169,83 @@ namespace AmazingTech.InternSystem.Controllers
         //    });
         //}
 
-        [HttpPost]
-        [Route("update/role/{email}/{role}")]
-        [Authorize(Roles = Roles.ADMIN)]
-        public async Task<IActionResult> UpdateUserRole([FromRoute] string role, [FromRoute] string email)
-        {
-            var existingUser = await _userManager.FindByEmailAsync(email);
-            if (existingUser == null)
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = new[] { "user doesn't exist" }
-                });
-            }
-            var existingRole = await _userManager.GetRolesAsync(existingUser);
+        //[HttpPost]
+        //[Route("update/role/{email}/{role}")]
+        //[Authorize(Roles = Roles.ADMIN)]
+        //public async Task<IActionResult> UpdateUserRole([FromRoute] string role, [FromRoute] string email)
+        //{
+        //    var existingUser = await _userManager.FindByEmailAsync(email);
+        //    if (existingUser == null)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            succeeded = false,
+        //            errors = new[] { "user doesn't exist" }
+        //        });
+        //    }
+        //    var existingRole = await _userManager.GetRolesAsync(existingUser);
 
 
-            await _userManager.RemoveFromRolesAsync(existingUser, existingRole);
-            await _userManager.AddToRoleAsync(existingUser, role);
-            try
-            {
-                var result = await _userManager.UpdateAsync(existingUser);
-                return Ok(result);
+        //    await _userManager.RemoveFromRolesAsync(existingUser, existingRole);
+        //    await _userManager.AddToRoleAsync(existingUser, role);
+        //    try
+        //    {
+        //        var result = await _userManager.UpdateAsync(existingUser);
+        //        return Ok(result);
 
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = new[] { "failed to update" }
-                });
-            }
-        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            succeeded = false,
+        //            errors = new[] { "failed to update" }
+        //        });
+        //    }
+        //}
 
 
-        [HttpDelete]
-        [Route("delete/{email}")]
-        public async Task<IActionResult> RemoveUser([FromRoute] string username)
-        {
-            if (string.IsNullOrEmpty(username))
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = new[] { "username is null or empty unable to delete" }
-                });
-            }
+        //[HttpDelete]
+        //[Route("delete/{email}")]
+        //public async Task<IActionResult> RemoveUser([FromRoute] string username)
+        //{
+        //    if (string.IsNullOrEmpty(username))
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            succeeded = false,
+        //            errors = new[] { "username is null or empty unable to delete" }
+        //        });
+        //    }
 
-            var existingUser = await _userManager.FindByNameAsync(username);
+        //    var existingUser = await _userManager.FindByNameAsync(username);
 
-            if (existingUser == null)
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = new[] { "user doesn't exist" }
-                });
-            }
-            var result = await _userManager.DeleteAsync(existingUser);
-            if (result.Succeeded)
-            {
-                return Ok(new
-                {
-                    succeeded = true,
-                    message = "User deleted successfully"
-                });
-            }
-            else
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = result.Errors.Select(error => error.Description)
-                });
-            }
-        }
+        //    if (existingUser == null)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            succeeded = false,
+        //            errors = new[] { "user doesn't exist" }
+        //        });
+        //    }
+        //    var result = await _userManager.DeleteAsync(existingUser);
+        //    if (result.Succeeded)
+        //    {
+        //        return Ok(new
+        //        {
+        //            succeeded = true,
+        //            message = "User deleted successfully"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            succeeded = false,
+        //            errors = result.Errors.Select(error => error.Description)
+        //        });
+        //    }
+        //}
 
 
         //[HttpPost]

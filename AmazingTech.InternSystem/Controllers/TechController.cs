@@ -6,6 +6,7 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -40,8 +41,8 @@ namespace AmazingTech.InternSystem.Controllers
         public async Task<IActionResult> CreateTech([FromBody] TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _service.CreateTech(tech, user);
-            return Ok(tech);
+            var save = await _service.CreateTech(tech, user);
+             return Ok(save == 1 ? "Success" : "failed");
         }
 
         [HttpPut]
@@ -50,8 +51,8 @@ namespace AmazingTech.InternSystem.Controllers
         public async Task<IActionResult> UpdateTech(string id, TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _service.UpdateTech(user, id, tech);
-            return Ok(tech);
+            var save = await _service.UpdateTech(user, id, tech);
+            return Ok(save == 1 ? "Success" : "failed");
         }
 
         [HttpDelete]
@@ -60,8 +61,9 @@ namespace AmazingTech.InternSystem.Controllers
         public async Task<IActionResult> DeleteTech(string id)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _service.DeleteTech(user, id);
-            return Ok("Success");
+            var save = await _service.DeleteTech(user, id);
+            return Ok(save == 1 ? "Success" : "failed");
+
         }
 
 
