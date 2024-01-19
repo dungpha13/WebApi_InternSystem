@@ -5,8 +5,10 @@ using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace AmazingTech.InternSystem.Repositories
@@ -22,8 +24,13 @@ namespace AmazingTech.InternSystem.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<int> AddInternInfoAsync(InternInfo entity)
+        public async Task<int> AddInternInfoAsync(string userId, InternInfo entity)
         {
+
+            var user = await _context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+            string userName = user.UserName;
+            //createBy
+            entity.CreatedBy = userName;
 
             _context.InternInfos.Add(entity);
             return await _context.SaveChangesAsync();
@@ -67,77 +74,96 @@ namespace AmazingTech.InternSystem.Repositories
                                 .ThenInclude(userduan => userduan.DuAn)
                              .FirstOrDefaultAsync(i => i.MSSV == MSSV);
 
-            return intern;    
+            return intern;
         }
 
         public async Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model)
         {
 
-            var intern = await _context.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
-            if (intern == null)
-            {
-                return 0;
-            }
+            //var intern = await _context.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
+            //if (intern == null)
+            //{
+            //    return 0;
+            //}
 
 
-            //Update UserViTri
-            var existUserViTri = await _context.UserViTris
-                   .Where(uv => uv.UsersId == intern.UserId)
-                   .ToListAsync();
-            _context.UserViTris.RemoveRange(existUserViTri);
-
-            foreach (var viTriId in model.ViTrisId)
-            {
-                    var userViTri = new UserViTri
-                    {
-                        UsersId = intern.UserId!,
-                        ViTrisId = viTriId
-                    };
-
-                    _context.UserViTris.Add(userViTri);
-                
-            }
+            ////Update UserViTri
+            //var existUserViTri = await _context.UserViTris
+            //       .Where(uv => uv.UsersId == intern.UserId)
+            //       .ToListAsync();
+            //_context.UserViTris.RemoveRange(existUserViTri);  
 
 
-            //Update UserNhomZalo
-            var existUserNhomZalo = await _context.UserNhomZalos
-                  .Where(unz => unz.UserId == intern.UserId)
-                  .ToListAsync();
-            _context.UserNhomZalos.RemoveRange(existUserNhomZalo);
 
-            foreach (var nhomZaloId in model.IdNhomZalo)
-            {
-                    var userNhomZalo = new UserNhomZalo
-                    {
-                        UserId = intern.UserId!,
-                        IdNhomZalo = nhomZaloId
-                    };
+            //foreach (var viTriId in model.ViTrisId)
+            //{
+            //    // Kiểm tra nếu viTriId tồn tại trong CSDL
+            //    var isViTriExist = await _context.ViTris.AnyAsync(vt => vt.Id == viTriId);
 
-                    _context.UserNhomZalos.Add(userNhomZalo);   
-            }
+            //    if (isViTriExist)
+            //    {
 
+            //        var userViTri = new UserViTri
+            //        {
+            //            UsersId = intern.UserId!,
+            //            ViTrisId = viTriId
+            //        };
 
-            //Update UserDuAn
-            var existUserDuAn = await _context.InternDuAns
-                    .Where(uda => uda.UserId == intern.UserId)
-                    .ToListAsync();
-            _context.InternDuAns.RemoveRange(existUserDuAn);
-
-            foreach (var duAnId in model.IdDuAn)
-            {     
-                    var userDuAn = new UserDuAn
-                    {
-                        UserId = intern.UserId,
-                        IdDuAn = duAnId
-                    };
-
-                    _context.InternDuAns.Add(userDuAn);            
-            }
+            //        _context.UserViTris.Add(userViTri);
+            //    }
+            //    else
+            //    {
+            //        return 0;
+            //    }
+            //}
 
 
-            intern.LastUpdatedBy = "Admin";
+            ////Update UserNhomZalo
+            //var existUserNhomZalo = await _context.UserNhomZalos
+            //      .Where(unz => unz.UserId == intern.UserId)
+            //      .ToListAsync();
+            //_context.UserNhomZalos.RemoveRange(existUserNhomZalo);
 
-            mapper.Map(model, intern);
+            //foreach (var nhomZaloId in model.IdNhomZalo)
+            //{
+            //    var isNhomZaloExist = await _context.NhomZalos.AnyAsync(nz => nz.Id == nhomZaloId);
+
+            //    if (isNhomZaloExist)
+            //    {
+            //        var userNhomZalo = new UserNhomZalo
+            //        {
+            //            UserId = intern.UserId!,
+            //            IdNhomZalo = nhomZaloId
+            //        };
+
+            //        _context.UserNhomZalos.Add(userNhomZalo);
+            //    }
+            //    else
+            //    {
+            //        return 0;
+            //    }
+            //}
+
+
+            ////Update UserDuAn
+            //var existUserDuAn = await _context.InternDuAns
+            //        .Where(uda => uda.UserId == intern.UserId)
+            //        .ToListAsync();
+            //_context.InternDuAns.RemoveRange(existUserDuAn);
+
+            //foreach (var duAnId in model.IdDuAn)
+            //{
+            //    var userDuAn = new UserDuAn
+            //    {
+            //        UserId = intern.UserId,
+            //        IdDuAn = duAnId
+            //    };
+
+            //    _context.InternDuAns.Add(userDuAn);
+            //}
+
+
+           var intern = mapper.Map<InternInfo>(model);
 
             _context.InternInfos?.Update(intern);
             return await _context.SaveChangesAsync();
@@ -159,6 +185,18 @@ namespace AmazingTech.InternSystem.Repositories
             }
 
             return _context.SaveChangesAsync();
+        }
+
+
+        public async Task<InternInfo> GetCommentByMssv(string mssv)
+        {
+            UserRepository _userRepo = new UserRepository();
+            var intern = await _context.InternInfos
+                .Include(intern => intern.Comments)
+                   .ThenInclude(comment => comment.NguoiComment)
+                .FirstOrDefaultAsync(i => i.MSSV == mssv);
+           
+            return intern;
         }
 
     }
