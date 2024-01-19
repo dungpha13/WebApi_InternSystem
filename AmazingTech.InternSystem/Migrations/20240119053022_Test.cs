@@ -314,10 +314,7 @@ namespace AmazingTech.InternSystem.Migrations
 
             migrationBuilder.CreateTable(
                 name: "RoleUser",
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-========
                 schema: "dbo",
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
                 columns: table => new
                 {
                     RolesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -329,20 +326,14 @@ namespace AmazingTech.InternSystem.Migrations
                     table.ForeignKey(
                         name: "FK_RoleUser_AspNetRoles_RolesId",
                         column: x => x.RolesId,
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-========
                         principalSchema: "dbo",
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RoleUser_AspNetUsers_UsersId",
                         column: x => x.UsersId,
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-========
                         principalSchema: "dbo",
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -796,10 +787,7 @@ namespace AmazingTech.InternSystem.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleUser_UsersId",
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-========
                 schema: "dbo",
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
                 table: "RoleUser",
                 column: "UsersId");
 
@@ -897,15 +885,8 @@ namespace AmazingTech.InternSystem.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-                name: "RoleUser");
-
-            migrationBuilder.DropTable(
-                name: "ThongBao");
-========
                 name: "RoleUser",
                 schema: "dbo");
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
 
             migrationBuilder.DropTable(
                 name: "ThongBao",
@@ -916,16 +897,12 @@ namespace AmazingTech.InternSystem.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-                name: "UserViTri");
-========
                 name: "UserNhomZalo",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "UserViTri",
                 schema: "dbo");
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
 
             migrationBuilder.DropTable(
                 name: "InternInfo",
@@ -936,19 +913,12 @@ namespace AmazingTech.InternSystem.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:AmazingTech.InternSystem/Migrations/20240119041850_Test.cs
-                name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "NhomZalo");
-========
                 name: "AspNetRoles",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "NhomZalo",
                 schema: "dbo");
->>>>>>>> 174cc56816fad226fb26e81019de273d438b41da:AmazingTech.InternSystem/Migrations/20240119053022_Test.cs
 
             migrationBuilder.DropTable(
                 name: "KiThucTap",
