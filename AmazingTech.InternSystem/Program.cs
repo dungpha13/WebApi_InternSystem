@@ -27,6 +27,7 @@ using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using Microsoft.OpenApi.Models;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using AmazingTech.InternSystem.Data.Enum;
+using Microsoft.AspNetCore.Authentication.OAuth;
 
 namespace AmazingTech.InternSystem
 {
@@ -189,6 +190,14 @@ namespace AmazingTech.InternSystem
                 options.ClientSecret = builder.Configuration["Google:ClientSecret"];
                 //options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.Events = new OAuthEvents
+                {
+                    OnRedirectToAuthorizationEndpoint = context =>
+                    {
+                        context.Response.StatusCode = 401; // Set the status code to 401 instead of redirecting
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
 
