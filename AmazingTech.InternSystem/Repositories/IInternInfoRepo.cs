@@ -12,12 +12,14 @@ namespace AmazingTech.InternSystem.Repositories
         public Task<List<InternInfo>> GetAllInternsInfoAsync();
         public Task<InternInfo> GetInternInfoAsync(string MSSV);
 
-        public Task<int> AddInternInfoAsync(InternInfo entity);
+        public Task<int> AddInternInfoAsync(string user, InternInfo entity);
 
         public Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model);
 
         public Task<int> DeleteInternInfoAsync(InternInfo entity);
 
         public Task<int> AddListInternInfoAsync(List<InternInfo> interns);
+
+        public Task<InternInfo> GetCommentByMssv(string mssv);
     }
 }

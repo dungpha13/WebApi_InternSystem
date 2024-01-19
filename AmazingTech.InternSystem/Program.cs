@@ -13,7 +13,7 @@ using System.Text;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
-using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
+
 using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using AmazingTech.InternSystem.Models.Request.DuAn;
@@ -23,6 +23,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
+using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
+using Microsoft.OpenApi.Models;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using AmazingTech.InternSystem.Data.Enum;
 
 namespace AmazingTech.InternSystem
 {
@@ -64,6 +68,8 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<INameService, NameService>();
+            builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -72,9 +78,7 @@ namespace AmazingTech.InternSystem
             EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
 
 
             //Inject
@@ -82,7 +86,7 @@ namespace AmazingTech.InternSystem
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
-            builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
+           
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
@@ -186,6 +190,9 @@ namespace AmazingTech.InternSystem
                 //options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
+
+
+
 
             var app = builder.Build();
 
