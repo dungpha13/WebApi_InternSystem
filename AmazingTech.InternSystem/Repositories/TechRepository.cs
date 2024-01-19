@@ -64,10 +64,10 @@ namespace AmazingTech.InternSystem.Repositories
         {
            
            var existingCongNghe = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId);
-           if (existingCongNghe != null) {  return 0;}
-           var check = _context.CongNghes.Where(x => x.Ten == updatedCongNghe.Ten && x.DeletedBy == null).FirstOrDefault();
-           if (check != null) { throw new Exception("Tech has been existed"); }
+           if (existingCongNghe != null) {  return 0;}           
            if (updatedCongNghe.Ten != null) existingCongNghe.Ten = updatedCongNghe.Ten;
+           var check = _context.CongNghes.Where(x => x.Ten == existingCongNghe.Ten && x.DeletedBy == null).FirstOrDefault();
+           if (check != null) { throw new Exception("Tech has been existed"); }
            if (updatedCongNghe.IdViTri != null) existingCongNghe.IdViTri = updatedCongNghe.IdViTri;
            if (updatedCongNghe.ImgUrl != null) existingCongNghe.ImgUrl = updatedCongNghe.ImgUrl;
             existingCongNghe.LastUpdatedBy = user;
