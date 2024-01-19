@@ -21,7 +21,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? DiaChi { get; set; }
         public decimal? GPA { get; set; }
         public string? TrinhDoTiengAnh { get; set; }
-        public string? ChungChi { get; set; }
         public string? LinkFacebook { get; set; }
         public string? LinkCV { get; set; }
         public string? NganhHoc { get; set; }
@@ -30,7 +29,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? KiThucTapId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public ICollection<Comment>? Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public KiThucTap? KiThucTap { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Models.Request.InternInfo
 {
@@ -10,6 +11,7 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         public string Sdt { get; set; }
         public string DiaChi { get; set; }
         public bool GioiTinh { get; set; }
+        public string EmailCaNhan { get; set; }
         public string EmailTruong { get; set; }
         public string LinkCV { get; set; }
         public string TrinhDoTiengAnh { get; set; }
