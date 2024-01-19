@@ -229,9 +229,7 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ChungChi")
-                        .HasColumnType("nvarchar(max)");
+              
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");

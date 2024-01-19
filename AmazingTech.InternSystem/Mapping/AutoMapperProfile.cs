@@ -52,10 +52,8 @@ namespace AmazingTech.InternSystem.Mapping
             .ForMember(dest => dest.ThoiGianBatDau, opt => opt.MapFrom(src => src.ThoiGianBatDau.HasValue ? src.ThoiGianBatDau.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
             .ForMember(dest => dest.ThoiGianKetThuc, opt => opt.MapFrom(src => src.ThoiGianKetThuc.HasValue ? src.ThoiGianKetThuc.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null));
 
-            CreateMap<DuAn, AddDuAnModel>().ReverseMap();
 
-        }  
-    }    
+            CreateMap<DuAn, AddDuAnModel>().ReverseMap();
             CreateMap<DuAn, UpdateDuAnModel>().ReverseMap();
         }
     }

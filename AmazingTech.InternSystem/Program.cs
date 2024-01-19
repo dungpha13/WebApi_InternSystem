@@ -68,7 +68,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<INameService, NameService>();
-
+            builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddControllers();
 
@@ -80,39 +80,13 @@ namespace AmazingTech.InternSystem
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-            //Authen swagger
-            builder.Services.AddSwaggerGen(c =>
-
-                                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                                {
-                                    In = ParameterLocation.Header,
-                                    Description = "Insert JWT Token",
-                                    Name = "Authorization",
-                                    Type = SecuritySchemeType.Http,
-                                    BearerFormat = "JWT",
-                                    Scheme = "bearer",
-                                }));
-            builder.Services.AddSwaggerGen(W =>
-                               W.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                                {
-                                 new OpenApiSecurityScheme {
-                                  Reference = new OpenApiReference{
-                                  Type = ReferenceType.SecurityScheme,
-                                  Id = "Bearer"
-                                }},
-                                       new String[]{}}
-                              }));
-
-        
-
-
 
             //Inject
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 
-            builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
+           
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

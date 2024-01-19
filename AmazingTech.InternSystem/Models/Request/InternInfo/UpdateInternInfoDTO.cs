@@ -14,7 +14,11 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         public string Sdt { get; set; }
         public string DiaChi { get; set; }
         public bool GioiTinh { get; set; }
+        [Required]
+        [EmailAddress]
         public string? EmailCaNhan { get; set; }
+        [Required]
+        [EmailAddress]
         public string EmailTruong { get; set; }
         public string LinkCV { get; set; }
         public string TrinhDoTiengAnh { get; set; }
@@ -30,6 +34,7 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         public string[] IdNhomZalo { get; set; }
 
         public string? Status { get; set; }
+       
 
     }
 }

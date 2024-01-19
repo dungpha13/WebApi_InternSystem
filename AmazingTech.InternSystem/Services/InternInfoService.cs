@@ -165,7 +165,7 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
 
-            var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv);
+            var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
             if (intern == null)
             {
                 return new BadRequestObjectResult($"Intern voi MSSV: '{mssv}' khong ton tai!");
@@ -242,7 +242,7 @@ namespace AmazingTech.InternSystem.Services
                 {
                     var userDuAn = new UserDuAn
                     {
-                        UserId = intern.UserId,
+                        UserId = intern.UserId!,
                         IdDuAn = duAnId
                     };
 
@@ -254,6 +254,7 @@ namespace AmazingTech.InternSystem.Services
                 }
             }
 
+            
             var updateIntern = await _internRepo.UpdateInternInfoAsync(mssv, model);
 
 
