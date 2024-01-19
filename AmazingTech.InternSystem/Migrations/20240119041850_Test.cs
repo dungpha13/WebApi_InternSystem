@@ -30,8 +30,8 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     HoVaTen = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -236,6 +236,7 @@ namespace AmazingTech.InternSystem.Migrations
                     DaXacNhanMail = table.Column<bool>(type: "bit", nullable: true),
                     InterviewForm = table.Column<int>(type: "int", nullable: false),
                     TrangThai = table.Column<int>(type: "int", nullable: false),
+                    TimeDuration = table.Column<TimeSpan>(type: "time", nullable: false),
                     KetQua = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -267,7 +268,7 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TenNhom = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LinkNhom = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdMentor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdMentor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MentorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -284,6 +285,30 @@ namespace AmazingTech.InternSystem.Migrations
                         column: x => x.MentorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoleUser",
+                columns: table => new
+                {
+                    RolesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleUser", x => new { x.RolesId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_RoleUser_AspNetRoles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RoleUser_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -316,30 +341,6 @@ namespace AmazingTech.InternSystem.Migrations
                         column: x => x.IdNguoiNhan,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRole",
-                columns: table => new
-                {
-                    RolesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRole", x => new { x.RolesId, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_UserRole_AspNetRoles_RolesId",
-                        column: x => x.RolesId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserRole_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -463,7 +464,7 @@ namespace AmazingTech.InternSystem.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    GioiTinh = table.Column<bool>(type: "bit", nullable: true),
+                    GioiTinh = table.Column<bool>(type: "bit", nullable: false),
                     MSSV = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailCaNhan = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -712,6 +713,11 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "MentorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoleUser_UsersId",
+                table: "RoleUser",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ThongBao_IdNguoiGui",
                 table: "ThongBao",
                 column: "IdNguoiGui");
@@ -740,11 +746,6 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "IX_UserNhomZalo_UserId",
                 table: "UserNhomZalo",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRole_UsersId",
-                table: "UserRole",
-                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserViTri_UsersId",
@@ -792,6 +793,9 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "LichPhongVan");
 
             migrationBuilder.DropTable(
+                name: "RoleUser");
+
+            migrationBuilder.DropTable(
                 name: "ThongBao");
 
             migrationBuilder.DropTable(
@@ -799,9 +803,6 @@ namespace AmazingTech.InternSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserNhomZalo");
-
-            migrationBuilder.DropTable(
-                name: "UserRole");
 
             migrationBuilder.DropTable(
                 name: "UserViTri");
@@ -813,10 +814,10 @@ namespace AmazingTech.InternSystem.Migrations
                 name: "CongNghe");
 
             migrationBuilder.DropTable(
-                name: "NhomZalo");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "NhomZalo");
 
             migrationBuilder.DropTable(
                 name: "KiThucTap");

@@ -24,7 +24,7 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 _guiLichPhongVanService.AddLichPhongVan(model);
                 return Ok("Send Successful");
-            }catch(Exception ex)
+            }catch(BadHttpRequestException ex)
             {
                 return Ok(ex.Message);
             }

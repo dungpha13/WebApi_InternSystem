@@ -3,7 +3,11 @@ using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Request;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Services
@@ -17,97 +21,111 @@ namespace AmazingTech.InternSystem.Services
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
+        private readonly UserManager<User> _userManager;
         private readonly IUserRepository _userRepository;
         private readonly ILichPhongVanRepository _lichPhongVanRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailService _emailService;
-        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService)
+        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager)
         {
+            _userManager = userManager;
             _emailService = emailService;
             _userRepository = userRepository;
             _lichPhongVanRepository = lichPhongVanRepository;
             _httpContextAccessor = httpContextAccessor;
         }
-        
-        public void AddLichPhongVan(LichPhongVanRequestModel model)
-        {
+   
 
-            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
-            // string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
-            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (accountId == null)
-            {
-                throw new BadHttpRequestException("You need to login to create an interview schedule");
-            }
-            if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN.ToUpper())))
-            {
-                throw new BadHttpRequestException("You don't have permission to create schedule");
-            }
-            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null|| TimeSpan.FromMinutes(model.TimeDuration)  <= new TimeSpan(0,0,0))
-            {
-                throw new BadHttpRequestException("You need to fill all information");
-            }
-            if (model.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || model.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
-            {
-                throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
-            }
-            var InternId = _userRepository.GetUserIdByEmail(model.Email);
-            if (InternId == null)
-            {
-                throw new BadHttpRequestException("This Mail is not exist in database");
-            }
-            var ScheduleisExist = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
-            if (ScheduleisExist != null)
-            {
-                throw new BadHttpRequestException("This intern already has interview schedule");
-            }
-            var Interviewer = _userRepository.GetUserByName(model.HoVaTenNgPhongVan);
-            if(Interviewer == null)
-            {
-                throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
-            }
-            int count = 0;
-            foreach (var item in Interviewer.Roles)
-            {
-                if (!(item.Name.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.MENTOR.ToUpper())))
+        public  void AddLichPhongVan(LichPhongVanRequestModel model)
+        {
+            
+                string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                // string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
+                string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (accountId == null)
                 {
-                    count++;
+                    throw new BadHttpRequestException("You need to login to create an interview schedule");
+
                 }
-            }
-            if(count != 0)
-            {
-                throw new BadHttpRequestException("This interviewer has no right to be the interviewer");
-            }
-            var NewLichPhongVan = new LichPhongVan()
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                CreatedBy = _userRepository.GetUserById(accountId).HoVaTen,
-                IdNguoiPhongVan = Interviewer.Id,
-                IdNguoiDuocPhongVan = InternId,
-                DiaDiemPhongVan = model.DiaDiemPhongVan,
-                ThoiGianPhongVan = model.ThoiGianPhongVan,
-                TrangThai = Data.Enum.Status.Not_Yet,
-                InterviewForm = model.interviewForm,
-                DaXacNhanMail = false,
-                LastUpdatedBy = _userRepository.GetUserById(accountId).HoVaTen,
-                LastUpdatedTime = DateTime.Now,
-                CreatedTime = DateTime.Now,
-                TimeDuration = TimeSpan.FromMinutes(model.TimeDuration),
-                
-            };
-           
-            _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
-            string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
-                "\r\n\r\nChúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi. Chúng tôi gửi đến bạn một số thông tin và tài liệu cần thiết:\r\n\r\n" +
-                "Đây là lịch phỏng vấn của bạn\r\n\r\n " +
-                model.ThoiGianPhongVan + "\r\n\r\n Khoảng thời gian phỏng vấn dự kiến \r\n\r\n" +
-                +model.TimeDuration+
-                "\r\n\r\n Đây là địa chỉ phỏng vấn\r\n\r\n" +
-                model.DiaDiemPhongVan + "\r\n\r\n Hình thức phỏng vấn\r\n\r\n" +
-                model.interviewForm.ToString()
-                ;
-            string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
-            _emailService.SendMail(context, model.Email, subject);
+              
+                if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0))
+                {
+                    throw new BadHttpRequestException("You need to fill all information");
+                }
+                if (model.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || model.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
+                {
+                    throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
+                }
+                var InternId = _userRepository.GetUserIdByEmail(model.Email);
+                if (InternId == null)
+                {
+                    throw new BadHttpRequestException("This Mail is not exist in database");
+                }
+                var ScheduleisExist = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
+                if (ScheduleisExist != null)
+                {
+                    throw new BadHttpRequestException("This intern already has interview schedule");
+                }
+                var Interviewer = _userRepository.GetUserByName(model.HoVaTenNgPhongVan);
+                if (Interviewer == null)
+                {
+                    throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
+                }
+                if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN.ToUpper()))) // không phải là HR hay Admin thì không lịch đc tạo 
+                {
+                    throw new BadHttpRequestException("You don't have permission to create schedule");
+                }
+                var InterViewListRole =  _userManager.GetRolesAsync(Interviewer).Result;
+                var count = 0;
+                // Người Phỏng Vấn phải là HR hoặc Mentor
+                foreach (var item in  InterViewListRole)
+                {
+                    if (!(item.ToUpper() == Roles.HR.ToUpper() || item.ToUpper() == Roles.MENTOR.ToUpper()))
+                    {
+                        count++;
+                    }
+                }
+                if (count != 0)
+                {
+                    throw new BadHttpRequestException("This interviewer has no right to be the interviewer");
+                }
+                // Nếu Người đang tạo lịch là HR thì ng phỏng vấn cũng phải là ng login
+                if (accountRole.Equals(Roles.HR.ToUpper()) && Interviewer.Id != accountId)
+                {
+                    throw new BadHttpRequestException("You don't have permission to create schedule for this interviewer");
+                }
+            
+                var NewLichPhongVan = new LichPhongVan()
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    CreatedBy = _userRepository.GetUserById(accountId).HoVaTen,
+                    IdNguoiPhongVan = Interviewer.Id,
+                    IdNguoiDuocPhongVan = InternId,
+                    DiaDiemPhongVan = model.DiaDiemPhongVan,
+                    ThoiGianPhongVan = model.ThoiGianPhongVan,
+                    TrangThai = Data.Enum.Status.Not_Yet,
+                    InterviewForm = model.interviewForm,
+                    DaXacNhanMail = false,
+                    LastUpdatedBy = _userRepository.GetUserById(accountId).HoVaTen,
+                    LastUpdatedTime = DateTime.Now,
+                    CreatedTime = DateTime.Now,
+                    TimeDuration = TimeSpan.FromMinutes(model.TimeDuration),
+
+                };
+
+                _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
+                string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
+                    "\r\n\r\nChúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi. Chúng tôi gửi đến bạn một số thông tin và tài liệu cần thiết:\r\n\r\n" +
+                    "Đây là lịch phỏng vấn của bạn\r\n\r\n " +
+                    model.ThoiGianPhongVan + "\r\n\r\n Khoảng thời gian phỏng vấn dự kiến \r\n\r\n" +
+                    +model.TimeDuration +
+                    "\r\n\r\n Đây là địa chỉ phỏng vấn\r\n\r\n" +
+                    model.DiaDiemPhongVan + "\r\n\r\n Hình thức phỏng vấn\r\n\r\n" +
+                    model.interviewForm.ToString()
+                    ;
+                string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
+                _emailService.SendMail(context, model.Email, subject);
+          
 
         }
         public List<LichPhongVanResponseModel> getmyInterviewSchedule()
@@ -148,9 +166,10 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
             }
+            var Interviewer = _userRepository.GetUserByName(request.HoVaTenNgPhongVan);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var accountLogin = _userRepository.GetUserById(accountId);
-;            string InternId = _userRepository.GetUserIdByEmail(request.Email);
+;           string InternId = _userRepository.GetUserIdByEmail(request.Email);
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to update schedule");
@@ -159,28 +178,25 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This intern doesn't exist in data");
             }
-            var lichphongvan = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
+            var lichphongvan = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(Interviewer.Id, InternId);
             if(lichphongvan == null)
             {
                 throw new BadHttpRequestException("This intern doesn't have any interview schedule");
             }
-            if(lichphongvan.IdNguoiPhongVan != accountId)
-            {
-                throw new BadHttpRequestException("You aren't the one who created this interview schedule");
-            }
+           
             if (request.ThoiGianPhongVan == null || request.DiaDiemPhongVan.Length == 0 || request.Email == null || TimeSpan.FromMinutes(request.TimeDuration) <= new TimeSpan(0, 0, 0))
             {
                 throw new BadHttpRequestException("You need to fill all information");
             }
-            var Interviewer = _userRepository.GetUserByName(request.HoVaTenNgPhongVan);
             if (Interviewer == null)
             {
                 throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
             }
             int count = 0;
-            foreach (var item in Interviewer.Roles)
+            var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result;
+            foreach (var item in InterViewListRole)
             {
-                if (!(item.Name.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.MENTOR.ToUpper())))
+                if (!(item.ToUpper() == Roles.HR.ToUpper() || item.ToUpper() == Roles.MENTOR.ToUpper()))
                 {
                     count++;
                 }
@@ -189,19 +205,15 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This interviewer has no right to be the interviewer");
             }
-
-            foreach (var item in accountLogin.Roles)
+            if (accountRole.Equals(Roles.HR.ToUpper()) && Interviewer.Id != accountId)
             {
-                if(item.Name.Equals(Roles.HR.ToUpper()) && accountId != Interviewer.Id)
-                {
-                    throw new BadHttpRequestException("You don't have permission to update this schedulee");
-                }
-                if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN.ToUpper())))
-                {
-                    throw new BadHttpRequestException("You don't have permission to Update schedule");
-                }
+                throw new BadHttpRequestException("You don't have permission to update schedule for this interviewer");
             }
-           
+            if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN.ToUpper())))
+            {
+                    throw new BadHttpRequestException("You don't have permission to Update schedule");
+            }
+          
             lichphongvan.IdNguoiPhongVan = Interviewer.Id;
             lichphongvan.InterviewForm = request.interviewForm;
             lichphongvan.LastUpdatedTime = DateTime.Now;
@@ -231,22 +243,24 @@ namespace AmazingTech.InternSystem.Services
         }
         public void deleteSchedudle(string ScheduleId)
         {
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (ScheduleId == null)
             {
                 throw new BadHttpRequestException("Please, Enter the Id");
             }
+            
+            var accountLogin = _userRepository.GetUserById(accountId);
             var schedule = _lichPhongVanRepository.GetScheduleById(ScheduleId);
             if(schedule == null)
             {
                 throw new BadHttpRequestException("This schedule is not existed");
             }
-            if(schedule.IdNguoiPhongVan != accountId)
+            if (accountId != schedule.IdNguoiPhongVan || accountRole != Roles.ADMIN.ToUpper())
             {
-                throw new BadHttpRequestException("You don't have the permission to delete this schedule");
+                throw new BadHttpRequestException("You don't have permission to delete this schedule");
             }
-            _lichPhongVanRepository.DeleteLichPhongVan(schedule);
-
+                _lichPhongVanRepository.DeleteLichPhongVan(schedule);
         }
     }
 }

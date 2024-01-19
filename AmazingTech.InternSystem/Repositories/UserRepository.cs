@@ -47,6 +47,7 @@ namespace AmazingTech.InternSystem.Repositories
                 }
             }
         }
+        
         public User GetUserById(string id)
         {
             using (var context = new AppDbContext())
