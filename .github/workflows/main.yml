@@ -1,0 +1,57 @@
+name: Build and Deploy InternSystem
+
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        
+        - name: Login to Docker Hub
+          run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+        
+        - name: Build Docker image
+          run: docker build -t ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest .
+
+        - name: Push Docker image to Docker Hub
+          run: docker push ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
+          
+  deploy:
+     needs: build
+     runs-on: ubuntu-latest
+         
+     steps:
+     - name: Install sshpass
+       run: 'if ! command -v sshpass &> /dev/null; then sudo apt-get install -y sshpass; fi'
+     - name: Pull and run Docker image
+       run: |
+	if [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.base.ref }}" == "master" ]; then
+          sshpass -p ${{secrets.SSH_PASSWORD}} ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "
+          
+          docker stop ${{secrets.DOCKER_IMAGE}}-backend-api || true
+          docker rm ${{secrets.DOCKER_IMAGE}}-backend-api || true
+          docker rmi ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}} || true
+          
+          docker pull ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
+          docker run -d -p 8071:80 --name ${{secrets.DOCKER_IMAGE}}-backend-api ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
+          "
+        fi
+     # - name: Connect to EC2 Instance, update Docker
+     #   uses: appleboy/ssh-action@master
+     #   with:
+     #     host: ${{secrets.SSH_HOST}}
+     #     username: ${{secrets.SSH_USERNAME}}
+     #     key: ${{secrets.SSH_PASSWORD}}
+     #     script: |
+     #      if [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.base.ref }}" == "main" ]; then
+     #        sudo docker stop ${{secrets.DOCKER_IMAGE}}-backend-api || true
+     #        sudo docker rm ${{secrets.DOCKER_IMAGE}}-backend-api || true
+     #        sudo docker rmi ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}} || true
+          
+     #        sudo docker pull ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
+     #        sudo docker run -d -p 8070:80 --name ${{secrets.DOCKER_IMAGE}}-backend-api ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
+     #      fi
