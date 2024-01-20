@@ -8,6 +8,7 @@ namespace AmazingTech.InternSystem.Repositories
     {
         public string GetUserIdByEmail(string email);
         public User GetUserById(string id);
+        public User GetUserByName(string name);
     }
     public class UserRepository : IUserRepository
     {
@@ -46,6 +47,7 @@ namespace AmazingTech.InternSystem.Repositories
                 }
             }
         }
+        
         public User GetUserById(string id)
         {
             using (var context = new AppDbContext())
@@ -61,6 +63,21 @@ namespace AmazingTech.InternSystem.Repositories
                 }
             }
 
+        }
+        public User GetUserByName(string name)
+        {
+            using ( var context = new AppDbContext())
+            {
+                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == name).FirstOrDefault();
+                if(user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return user;
+                }
+            }
         }
     }
 

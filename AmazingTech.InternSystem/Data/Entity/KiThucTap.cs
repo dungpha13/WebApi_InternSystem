@@ -6,6 +6,7 @@ namespace AmazingTech.InternSystem.Data.Entity
     [Table("KiThucTap")]
     public class KiThucTap : AbstractEntity
     {
+        public string? Ten { get; set; }
         public DateTime? NgayBatDau { get; set; }
         public DateTime? NgayKetThuc { get; set; }
 

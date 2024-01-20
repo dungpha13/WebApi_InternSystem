@@ -38,8 +38,8 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<CongNgheDuAn> CongNgheDuAns { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
         public DbSet<ViTri> ViTris { get; set; }
-
         public DbSet<UserViTri> UserViTris { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -64,10 +64,10 @@ namespace AmazingTech.InternSystem.Data
                .HasForeignKey(lp => lp.IdCongNghe)
                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Roles)
-                .WithMany(r => r.Users)
-                .UsingEntity(j => j.ToTable("UserRole"));
+            //modelBuilder.Entity<User>()
+            //    .HasMany(u => u.Roles)
+            //    .WithMany(r => r.Users)
+            //    .UsingEntity(j => j.ToTable("UserRole"));
 
             modelBuilder.Entity<LichPhongVan>()
                 .HasKey(lp => new { lp.IdNguoiDuocPhongVan, lp.IdNguoiPhongVan });
@@ -145,7 +145,7 @@ namespace AmazingTech.InternSystem.Data
                .HasForeignKey(zl => zl.ViTrisId)
                .OnDelete(DeleteBehavior.NoAction);
 
-       
+
 
             // Auto generate when inserted/updated
 
@@ -246,6 +246,8 @@ namespace AmazingTech.InternSystem.Data
             //     modelBuilder.Entity<NhomZalo>()
             //         .Property(e => e.LastUpdatedTime)
             //         .ValueGeneratedOnAddOrUpdate();
+
+            modelBuilder.HasDefaultSchema("dbo");
 
             base.OnModelCreating(modelBuilder);
         }

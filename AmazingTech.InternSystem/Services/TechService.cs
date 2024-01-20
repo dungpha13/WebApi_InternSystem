@@ -1,13 +1,8 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
-using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
 
 namespace AmazingTech.InternSystem.Services
 {
