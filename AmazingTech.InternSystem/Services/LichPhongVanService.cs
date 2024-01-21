@@ -178,7 +178,21 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This intern doesn't exist in data");
             }
-            var lichphongvan = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(Interviewer.Id, InternId);
+            var Intern = _userRepository.GetUserById(InternId);
+            var InternRole = _userManager.GetRolesAsync(Intern).Result;
+            int countRole = 0;
+            foreach (var item in InternRole)
+            {
+                if(item.ToUpper() != Roles.INTERN.ToUpper())
+                {
+                    countRole++;
+                }
+            }
+            if(countRole > 0)
+            {
+                throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
+            }
+            var lichphongvan = _lichPhongVanRepository.GetScheduleByIntervieweeId(InternId);
             if(lichphongvan == null)
             {
                 throw new BadHttpRequestException("This intern doesn't have any interview schedule");

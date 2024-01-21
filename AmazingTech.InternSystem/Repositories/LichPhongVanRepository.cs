@@ -11,6 +11,7 @@ namespace AmazingTech.InternSystem.Repositories
         public List<LichPhongVan> GetLichPhongVansByIdNgPhongVan(string id);
         public void UpdateLichPhongVan(LichPhongVan lichPhongVan);
         public LichPhongVan GetScheduleById(string scheduleId);
+        public LichPhongVan GetScheduleByIntervieweeId(string id);
         public LichPhongVan GetScheduleByInterviewerIdAndIntervieweeId(string interviewerid, string intervieweeid);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
@@ -65,6 +66,13 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.Id == scheduleId).SingleOrDefault();
+            }
+        }
+        public LichPhongVan GetScheduleByIntervieweeId(string id)
+        {
+            using( var context = new AppDbContext())
+            {
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == id).SingleOrDefault();
             }
         }
     }
