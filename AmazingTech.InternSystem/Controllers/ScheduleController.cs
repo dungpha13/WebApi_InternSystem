@@ -44,6 +44,22 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("api/lich-phong-vans/ConfirmEmail")]
+        public IActionResult ConfirmEmail([FromQuery] string id)
+        {
+            var result = _guiLichPhongVanService.ConfirmEmail(id);
+
+            if (result)
+            {
+                return Ok(new { Message = "Email confirmed successfully." });
+            }
+
+            return BadRequest(new { Message = "Email confirmed unsuccessfully" });
+        }
+
+
         [HttpPut]
         [Authorize]
         [Route("api/lich-phong-vans/Change-schudele")]

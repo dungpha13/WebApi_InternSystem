@@ -18,6 +18,7 @@ namespace AmazingTech.InternSystem.Services
         public List<LichPhongVanResponseModel> getmyInterviewSchedule();
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request);
         public void deleteSchedudle(string ScheduleId);
+        public bool ConfirmEmail(string id);
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -34,7 +35,22 @@ namespace AmazingTech.InternSystem.Services
             _lichPhongVanRepository = lichPhongVanRepository;
             _httpContextAccessor = httpContextAccessor;
         }
-   
+
+        public bool ConfirmEmail(string id)
+        {
+            var lichPhongVan = _lichPhongVanRepository.GetScheduleByIntervieweeId(id);
+
+            if (lichPhongVan == null)
+            {
+                return false;
+            }
+
+            // Update user status (e.g., set DaXacNhanMail to true)
+            lichPhongVan.DaXacNhanMail = true;
+            _lichPhongVanRepository.UpdateLichPhongVan(lichPhongVan);
+
+            return true;
+        }
 
         public  void AddLichPhongVan(LichPhongVanRequestModel model)
         {
