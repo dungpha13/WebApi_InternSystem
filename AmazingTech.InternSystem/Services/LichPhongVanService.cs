@@ -140,7 +140,7 @@ namespace AmazingTech.InternSystem.Services
                     model.interviewForm.ToString()
                     ;
                 string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
-                _emailService.SendMail(context, model.Email, subject);
+                _emailService.SendMail(context, model.Email, subject, InternId);
           
 
         }
@@ -243,7 +243,7 @@ namespace AmazingTech.InternSystem.Services
                 request.DiaDiemPhongVan +
                 "\r\n\r\n Xin cảm ơn sự hiểu biết và sự linh hoạt của bạn trong việc xem xét yêu cầu của tôi. Xin vui lòng cho chúng tôi  biết nếu có bất kỳ điều gì cần được điều chỉnh hoặc có bất kỳ thông tin nào khác chúng tôi cần cung cấp.\r\n\r\nTrân trọng";
             string subject = "[AMAZINGTECH - HR] THƯ THÔNG BÁO DỜI LỊCH PHỎNG VẤN";
-            _emailService.SendMail(content, request.Email,subject);
+            _emailService.SendMail(content, request.Email,subject, InternId);
             var lichphongvannew = new LichPhongVanResponseModel()
             {
                 ID = lichphongvan.Id,
