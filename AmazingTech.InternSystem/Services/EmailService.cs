@@ -1,12 +1,13 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Data.Entity;
 
 namespace AmazingTech.InternSystem.Services
 {
     public interface IEmailService
     {
-        public void SendMail(string Content, string ReceiveAddress, String Subject);
+        public void SendMail(string Content, string ReceiveAddress, String Subject, string InternId);
     }
 
     public class EmailService : IEmailService
@@ -17,14 +18,18 @@ namespace AmazingTech.InternSystem.Services
 
         }
 
-        public void SendMail(string Content,string ReceiveAddress, String Subject)
+        public void SendMail(string Content,string ReceiveAddress, String Subject, String InternId)
         {
+            // var confirmLink = $"https://localhost:7078/api/lich-phong-vans/confirmEmail?id={InternId}";
+            var confirmLink = $"https://internsystem.zouzoumanagement.xyz/api/lich-phong-vans/confirmEmail?id={InternId}";
+            string contentConfirm = "\r\n\r\n Please click this link to confirm your interview: " + confirmLink;
+
             try
             {
                 MailMessage mailMessage = new MailMessage()
                 {
                     Subject = Subject,
-                    Body = Content,
+                    Body = Content + contentConfirm,
                     IsBodyHtml = false,
                 };
                 mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
