@@ -77,6 +77,20 @@ namespace AmazingTech.InternSystem.Services
                 {
                     throw new BadHttpRequestException("This Mail is not exist in database");
                 }
+                var Intern = _userRepository.GetUserById(InternId);
+                var InternRole = _userManager.GetRolesAsync(Intern).Result;
+                int countRole = 0;
+                foreach (var item in InternRole)
+                {
+                    if (item.ToUpper() != Roles.INTERN.ToUpper())
+                    {
+                        countRole++;
+                    }
+                }
+                if (countRole > 0)
+                    {
+                        throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
+                    }
                 var ScheduleisExist = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
                 if (ScheduleisExist != null)
                 {
@@ -286,11 +300,15 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This schedule is not existed");
             }
-            if (accountId != schedule.IdNguoiPhongVan || accountRole != Roles.ADMIN.ToUpper())
+            if (accountId != schedule.IdNguoiPhongVan || (accountRole != Roles.ADMIN.ToUpper()) && (accountRole != Roles.HR.ToUpper()))
             {
                 throw new BadHttpRequestException("You don't have permission to delete this schedule");
             }
                 _lichPhongVanRepository.DeleteLichPhongVan(schedule);
+        }
+        public void AutoCreateSchedule(DateTime startTime , DateTime endTime)
+        {
+
         }
     }
 }
