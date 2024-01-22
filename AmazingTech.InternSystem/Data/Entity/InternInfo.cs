@@ -32,7 +32,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<Comment>? Comments { get; set; }
-        [JsonIgnore]
-        public KiThucTap? KiThucTap { get; set; }
+        public ICollection<InternTruongKyThucTap> InternTruongKyThucTaps { get; set; }
     }
 }

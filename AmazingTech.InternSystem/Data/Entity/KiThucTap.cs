@@ -9,10 +9,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? Ten { get; set; }
         public DateTime? NgayBatDau { get; set; }
         public DateTime? NgayKetThuc { get; set; }
-
-        [ForeignKey("TruongHoc")]
-        public string IdTruong { get; set; }
-        public TruongHoc TruongHoc { get; set; }
-        public ICollection<InternInfo> InternInfos { get; set; }
+        public ICollection<InternTruongKyThucTap> InternTruongKyThucTaps { get; set; }
     }
 }

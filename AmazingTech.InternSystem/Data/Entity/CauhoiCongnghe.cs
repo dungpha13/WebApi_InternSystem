@@ -2,6 +2,7 @@
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
+    [Table("CauHoiCongNghe")]
     public class CauhoiCongnghe :AbstractEntity
     {
         [ForeignKey("CongNghe")]

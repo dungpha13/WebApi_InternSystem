@@ -28,16 +28,16 @@ namespace AmazingTech.InternSystem.Repositories
             return _context.SaveChanges();
         }
 
-        public List<KiThucTap> GetAllKiThucTaps()
+        /*public List<KiThucTap> GetAllKiThucTaps()
         {
             using (var context = new AppDbContext())
             {
                 var kis = context.Set<KiThucTap>().Include(ki => ki.TruongHoc).ToList();
                 return kis;
             }
-        }
+        }*/
 
-        public KiThucTap? GetKiThucTap(string id)
+      /*  public KiThucTap? GetKiThucTap(string id)
         {
             using (var context = new AppDbContext())
             {
@@ -46,7 +46,7 @@ namespace AmazingTech.InternSystem.Repositories
                         .FirstOrDefault(ktt => ktt.Id == id);
             }
         }
-
+*/
         public int UpdateKiThucTap(KiThucTap kiThucTap)
         {
             _context.KiThucTaps.Update(kiThucTap);
