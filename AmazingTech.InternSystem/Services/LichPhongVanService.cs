@@ -306,8 +306,14 @@ namespace AmazingTech.InternSystem.Services
             }
                 _lichPhongVanRepository.DeleteLichPhongVan(schedule);
         }
+
         public void AutoCreateSchedule(DateTime startTime , DateTime endTime)
         {
+            if(startTime > endTime)
+            {
+                throw new BadHttpRequestException("The end time cannot be earlier than the start time");
+            }
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
 
         }
     }

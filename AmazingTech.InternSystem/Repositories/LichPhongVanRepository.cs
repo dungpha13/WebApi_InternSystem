@@ -77,5 +77,12 @@ namespace AmazingTech.InternSystem.Repositories
                 return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == intervieweeid).SingleOrDefault();
             }
         }
+        public List<LichPhongVan> getScheduleInPeriodTime(DateTime startDate , DateTime EndTime)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => startDate <= x.ThoiGianPhongVan && x.ThoiGianPhongVan <= EndTime).ToList();  
+            }
+        }
     }
 }

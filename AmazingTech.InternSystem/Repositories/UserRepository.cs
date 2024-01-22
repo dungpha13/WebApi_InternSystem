@@ -9,10 +9,12 @@ namespace AmazingTech.InternSystem.Repositories
         public string GetUserIdByEmail(string email);
         public User GetUserById(string id);
         public User GetUserByName(string name);
+        public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
     }
     public class UserRepository : IUserRepository
     {
         private readonly DbSet<User> DbSet;
+        private readonly DbSet<LichPhongVan> _DbSet;
         public UserRepository()
         {
 
@@ -77,6 +79,28 @@ namespace AmazingTech.InternSystem.Repositories
                 {
                     return user;
                 }
+            }
+        }
+        public List<User> GetInternWithoutInterview(DateTime startTime , DateTime endTime)
+        {
+            using(var context = new AppDbContext())
+            {
+                var result = context.Set<User>()
+                      .AsNoTracking()
+                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.LichPhongVans.Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+                      .ToList();
+                return result;
+            }
+        }
+        public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime)
+        {
+            using (var context = new AppDbContext())
+            {
+                var result = context.Set<User>()
+                      .AsNoTracking()
+                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.HR) || r.Name.Equals(Roles.MENTOR)) && !context.LichPhongVans.Any(l => l.NguoiPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+                      .ToList();
+                return result;
             }
         }
     }
