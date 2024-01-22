@@ -23,7 +23,7 @@ namespace AmazingTech.InternSystem.Services
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
-      
+        private readonly IKiThucTapRepository _kiThucTapRepository;
 
         private readonly AppDbContext _dbContext;
 
@@ -31,7 +31,7 @@ namespace AmazingTech.InternSystem.Services
             ICommentRepository commentRepo,
             IMapper mapper, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
-           
+            IKiThucTapRepository kiThucTapRepository,
             AppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -41,7 +41,7 @@ namespace AmazingTech.InternSystem.Services
             _userManager = userManager;
             _roleManager = roleManager;
             _dbContext = dbContext;
-            
+            _kiThucTapRepository = kiThucTapRepository;
         }
 
         //Get all Intern
@@ -411,8 +411,8 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
         {
             List<InternInfo> interns = ReadFile(file);
+            var existingKi = _kiThucTapRepository.GetKiThucTap(kiThucTapId);
 
-          
             if (existingKi is null)
                 return new BadRequestObjectResult("Khong tim thay ki thuc tap voi id: " + kiThucTapId);
 
