@@ -13,5 +13,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? ImgUrl { get; set; }
         public ViTri ViTri { get; set; }
         public ICollection<CongNgheDuAn> CongNgheDuAns { get; set; }
+
+        public ICollection<CauhoiCongnghe> CauhoiCongnghe{ get; set; }
+
     }
 }

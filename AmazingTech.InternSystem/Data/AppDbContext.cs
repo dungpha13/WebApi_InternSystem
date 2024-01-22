@@ -40,6 +40,8 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<ViTri> ViTris { get; set; }
         public DbSet<UserViTri> UserViTris { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Cauhoi> cauhois { get; set; }
+        public DbSet<CauhoiCongnghe> cauhoiCongnghes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -145,7 +147,16 @@ namespace AmazingTech.InternSystem.Data
                .HasForeignKey(zl => zl.ViTrisId)
                .OnDelete(DeleteBehavior.NoAction);
 
-
+            modelBuilder.Entity<CauhoiCongnghe>()
+               .HasOne(zl => zl.cauhoi)
+               .WithMany(u => u.CauhoiCongnghe)
+               .HasForeignKey(zl => zl.IdCauhoi)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<CauhoiCongnghe>()
+              .HasOne(zl => zl.CongNghe)
+              .WithMany(u => u.CauhoiCongnghe)
+              .HasForeignKey(zl => zl.IdCongNghe)
+              .OnDelete(DeleteBehavior.NoAction);
 
             // Auto generate when inserted/updated
 
