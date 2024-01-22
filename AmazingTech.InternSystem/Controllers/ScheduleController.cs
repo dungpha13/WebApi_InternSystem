@@ -11,24 +11,26 @@ namespace AmazingTech.InternSystem.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly IGuiLichPhongVanService _guiLichPhongVanService;
-        public ScheduleController(IGuiLichPhongVanService guiLichPhongVanService)
+        private readonly IEmailService _emailService;
+        public ScheduleController(IGuiLichPhongVanService guiLichPhongVanService, IEmailService emailService)
         {
             _guiLichPhongVanService = guiLichPhongVanService;
+            _emailService = emailService;
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/Send-Interview-Schedule")]
-        public IActionResult SendInterviewSchedule([FromBody]LichPhongVanRequestModel model)
+        public IActionResult SendInterviewSchedule([FromBody] LichPhongVanRequestModel model)
         {
             try
             {
                 _guiLichPhongVanService.AddLichPhongVan(model);
                 return Ok("Send Successful");
-            }catch(BadHttpRequestException ex)
+            } catch (BadHttpRequestException ex)
             {
                 return Ok(ex.Message);
             }
-           
+
         }
         [HttpGet]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
@@ -37,9 +39,9 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-               var result =  _guiLichPhongVanService.getmyInterviewSchedule();
+                var result = _guiLichPhongVanService.getmyInterviewSchedule();
                 return Ok(result);
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 return Ok(ex.Message);
             }
@@ -70,12 +72,13 @@ namespace AmazingTech.InternSystem.Controllers
                 var result = _guiLichPhongVanService.UpdateSchedule(model);
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(ex.Message);
             }
         }
         [HttpDelete]
+        [Authorize]
         [Route("api/lich-phong-vans/Delete-schedule")]
         public IActionResult DeleteSchedule(string scheduleId)
         {
@@ -84,9 +87,18 @@ namespace AmazingTech.InternSystem.Controllers
                 _guiLichPhongVanService.deleteSchedudle(scheduleId);
                 return Ok("Delete Succesful");
 
-            }catch(Exception ex ) 
+            } catch (Exception ex)
             {
-            return Ok(ex.Message);}
-            }
+                return Ok(ex.Message); }
+        }
+        [HttpPost]
+        [Route("api/send-mail-test")]
+        public IActionResult SendImage(string content, string email, string subject)
+        {
+            _emailService.SendMail2(content, email, subject);
+            return Ok("Send Successfull");
+        }
     }
 }
+
+
