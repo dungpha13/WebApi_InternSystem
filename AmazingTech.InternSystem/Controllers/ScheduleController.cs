@@ -1,4 +1,7 @@
-﻿using AmazingTech.InternSystem.Models.Request;
+﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
+using AmazingTech.InternSystem.Models.Request;
+using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,10 +15,12 @@ namespace AmazingTech.InternSystem.Controllers
     {
         private readonly IGuiLichPhongVanService _guiLichPhongVanService;
         private readonly IEmailService _emailService;
-        public ScheduleController(IGuiLichPhongVanService guiLichPhongVanService, IEmailService emailService)
+        private readonly IUserRepository _userRepository;
+        public ScheduleController(IGuiLichPhongVanService guiLichPhongVanService, IEmailService emailService,IUserRepository userRepository)
         {
             _guiLichPhongVanService = guiLichPhongVanService;
             _emailService = emailService;
+            _userRepository = userRepository;
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
@@ -98,6 +103,30 @@ namespace AmazingTech.InternSystem.Controllers
             _emailService.SendMail2(content, email, subject);
             return Ok("Send Successfull");
         }
+        [HttpPost]
+        [Authorize(Roles = Roles.ADMIN)]
+        [Route("api/lich-phong-vans/Auto-Create-Schedule")]
+        public IActionResult AutoCreateSchedule(DateTime start, DateTime end, string diadiemphongvan, InterviewForm interviewForm)
+        {
+            try
+            {
+                _guiLichPhongVanService.AutoCreateSchedule(start, end, diadiemphongvan,interviewForm);
+                return Ok("Successful");
+            }catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("test")]
+        public IActionResult GetInterUser(DateTime start , DateTime end)
+        {
+            var result = _guiLichPhongVanService.GetHrOrMentorWithoutInternView(start, end);
+            var result2 = 0;
+            return Ok(result);
+        }
+
+
     }
 }
 

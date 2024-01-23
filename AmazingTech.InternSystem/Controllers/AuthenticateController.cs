@@ -65,7 +65,7 @@ namespace AmazingTech.InternSystem.Controllers
 
             var roleExists = await _roleManager.RoleExistsAsync(registerUserRequestDTO.Role);
 
-            if (!registerUserRequestDTO.Role.Equals("Intern") && !registerUserRequestDTO.Role.Equals("School") && !registerUserRequestDTO.Role.Equals("HR"))
+            if (!registerUserRequestDTO.Role.Equals("Intern") && !registerUserRequestDTO.Role.Equals("School") && !registerUserRequestDTO.Role.Equals("HR") )
             {
                 return BadRequest(new ErrorResponse { Errors = "No role with that name" });
             }
