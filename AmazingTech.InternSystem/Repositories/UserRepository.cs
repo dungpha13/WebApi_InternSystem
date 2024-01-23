@@ -10,14 +10,15 @@ namespace AmazingTech.InternSystem.Repositories
         public User GetUserById(string id);
         public User GetUserByName(string name);
         public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
+        public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime);
+        public List<User> GetUsersWithoutInterview(DateTime startTime, DateTime endTime);
     }
     public class UserRepository : IUserRepository
     {
         private readonly DbSet<User> DbSet;
-        private readonly DbSet<LichPhongVan> _DbSet;
+ 
         public UserRepository()
         {
-
         }
         public string GetUserIdByEmail(string email)
         {
@@ -81,24 +82,37 @@ namespace AmazingTech.InternSystem.Repositories
                 }
             }
         }
-        public List<User> GetInternWithoutInterview(DateTime startTime , DateTime endTime)
-        {
-            using(var context = new AppDbContext())
-            {
-                var result = context.Set<User>()
-                      .AsNoTracking()
-                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.LichPhongVans.Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
-                      .ToList();
-                return result;
-            }
-        }
-        public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime)
+        public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime)
         {
             using (var context = new AppDbContext())
             {
                 var result = context.Set<User>()
-                      .AsNoTracking()
-                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.HR) || r.Name.Equals(Roles.MENTOR)) && !context.LichPhongVans.Any(l => l.NguoiPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+
+                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+                      .ToList();
+                return result;
+            }
+        }
+        public List<User> GetUsersWithoutInterview(DateTime startTime, DateTime endTime)
+        {
+            using (var context = new AppDbContext())
+            {
+                var usersWithoutInterview = context.Set<User>()
+                    .Where(user => !context.Set<LichPhongVan>().Any(interview => interview.NguoiDuocPhongVan.Id == user.Id && startTime <= interview.ThoiGianPhongVan && interview.ThoiGianPhongVan <= endTime))
+                    .ToList();
+                return usersWithoutInterview;
+            }
+        }
+
+        public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime)
+        {
+    
+            using (var context = new AppDbContext())
+            {
+                var result = context.Set<User>()
+              
+                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.HR.ToUpper()) || r.Name.Equals(Roles.MENTOR)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+                      .Take(5)
                       .ToList();
                 return result;
             }
