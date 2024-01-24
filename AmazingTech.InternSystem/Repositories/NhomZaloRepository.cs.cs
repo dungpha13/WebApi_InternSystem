@@ -80,6 +80,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             }
 
             _appDbContext.NhomZalos.Remove(nhomZalo);
+            nhomZalo.DeletedTime = DateTime.Now;
             await _appDbContext.SaveChangesAsync();
         }
 
