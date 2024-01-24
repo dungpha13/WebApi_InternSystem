@@ -4,6 +4,7 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public interface ITruongRepository
     {
+     
         TruongHoc? GetTruong(string id);
         List<TruongHoc> GetAllTruongs();
         int AddTruong(TruongHoc truong);
