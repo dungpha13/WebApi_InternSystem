@@ -28,8 +28,8 @@ namespace AmazingTech.InternSystem.Services
         private readonly ITruongRepository _truongRepository;
         private readonly IInternInfoRepo _internInfoRepo;
 
-        public UserService(UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager, 
+        public UserService(UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
             IEmailService emailService,
             ITruongRepository truongRepository,
             IInternInfoRepo internInfoRepo)
@@ -74,11 +74,11 @@ namespace AmazingTech.InternSystem.Services
                     var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
                     roleExists = true;
                 }
-            } 
-            else 
-            if (registerUser.Role.Equals("Admin") 
-                || registerUser.Role.Equals("HR") 
-                || registerUser.Role.Equals("Mentor")) 
+            }
+            else
+            if (registerUser.Role.Equals("Admin")
+                || registerUser.Role.Equals("HR")
+                || registerUser.Role.Equals("Mentor"))
             {
                 newUser.isConfirmed = false;
                 if (!roleExists)
@@ -126,7 +126,7 @@ namespace AmazingTech.InternSystem.Services
                 int result = await _internInfoRepo.AddInternInfoAsync(createdUser.Id, new InternInfo
                 {
                     MSSV = registerUser.Mssv,
-                    IdTruong = truong.Id
+                    // IdTruong = truong.Id
                 });
             }
 

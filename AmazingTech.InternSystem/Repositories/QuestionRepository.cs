@@ -1,0 +1,86 @@
+﻿using AmazingTech.InternSystem.Data;
+using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.DTO;
+using Microsoft.EntityFrameworkCore;
+
+namespace AmazingTech.InternSystem.Repositories
+{
+    public interface IQuestionRepository
+    {
+        Task<List<Cauhoi>> GetAllCauHoiAsync(string CongNgheID);
+        Task<int> CreateCauHoiAsync(string user, string congngheId, Cauhoi cauhoi);
+        Task<int> UpdateQuestionAsync(string user, string congNgheId, string cauhoiId, Cauhoi cauhoi);
+        Task<int> DeleteQuestionAsync(string user, string congNgheId, string cauhoiId);
+
+    }
+    public class QuestionRepository : IQuestionRepository
+    {
+        private readonly AppDbContext _context;
+
+        public QuestionRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+
+        public async Task<List<Cauhoi>> GetAllCauHoiAsync(string CongNgheID)
+        {        
+            return await _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == CongNgheID).Any()).ToListAsync();
+        }
+
+        public async Task<int> CreateCauHoiAsync(string user, string congngheId, Cauhoi cauhoi)
+        {
+            var congngheExist = _context.CongNghes.Where(x => x.Id == congngheId && x.DeletedBy == null).FirstOrDefault();
+            if (congngheExist == null) { return 0; }
+            cauhoi.CreatedBy = user;
+            cauhoi.LastUpdatedBy = user;
+            cauhoi.LastUpdatedTime = DateTime.Now;
+            _context.cauhois.Add(cauhoi);
+           CauhoiCongnghe cauhoiCongNghe = new CauhoiCongnghe()
+            {
+                IdCauhoi = cauhoi.Id,
+                IdCongNghe = congngheId,
+                CreatedBy = user,
+                LastUpdatedBy = user,
+            };
+            _context.cauhoiCongnghes.Add(cauhoiCongNghe);         
+            await _context.SaveChangesAsync();
+            return 1;
+        }
+
+        public async Task<int> UpdateQuestionAsync(string user, string congNgheId, string cauhoiId , Cauhoi cauhoi)
+        {
+
+            var existingCongNghe = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId && c.DeletedBy == null);
+            if (existingCongNghe == null) { return 0; }
+            var check = _context.cauhois.Where(x => x.Id == cauhoiId && x.DeletedBy == null).FirstOrDefault();
+            if (check == null) { return 0; }
+            var cauhoiCongnghe = _context.cauhoiCongnghes.Where(x => x.IdCongNghe == congNgheId && x.IdCauhoi == cauhoiId).FirstOrDefault();
+            check.NoiDung = cauhoi.NoiDung;
+            existingCongNghe.LastUpdatedBy = user;
+            existingCongNghe.LastUpdatedTime = DateTime.Now;
+            cauhoiCongnghe.LastUpdatedBy = user;
+            cauhoiCongnghe.LastUpdatedTime = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return 1;
+
+        }
+
+        public async Task<int> DeleteQuestionAsync(string user, string congNgheId, string cauhoiId)
+        {
+            var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId && c.DeletedBy == null);
+            if (congNgheToDelete == null) { return 0; }
+            var check = _context.cauhois.Where(x => x.Id == cauhoiId && x.DeletedBy == null).FirstOrDefault();
+            if (check == null) { return 0; }
+            var cauhoiCongnghe = _context.cauhoiCongnghes.Where(x => x.IdCongNghe == congNgheId && x.IdCauhoi == cauhoiId).FirstOrDefault();
+            check.DeletedBy = user;
+            check.DeletedTime = DateTime.Now;
+            cauhoiCongnghe.DeletedBy = user;
+            cauhoiCongnghe.DeletedTime = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return 1;
+
+        }
+
+    }
+}

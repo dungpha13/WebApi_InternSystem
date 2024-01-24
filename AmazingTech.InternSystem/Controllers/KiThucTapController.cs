@@ -49,9 +49,9 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteKiThucTap(string id)
+        public async Task<IActionResult> DeleteKiThucTap(string id)
         {
-            return _kiThucTapService.DeleteKiThucTap(id);
+            return await _kiThucTapService.DeleteKiThucTap(id);
         }
 
     }

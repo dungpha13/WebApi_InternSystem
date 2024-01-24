@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
@@ -55,6 +56,8 @@ namespace AmazingTech.InternSystem.Mapping
 
             CreateMap<DuAn, AddDuAnModel>().ReverseMap();
             CreateMap<DuAn, UpdateDuAnModel>().ReverseMap();
+            CreateMap<TechModel, CongNghe>().ReverseMap();
+            CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
         }
     }
 }
