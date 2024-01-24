@@ -363,7 +363,9 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You don't have permission to delete this schedule");
             }
-            _lichPhongVanRepository.DeleteLichPhongVan(schedule);
+            schedule.DeletedBy = accountLogin.HoVaTen;
+            schedule.DeletedTime = DateTime.Now;
+            _lichPhongVanRepository.UpdateLichPhongVan(schedule);
         }
         public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate)
         {

@@ -84,14 +84,14 @@ namespace AmazingTech.InternSystem.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<InternInfo?> GetInternInfo(string id)
-        {
-            return await _context.InternInfos
-                    .Where(intern => intern.Id == id)
-                        .Include(intern => intern.KiThucTap)
-                        .Include(intern => intern.Truong)
-                    .FirstOrDefaultAsync();
-        }
+        //public async Task<InternInfo?> GetInternInfo(string id)
+        //{
+        //    return await _context.InternInfos
+        //            .Where(intern => intern.Id == id)
+        //                .Include(intern => intern.KiThucTap)
+        //                .Include(intern => intern.Truong)
+        //            .FirstOrDefaultAsync();
+        //}
 
         public Task<int> AddListInternInfoAsync(List<InternInfo> interns)
         {
