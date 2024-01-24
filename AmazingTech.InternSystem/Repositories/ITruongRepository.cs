@@ -9,6 +9,6 @@ namespace AmazingTech.InternSystem.Repositories
         List<TruongHoc> GetAllTruongs();
         int AddTruong(TruongHoc truong);
         int UpdateTruong(TruongHoc truong);
-        int DeleteTruong(TruongHoc truong);
+        Task<int> DeleteTruong(TruongHoc truong);
     }
 }
