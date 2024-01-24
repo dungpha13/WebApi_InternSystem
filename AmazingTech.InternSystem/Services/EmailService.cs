@@ -12,6 +12,8 @@ namespace AmazingTech.InternSystem.Services
     {
         public void SendMail(string Content, string ReceiveAddress, String Subject, string InternId);
         public void SendMail2(string Content, string ReceiveAddress, String Subject);
+        public void SendResultInterviewEmail(string Content, string ReceiveAddress, String Subject);
+        public void SendRegistrationSuccessfulMail(User user);
     }
 
     public class EmailService : IEmailService
@@ -71,6 +73,72 @@ namespace AmazingTech.InternSystem.Services
                 mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
                 mailMessage.To.Add(ReceiveAddress);
                 
+                var smtp = new SmtpClient()
+                {
+                    EnableSsl = EmailSettingModel.Instance.Smtp.EnableSsl,
+                    Host = EmailSettingModel.Instance.Smtp.Host,
+                    Port = EmailSettingModel.Instance.Smtp.Port,
+                };
+                var network = new NetworkCredential(EmailSettingModel.Instance.Smtp.EmailAddress, EmailSettingModel.Instance.Smtp.Password);
+                smtp.Credentials = network;
+
+                smtp.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public void SendResultInterviewEmail(string Content, string ReceiveAddress, String Subject)
+        {
+            try
+            {
+                MailMessage mailMessage = new MailMessage()
+                {
+                    Subject = Subject,
+                    Body = Content,
+                    IsBodyHtml = true,
+                };
+                mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
+                mailMessage.To.Add(ReceiveAddress);
+
+                var smtp = new SmtpClient()
+                {
+                    EnableSsl = EmailSettingModel.Instance.Smtp.EnableSsl,
+                    Host = EmailSettingModel.Instance.Smtp.Host,
+                    Port = EmailSettingModel.Instance.Smtp.Port,
+                };
+                var network = new NetworkCredential(EmailSettingModel.Instance.Smtp.EmailAddress, EmailSettingModel.Instance.Smtp.Password);
+                smtp.Credentials = network;
+
+                smtp.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public void SendRegistrationSuccessfulMail(User user)
+        {
+            var subject = "Welcome to AmazingTech, " + user.HoVaTen + "!";
+            var body = "";
+            var receiver = user.Email;
+
+            try
+            {
+                MailMessage mailMessage = new MailMessage()
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = false,
+                };
+                mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
+                mailMessage.To.Add(receiver);
+
                 var smtp = new SmtpClient()
                 {
                     EnableSsl = EmailSettingModel.Instance.Smtp.EnableSsl,

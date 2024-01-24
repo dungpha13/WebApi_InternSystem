@@ -8,6 +8,7 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         public string? Ten { get; set; }
         public int? SoTuanThucTap { get; set; }
-        public ICollection<InternTruongKyThucTap> InternTruongKyThucTaps { get; set; }
+        public ICollection<InternInfo> Interns { get; set; }
+        public ICollection<KiThucTap> KiThucTaps { get; set; }
     }
 }

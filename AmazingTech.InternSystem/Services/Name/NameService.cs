@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace swp391_be.API.Services.Name
+namespace AmazingTech.InternSystem.Services.Name
 {
     public class NameService:INameService
     {

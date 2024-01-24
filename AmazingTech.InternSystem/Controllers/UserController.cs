@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using swp391_be.API.Models.Request.User;
-using swp391_be.API.Services.Name;
+using AmazingTech.InternSystem.Services.Name;
 
 namespace AmazingTech.InternSystem.Controllers
 {
