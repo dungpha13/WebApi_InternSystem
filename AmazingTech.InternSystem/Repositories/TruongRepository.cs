@@ -22,10 +22,14 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public int DeleteTruong(TruongHoc truong)
+        public async Task<int> DeleteTruong(TruongHoc truong)
         {
-            _context.TruongHocs.Remove(truong);
-            return _context.SaveChanges();
+            var currentTime = DateTime.Now;
+
+            truong.DeletedBy = "Admin";
+            truong.DeletedTime = currentTime;
+
+            return await _context.SaveChangesAsync();
         }
 
         public List<TruongHoc> GetAllTruongs()

@@ -79,7 +79,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public async Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model)
         {
-           var intern = mapper.Map<InternInfo>(model);
+            var intern = mapper.Map<InternInfo>(model);
             _context.InternInfos?.Update(intern);
             return await _context.SaveChangesAsync();
         }
@@ -88,7 +88,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             return await _context.InternInfos
                     .Where(intern => intern.Id == id)
-                        .Include(intern => intern.KiThucTap)
+                        .Include(intern => intern.InternTruongKyThucTaps)
                     .FirstOrDefaultAsync();
         }
 
@@ -110,7 +110,7 @@ namespace AmazingTech.InternSystem.Repositories
                 .Include(intern => intern.Comments)
                    .ThenInclude(comment => comment.NguoiComment)
                 .FirstOrDefaultAsync(i => i.MSSV == mssv);
-           
+
             return intern;
         }
 
