@@ -64,10 +64,15 @@ namespace AmazingTech.InternSystem.Services
             };
 
             var roleExists = await _roleManager.RoleExistsAsync(registerUser.Role);
+            var roleName = registerUser.Role;
 
             if (registerUser.Role.Equals("Intern") || registerUser.Role.Equals("School"))
             {
                 newUser.isConfirmed = true;
+                if (!roleExists)
+                {
+                    var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+                }
             } 
             else 
             if (registerUser.Role.Equals("Admin") 
@@ -75,6 +80,10 @@ namespace AmazingTech.InternSystem.Services
                 || registerUser.Role.Equals("Mentor")) 
             {
                 newUser.isConfirmed = false;
+                if (!roleExists)
+                {
+                    var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+                }
             }
 
             if (!roleExists)
