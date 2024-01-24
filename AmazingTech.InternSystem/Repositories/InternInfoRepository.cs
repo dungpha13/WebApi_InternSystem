@@ -89,6 +89,7 @@ namespace AmazingTech.InternSystem.Repositories
             return await _context.InternInfos
                     .Where(intern => intern.Id == id)
                         .Include(intern => intern.KiThucTap)
+                        .Include(intern => intern.Truong)
                     .FirstOrDefaultAsync();
         }
 

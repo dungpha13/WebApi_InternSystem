@@ -1,4 +1,4 @@
-﻿namespace swp391_be.API.Services.Name
+﻿namespace AmazingTech.InternSystem.Services.Name
 {
     public interface INameService
     {

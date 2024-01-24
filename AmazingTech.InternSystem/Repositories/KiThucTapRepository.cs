@@ -32,7 +32,10 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var kis = context.Set<KiThucTap>().Include(ki => ki.TruongHoc).ToList();
+                var kis = context.Set<KiThucTap>()
+                    .Include(ki => ki.Truong)
+                    .Include(ki => ki.Interns)
+                    .ToList();
                 return kis;
             }
         }
@@ -42,7 +45,8 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.KiThucTaps
-                        .Include(ktt => ktt.InternInfos)
+                        .Include(ktt => ktt.Truong)
+                        .Include(ktt => ktt.Interns)
                         .FirstOrDefault(ktt => ktt.Id == id);
             }
         }

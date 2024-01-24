@@ -120,5 +120,40 @@ namespace AmazingTech.InternSystem.Services
                 throw;
             }
         }
+
+        public void SendRegistrationSuccessfulMail(User user)
+        {
+            var subject = "Welcome to AmazingTech, " + user.HoVaTen + "!";
+            var body = "";
+            var receiver = user.Email;
+
+            try
+            {
+                MailMessage mailMessage = new MailMessage()
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = false,
+                };
+                mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
+                mailMessage.To.Add(receiver);
+
+                var smtp = new SmtpClient()
+                {
+                    EnableSsl = EmailSettingModel.Instance.Smtp.EnableSsl,
+                    Host = EmailSettingModel.Instance.Smtp.Host,
+                    Port = EmailSettingModel.Instance.Smtp.Port,
+                };
+                var network = new NetworkCredential(EmailSettingModel.Instance.Smtp.EmailAddress, EmailSettingModel.Instance.Smtp.Password);
+                smtp.Credentials = network;
+
+                smtp.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 }

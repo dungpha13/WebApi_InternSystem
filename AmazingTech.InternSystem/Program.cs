@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using swp391_be.API.Repositories.Tokens;
-using swp391_be.API.Services.Name;
 using System.Text;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Models.DTO;
@@ -28,6 +26,7 @@ using Microsoft.OpenApi.Models;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using AmazingTech.InternSystem.Data.Enum;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using AmazingTech.InternSystem.Services.Name;
 
 namespace AmazingTech.InternSystem
 {
@@ -70,7 +69,6 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<INameService, NameService>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-            builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddControllers();
 
@@ -180,7 +178,7 @@ namespace AmazingTech.InternSystem
                     OnTokenValidated = context =>
                     {
                         var token = context.SecurityToken as JwtSecurityToken;
-                        if (token != null && !SQLTokenRepository.IsTokenValid(token.RawData))
+                        if (token != null && !JwtGenerator.IsTokenValid(token.RawData))
                         {
                             context.Fail("Token is invalid.");
                         }

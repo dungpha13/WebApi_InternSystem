@@ -30,7 +30,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public ICollection<ThongBao> ThongBao_NguoiGui { get; set; }
         public ICollection<ThongBao> ThongBao_NguoiNhan { get; set; }
         public ICollection<UserDuAn> UserDuAns { get; set; }
-
         public ICollection<UserViTri> UserViTris { get; set; }
         public ICollection<UserNhomZalo> UserNhomZalos { get; set; }
     }
