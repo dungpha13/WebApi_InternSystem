@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Data
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"),
                 options => options.EnableRetryOnFailure());
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CongNgheDuAn>()

@@ -40,7 +40,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
             builder.Services.AddDbContext<AppDbContext>();
 
-
+            builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();

@@ -37,7 +37,7 @@ namespace AmazingTech.InternSystem.Controllers
             _userManager = userManager;
             _dbContext = dbContext;
             _roleManager = roleManager;
-            IUserService _userService = userService;
+            _userService = userService;
         }
 
         [HttpPost]

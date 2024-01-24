@@ -24,13 +24,13 @@ namespace AmazingTech.InternSystem.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly ITruongRepository _truongRepository;
         private readonly IInternInfoRepo _internInfoRepo;
 
         public UserService(UserManager<User> userManager, 
             RoleManager<IdentityRole> roleManager, 
-            EmailService emailService,
+            IEmailService emailService,
             ITruongRepository truongRepository,
             IInternInfoRepo internInfoRepo)
         {
