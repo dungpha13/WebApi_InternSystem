@@ -1,5 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.Response;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories
@@ -14,6 +16,8 @@ namespace AmazingTech.InternSystem.Repositories
  
         public LichPhongVan GetScheduleByInterviewerIdAndIntervieweeId(string interviewerid, string intervieweeid);
         public LichPhongVan GetScheduleByIntervieweeId(string intervieeid);
+
+        public List<LichPhongVan> GetListScheduleByInterviewer(string interviewerid);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -82,6 +86,14 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.Set<LichPhongVan>().AsNoTracking().Where(x => startDate <= x.ThoiGianPhongVan && x.ThoiGianPhongVan <= EndTime).ToList();  
+            }
+        }
+
+        public List<LichPhongVan> GetListScheduleByInterviewer(string interviewerid)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan == interviewerid).ToList();
             }
         }
     }
