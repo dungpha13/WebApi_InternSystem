@@ -4,6 +4,7 @@ using AmazingTech.InternSystem.Models.Request;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -24,6 +25,7 @@ namespace AmazingTech.InternSystem.Services
         public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate);
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
         public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
+        public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email);
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -448,6 +450,64 @@ namespace AmazingTech.InternSystem.Services
                 }
                 
             }
+        }
+
+        public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email)
+        {
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (accountId == null)
+            {
+                throw new BadHttpRequestException("You need to login to send list of interns to Mentor");
+            }
+
+            if (email == null)
+            {
+                throw new BadHttpRequestException("You need to fill all information");
+            }
+
+            var mentorId = _userRepository.GetUserIdByEmail(email);
+            var hr = _userRepository.GetUserById(accountId);
+
+            if (mentorId == null)
+            {
+                throw new BadHttpRequestException("This Mail is not exist in database");
+            }
+
+            var hrRole = _userManager.GetRolesAsync(hr).Result[0];
+
+            if(hrRole != Roles.HR.ToUpper()){
+                throw new BadHttpRequestException("Your role must be HR to do this");
+            }
+
+            var lichphongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(mentorId);
+
+            if (lichphongvan.Count == 0)
+            {
+                throw new BadHttpRequestException("This mentor has no interview schedule");
+            }
+
+            var lichphongvanList = new List<LichPhongVanResponseModel>();
+
+            foreach (var item in lichphongvan)
+            {
+                var lichphongvanrespone = new LichPhongVanResponseModel
+                {
+                    ID = item.Id,
+                    DiaDiemPhongVan = item.DiaDiemPhongVan,
+                    InterviewForm = item.InterviewForm.ToString(),
+                    KetQua = item.KetQua.ToString(),
+                    NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
+                    ThoiGianPhongVan = item.ThoiGianPhongVan,
+                    TrangThai = item.TrangThai.ToString(),
+                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen,
+                    TimeDuration = item.TimeDuration
+                };
+                lichphongvanList.Add(lichphongvanrespone);
+            }
+            return lichphongvanList;
         }
     }
 }
