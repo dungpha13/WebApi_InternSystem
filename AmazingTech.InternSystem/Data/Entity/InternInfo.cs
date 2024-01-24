@@ -6,8 +6,6 @@ namespace AmazingTech.InternSystem.Data.Entity
     [Table("InternInfo")]
     public class InternInfo : AbstractEntity
     {
-
-
         [ForeignKey("User")]
         public string? UserId { get; set; }
         public User? User { get; set; }
@@ -32,6 +30,13 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<Comment>? Comments { get; set; }
-        public ICollection<InternTruongKyThucTap> InternTruongKyThucTaps { get; set; }
+
+        [ForeignKey("Truong")]
+        public string? IdTruong { get; set; }
+        public TruongHoc? Truong { get; set; }
+
+        [ForeignKey("KiThucTap")]
+        public string? IdKiThucTap { get; set; }
+        public KiThucTap? KiThucTap { get; set; }
     }
 }

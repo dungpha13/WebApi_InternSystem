@@ -42,7 +42,6 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Cauhoi> cauhois { get; set; }
         public DbSet<CauhoiCongnghe> cauhoiCongnghes { get; set; }
-        public DbSet<InternTruongKyThucTap> InternTruongKyThucTaps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -53,7 +52,7 @@ namespace AmazingTech.InternSystem.Data
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"),
                 options => options.EnableRetryOnFailure());
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CongNgheDuAn>()
@@ -159,22 +158,24 @@ namespace AmazingTech.InternSystem.Data
               .HasForeignKey(zl => zl.IdCongNghe)
               .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<InternTruongKyThucTap>()
-             .HasOne(zl => zl.TruongHoc)
-             .WithMany(u => u.InternTruongKyThucTaps)
-             .HasForeignKey(zl => zl.IdTruongHoc)
+            modelBuilder.Entity<InternInfo>()
+             .HasOne(zl => zl.Truong)
+             .WithMany(u => u.Interns)
+             .HasForeignKey(zl => zl.IdTruong)
              .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<InternTruongKyThucTap>()
+            modelBuilder.Entity<KiThucTap>()
+             .HasOne(zl => zl.Truong)
+             .WithMany(u => u.KiThucTaps)
+             .HasForeignKey(zl => zl.IdTruong)
+             .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<InternInfo>()
              .HasOne(zl => zl.KiThucTap)
-             .WithMany(u => u.InternTruongKyThucTaps)
-             .HasForeignKey(zl => zl.IdKiThucTap)
+             .WithMany(u => u.Interns)
+             .HasForeignKey(zl => zl.KiThucTapId)
              .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<InternTruongKyThucTap>()
-             .HasOne(zl => zl.Intern)
-             .WithMany(u => u.InternTruongKyThucTaps)
-             .HasForeignKey(zl => zl.IdIntern)
-             .OnDelete(DeleteBehavior.NoAction);
+
             // Auto generate when inserted/updated
 
             //     modelBuilder.Entity<Comment>()
