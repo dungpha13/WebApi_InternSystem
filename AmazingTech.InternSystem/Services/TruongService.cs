@@ -32,7 +32,7 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult("Success");
         }
 
-        public IActionResult DeleteTruong(string id)
+        public async Task<IActionResult> DeleteTruong(string id)
         {
             var existingTruong = _truongRepository.GetTruong(id);
 
@@ -41,7 +41,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"Truong voi id {id} khong ton tai");
             }
 
-            var result = _truongRepository.DeleteTruong(existingTruong);
+            var result = await _truongRepository.DeleteTruong(existingTruong);
 
             if (result == 0)
             {

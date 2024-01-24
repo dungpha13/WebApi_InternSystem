@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Data
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"),
                 options => options.EnableRetryOnFailure());
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CongNgheDuAn>()
@@ -158,23 +158,20 @@ namespace AmazingTech.InternSystem.Data
               .HasForeignKey(zl => zl.IdCongNghe)
               .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<InternInfo>()
-             .HasOne(zl => zl.Truong)
-             .WithMany(u => u.Interns)
-             .HasForeignKey(zl => zl.IdTruong)
-             .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<InternTruongKyThucTap>()
+             .HasOne(zl => zl.TruongHoc)
+             .WithMany(u => u.InternTruongKyThucTaps)
+             .HasForeignKey(zl => zl.IdTruongHoc);
 
-            modelBuilder.Entity<KiThucTap>()
-             .HasOne(zl => zl.Truong)
-             .WithMany(u => u.KiThucTaps)
-             .HasForeignKey(zl => zl.IdTruong)
-             .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<InternInfo>()
+            modelBuilder.Entity<InternTruongKyThucTap>()
              .HasOne(zl => zl.KiThucTap)
-             .WithMany(u => u.Interns)
-             .HasForeignKey(zl => zl.KiThucTapId)
-             .OnDelete(DeleteBehavior.NoAction);
+             .WithMany(u => u.InternTruongKyThucTaps)
+             .HasForeignKey(zl => zl.IdKiThucTap);
+
+            modelBuilder.Entity<InternTruongKyThucTap>()
+             .HasOne(zl => zl.Intern)
+             .WithMany(u => u.InternTruongKyThucTaps)
+             .HasForeignKey(zl => zl.IdIntern);
 
             // Auto generate when inserted/updated
 

@@ -30,7 +30,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 NgayBatDau = request.NgayBatDau,
                 NgayKetThuc = request.NgayKetThuc,
-                IdTruong = existingTruong.Id
+                // IdTruong = existingTruong.Id
             };
 
             var result = _kiRepository.AddKiThucTap(ki);
@@ -43,7 +43,7 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult("Success");
         }
 
-        public IActionResult DeleteKiThucTap(string id)
+        public async Task<IActionResult> DeleteKiThucTap(string id)
         {
             var existingKi = _kiRepository.GetKiThucTap(id);
 
@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            var result = _kiRepository.DeleteKiThucTap(existingKi);
+            var result = await _kiRepository.DeleteKiThucTap(existingKi);
 
             if (result == 0)
             {
@@ -82,7 +82,7 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult GetKiThucTapsByTruong(string idTruong)
         {
-            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(_ => _.IdTruong.Equals(idTruong)).ToList();
+            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(_ => _.InternTruongKyThucTaps.Equals(idTruong)).ToList();
             return new OkObjectResult(kis);
         }
 

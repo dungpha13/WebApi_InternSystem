@@ -9,7 +9,7 @@ namespace AmazingTech.InternSystem.Services
         IActionResult GetAllTruongs();
         IActionResult GetTruong(string id);
         IActionResult AddTruong(AddTruongHocDTO truong);
-        IActionResult DeleteTruong(string id);
+        Task<IActionResult> DeleteTruong(string id);
         IActionResult UpdateTruong(UpdateTruongHocDTO truong);
     }
 }

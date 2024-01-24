@@ -10,7 +10,7 @@ namespace AmazingTech.InternSystem.Services
         IActionResult GetAllKiThucTaps();
         IActionResult GetKiThucTap(string id);
         IActionResult AddKiThucTap(AddKiThucTapDTO ki);
-        IActionResult DeleteKiThucTap(string id);
+        Task<IActionResult> DeleteKiThucTap(string id);
         IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki);
     }
 }
