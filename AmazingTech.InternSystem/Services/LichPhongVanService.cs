@@ -104,7 +104,10 @@ namespace AmazingTech.InternSystem.Services
         }
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
-
+            if(model.ThoiGianPhongVan < DateTime.Now)
+            {
+                throw new BadHttpRequestException("The date of interview must be in the future");
+            }
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             // string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -241,6 +244,10 @@ namespace AmazingTech.InternSystem.Services
         }
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request)
         {
+            if(request.ThoiGianPhongVan < DateTime.Now)
+            {
+                throw new BadHttpRequestException("The date of interview must be in the future");
+            }
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             if (request.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || request.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
             {
