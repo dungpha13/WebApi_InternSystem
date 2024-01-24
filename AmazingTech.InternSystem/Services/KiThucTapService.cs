@@ -23,7 +23,7 @@ namespace AmazingTech.InternSystem.Services
 
             if (existingTruong is null)
             {
-                return new BadRequestObjectResult($"Truong voi id {request.IdTruong} ton tai");
+                return new BadRequestObjectResult($"Truong voi id {request.IdTruong} khong ton tai");
             }
 
             KiThucTap ki = new KiThucTap()
@@ -82,7 +82,7 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult GetKiThucTapsByTruong(string idTruong)
         {
-            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(_ => _.InternTruongKyThucTaps.Equals(idTruong)).ToList();
+            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(ktt => ktt.IdTruong.Equals(idTruong)).ToList();
             return new OkObjectResult(kis);
         }
 
@@ -95,6 +95,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {ki.Id} khong ton tai");
             }
 
+            existingKi.Ten = ki.Name;
             existingKi.NgayBatDau = ki.NgayBatDau;
             existingKi.NgayKetThuc = ki.NgayKetThuc;
 

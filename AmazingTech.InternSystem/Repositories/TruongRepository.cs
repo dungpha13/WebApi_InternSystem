@@ -36,15 +36,14 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var truongs = context.Set<TruongHoc>().ToList();
-                Console.WriteLine("Truong: " + truongs);
+                var truongs = context.Set<TruongHoc>().Where(t => t.DeletedBy == null).ToList();
                 return truongs;
             }
         }
 
         public TruongHoc? GetTruong(string id)
         {
-            return _context.TruongHocs.FirstOrDefault(t => t.Id == id);
+            return _context.TruongHocs.FirstOrDefault(t => t.Id == id && t.DeletedBy == null);
         }
 
         public int UpdateTruong(TruongHoc truong)

@@ -158,20 +158,23 @@ namespace AmazingTech.InternSystem.Data
               .HasForeignKey(zl => zl.IdCongNghe)
               .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<InternTruongKyThucTap>()
-             .HasOne(zl => zl.TruongHoc)
-             .WithMany(u => u.InternTruongKyThucTaps)
-             .HasForeignKey(zl => zl.IdTruongHoc);
+            modelBuilder.Entity<InternInfo>()
+             .HasOne(zl => zl.Truong)
+             .WithMany(u => u.Interns)
+             .HasForeignKey(zl => zl.IdTruong)
+             .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<InternTruongKyThucTap>()
+            modelBuilder.Entity<KiThucTap>()
+             .HasOne(zl => zl.Truong)
+             .WithMany(u => u.KiThucTaps)
+             .HasForeignKey(zl => zl.IdTruong)
+             .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<InternInfo>()
              .HasOne(zl => zl.KiThucTap)
-             .WithMany(u => u.InternTruongKyThucTaps)
-             .HasForeignKey(zl => zl.IdKiThucTap);
-
-            modelBuilder.Entity<InternTruongKyThucTap>()
-             .HasOne(zl => zl.Intern)
-             .WithMany(u => u.InternTruongKyThucTaps)
-             .HasForeignKey(zl => zl.IdIntern);
+             .WithMany(u => u.Interns)
+             .HasForeignKey(zl => zl.KiThucTapId)
+             .OnDelete(DeleteBehavior.NoAction);
 
             // Auto generate when inserted/updated
 

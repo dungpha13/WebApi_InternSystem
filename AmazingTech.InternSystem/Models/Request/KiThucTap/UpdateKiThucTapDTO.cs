@@ -6,6 +6,7 @@ namespace AmazingTech.InternSystem.Models.Request.KiThucTap
     {
         [Required(ErrorMessage = "Id la bat buoc")]
         public string Id { get; set; }
+        public string Name { get; set; }
         public DateTime? NgayBatDau { get; set; }
 
         [Compare(nameof(NgayBatDau), ErrorMessage = "NgayKetThuc phai lon hon hoac bang NgayBatDau")]

@@ -29,6 +29,7 @@ namespace AmazingTech.InternSystem.Repositories
             kiThucTap.DeletedBy = "Admin";
             kiThucTap.DeletedTime = currentTime;
 
+            _context.KiThucTaps.Update(kiThucTap);
             return await _context.SaveChangesAsync();
         }
 
@@ -36,7 +37,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var kis = context.Set<KiThucTap>().Include(ki => ki.InternTruongKyThucTaps).ToList();
+                var kis = context.Set<KiThucTap>().Where(u => u.DeletedBy == null).Include(ki => ki.Interns).ToList();
                 return kis;
             }
         }
@@ -46,8 +47,8 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.KiThucTaps
-                        .Include(ktt => ktt.InternTruongKyThucTaps)
-                        .FirstOrDefault(ktt => ktt.Id == id);
+                        .Include(ktt => ktt.Interns)
+                        .FirstOrDefault(ktt => ktt.Id == id && ktt.DeletedBy == null);
             }
         }
 
