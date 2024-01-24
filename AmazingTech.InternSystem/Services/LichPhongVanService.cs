@@ -98,7 +98,7 @@ namespace AmazingTech.InternSystem.Services
 
             string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
 
-            _emailService.SendResultInterViewEmail(context, email, subject);
+            _emailService.SendResultInterviewEmail(context, email, subject);
 
             return true;
         }

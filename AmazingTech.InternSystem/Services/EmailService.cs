@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Services
     {
         public void SendMail(string Content, string ReceiveAddress, String Subject, string InternId);
         public void SendMail2(string Content, string ReceiveAddress, String Subject);
-        public void SendResultInterViewEmail(string Content, string ReceiveAddress, String Subject);
+        public void SendResultInterviewEmail(string Content, string ReceiveAddress, String Subject);
     }
 
     public class EmailService : IEmailService
@@ -90,7 +90,7 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
-        public void SendResultInterViewEmail(string Content, string ReceiveAddress, String Subject)
+        public void SendResultInterviewEmail(string Content, string ReceiveAddress, String Subject)
         {
             try
             {
