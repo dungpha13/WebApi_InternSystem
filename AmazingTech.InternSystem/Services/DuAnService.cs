@@ -56,18 +56,15 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult CreateDuAn(AddDuAnModel createDuAn)
         {
-            //var duAn = _mapper.Map<DuAn>(createDuAn);
-
-            //DuAn duan = new DuAn()
-            //{
-            //    Ten = createDuAn.Ten,
-            //    LeaderId = createDuAn.LeaderId,
-            //    ThoiGianBatDau = createDuAn.ThoiGianBatDau,
-            //    ThoiGianKetThuc = createDuAn.ThoiGianKetThuc,
-            //};
-            //_duAnRepo.CreateDuAn(duAn);
+            //_duAnRepo.CreateDuAn(_mapper.Map<DuAn>(createDuAn));
             //return new OkResult();
-            _duAnRepo.CreateDuAn(_mapper.Map<DuAn>(createDuAn));
+            int result = _duAnRepo.CreateDuAn(_mapper.Map<DuAn>(createDuAn));
+
+            if (result == -1)
+            {
+                return new BadRequestObjectResult("Project with the same name already exists");
+            }
+
             return new OkResult();
         }
 

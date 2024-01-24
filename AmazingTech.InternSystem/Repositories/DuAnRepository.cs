@@ -99,55 +99,51 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int CreateDuAn(DuAn createDuAn)
         {
-            //var duAn = new DuAn
-            //{
-            //    Id = createDuAn.Id,
-            //    Ten = createDuAn.Ten,
-            //    LeaderId = createDuAn.LeaderId,
-            //    ThoiGianBatDau = createDuAn.ThoiGianBatDau,
-            //    ThoiGianKetThuc = createDuAn.ThoiGianKetThuc,
-            //    CreatedBy = createDuAn.CreatedBy,
-            //    LastUpdatedBy = createDuAn.CreatedBy,
-            //};
-            //_dbContext.DuAns.Add(duAn);
-            //await _dbContext.SaveChangesAsync();
+            //_dbContext.Set<DuAn>().Add(createDuAn);
+            //return _dbContext.SaveChanges();
+            var existingDuAn = _dbContext.DuAns.FirstOrDefault(d => d.Ten == createDuAn.Ten);
+
+            if (existingDuAn != null)
+            {
+                return -1;
+            }
+
             _dbContext.Set<DuAn>().Add(createDuAn);
             return _dbContext.SaveChanges();
         }
 
         public int UpdateDuAn(DuAn updatedDuAn)
         {
+            //_dbContext.DuAns.Update(updatedDuAn);
+            //return _dbContext.SaveChanges();
+            var existDuAn = _dbContext.DuAns.FirstOrDefault(c => c.Id == updatedDuAn.Id);
 
-            //var existDuAn = await _dbContext.DuAns.FirstOrDefaultAsync(c => c.Id == id);
+            if (existDuAn != null)
+            {
+                existDuAn.Ten = updatedDuAn.Ten;
+                existDuAn.LeaderId = updatedDuAn.LeaderId;
+                existDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
+                existDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
 
+                return _dbContext.SaveChanges();
+            }
 
-            //if (existDuAn != null)
-            //{
-            //    if (updatedDuAn.Ten != null) existDuAn.Ten = updatedDuAn.Ten;
-            //    if (updatedDuAn.LeaderId != null) existDuAn.LeaderId = updatedDuAn.LeaderId;
-            //    if (updatedDuAn.ThoiGianBatDau != null) existDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
-            //    if (updatedDuAn.ThoiGianKetThuc != null) existDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
-            //    existDuAn.LastUpdatedBy = updatedDuAn.LastUpdatedBy;
-            //    await _dbContext.SaveChangesAsync();
-            //}
-            _dbContext.DuAns.Update(updatedDuAn);
-            return _dbContext.SaveChanges();
-
+            return 0;
         }
 
         public int DeleteDuAn(DuAn deleteDuAn)
         {
+            //_dbContext.DuAns.Remove(deleteDuAn);
+            //return _dbContext.SaveChanges();
+            var duAnToDelete = _dbContext.DuAns.FirstOrDefault(c => c.Id == deleteDuAn.Id);
 
-            //var DuAnToDelete = await _dbContext.CongNghes.FirstOrDefaultAsync(c => c.Id == id);
-
-            //if (DuAnToDelete != null)
-            //{
-            //    DuAnToDelete.DeletedBy = deleteDuAn.DeletedBy;
-            //    DuAnToDelete.DeletedTime = DateTime.Now;
-            //    await _dbContext.SaveChangesAsync();
-            //}
-            _dbContext.DuAns.Remove(deleteDuAn);
-            return _dbContext.SaveChanges();
+            if (duAnToDelete != null)
+            {
+                duAnToDelete.DeletedTime = DateTime.Now;
+                duAnToDelete.DeletedBy = deleteDuAn.DeletedBy;
+                return _dbContext.SaveChanges();
+            }
+            return 0;
         }
     }
 }
