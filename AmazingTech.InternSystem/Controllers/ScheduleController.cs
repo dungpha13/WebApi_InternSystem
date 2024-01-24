@@ -66,6 +66,20 @@ namespace AmazingTech.InternSystem.Controllers
             return BadRequest(new { Message = "Email confirmed unsuccessfully" });
         }
 
+        [HttpGet]
+        [Route("api/lich-phong-vans/SendResultInterviewEmail")]
+        public IActionResult SendRessultInterviewEmail([FromQuery] string email)
+        {
+            var result = _guiLichPhongVanService.SendResultInterviewEmail(email);
+
+            if (result)
+            {
+                return Ok(new { Message = "Send email successfully." });
+            }
+
+            return BadRequest(new { Message = "Send email unsuccessfully" });
+        }
+
 
         [HttpPut]
         [Authorize]
