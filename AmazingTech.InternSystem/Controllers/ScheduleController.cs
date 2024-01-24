@@ -81,6 +81,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
 
+
         [HttpPut]
         [Authorize]
         [Route("api/lich-phong-vans/Change-schudele")]
@@ -140,7 +141,20 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(result);
         }
 
-
+        [HttpGet]
+        [Route("api/lich-phong-vans/")]
+        public IActionResult SendListOfInternsToMentor([FromQuery] string email)
+        {
+            try
+            {
+                var result = _guiLichPhongVanService.SendListOfInternsToMentor(email);
+                return Ok(result);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
     }
 }
 
