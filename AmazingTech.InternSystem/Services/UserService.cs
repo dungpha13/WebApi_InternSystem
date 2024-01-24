@@ -72,6 +72,7 @@ namespace AmazingTech.InternSystem.Services
                 if (!roleExists)
                 {
                     var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+                    roleExists = true;
                 }
             } 
             else 
@@ -83,6 +84,7 @@ namespace AmazingTech.InternSystem.Services
                 if (!roleExists)
                 {
                     var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+                    roleExists = true;
                 }
             }
 
@@ -118,12 +120,13 @@ namespace AmazingTech.InternSystem.Services
             // tạo intern info nếu như user là intern
             if (registerUser.Role.Equals("Intern"))
             {
+                var truong = _truongRepository.GetAllTruongs().Where(t => t.Ten.Equals(registerUser.Truong)).SingleOrDefault();
                 var createdUser = await _userManager.FindByNameAsync(newUser.UserName);
 
                 int result = await _internInfoRepo.AddInternInfoAsync(createdUser.Id, new InternInfo
                 {
                     MSSV = registerUser.Mssv,
-                    
+                    IdTruong = truong.Id
                 });
             }
 
@@ -144,6 +147,11 @@ namespace AmazingTech.InternSystem.Services
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginUser.Password))
             {
                 return new BadRequestObjectResult(new { Succeeded = false, Errors = "Invalid username/email or password." });
+            }
+
+            if (!user.isConfirmed)
+            {
+                return new BadRequestObjectResult("Hay cho Admin duyet.");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
