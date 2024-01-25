@@ -150,6 +150,13 @@ namespace AmazingTech.InternSystem.Controllers
         //}
 
         [HttpGet]
+        [Route("GetAll")]
+        public IActionResult GetAllLichPhongvan()
+        {
+            return _guiLichPhongVanService.AllLichPhongVan();
+        }
+
+        [HttpGet]
         [Route("api/lich-phong-vans/")]
         public IActionResult SendListOfInternsToMentor([FromQuery] string email)
         {
