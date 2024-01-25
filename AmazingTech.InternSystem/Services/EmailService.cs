@@ -66,8 +66,8 @@ namespace AmazingTech.InternSystem.Services
                 MailMessage mailMessage = new MailMessage()
                 {
                     Subject = Subject,
-                    Body = Content+htmlCode,
-                    IsBodyHtml = true,
+                    Body = Content + htmlCode,
+                    IsBodyHtml = true
 
                 };
                 mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
