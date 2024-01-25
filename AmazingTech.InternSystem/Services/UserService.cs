@@ -125,8 +125,9 @@ namespace AmazingTech.InternSystem.Services
 
                 int result = await _internInfoRepo.AddInternInfoAsync(createdUser.Id, new InternInfo
                 {
+                    HoTen = registerUser.HoVaTen,
                     MSSV = registerUser.Mssv,
-                    // IdTruong = truong.Id
+                    IdTruong = truong.Id
                 });
             }
 
