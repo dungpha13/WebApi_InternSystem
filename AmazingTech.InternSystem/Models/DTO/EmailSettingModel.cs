@@ -1,4 +1,4 @@
-﻿namespace AmazingTech.InternSystem.Models
+﻿namespace AmazingTech.InternSystem.Models.DTO
 {
     public class EmailSettingModel
     {

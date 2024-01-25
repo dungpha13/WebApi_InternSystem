@@ -1,10 +1,34 @@
-﻿namespace AmazingTech.InternSystem.Data.Enum
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AmazingTech.InternSystem.Data.Enum
 {
-
-    public enum Enums
+  
+    public class Enums
     {
+        public enum Status
+        {
+            Not_Yet,
+            Done
+        }
+        public enum Result
+        {
+            Success,
+            Failed
+        }
+        public enum InterviewForm
+        {
+            Online,
+            Offline
+        }
 
+        public enum Rank
+        {
+            Intern,
+            Senior,
+            Junior
+        }
     }
+
     public enum Status
     {
         Not_Yet,
@@ -19,7 +43,12 @@
     {
         Online,
         Offline
-
     }
 
+    public enum Rank
+    {
+        Intern,
+        Senior,
+        Junior
+    }
 }
