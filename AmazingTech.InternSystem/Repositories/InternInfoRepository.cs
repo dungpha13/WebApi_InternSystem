@@ -58,6 +58,7 @@ namespace AmazingTech.InternSystem.Repositories
                     .ThenInclude(usernhomzalo => usernhomzalo.NhomZalo)
                 .Include(intern => intern.User!.UserDuAns)
                     .ThenInclude(userduan => userduan.DuAn)
+                .Include(intern => intern.Truong)
                 .ToListAsync();
             return interns;
         }
@@ -72,26 +73,25 @@ namespace AmazingTech.InternSystem.Repositories
                                 .ThenInclude(usernhomzalo => usernhomzalo.NhomZalo)
                             .Include(intern => intern.User!.UserDuAns)
                                 .ThenInclude(userduan => userduan.DuAn)
+                            .Include(intern => intern.Truong)
                              .FirstOrDefaultAsync(i => i.MSSV == MSSV);
 
             return intern;
         }
 
-        public async Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model)
-        {
-            var intern = mapper.Map<InternInfo>(model);
-            _context.InternInfos?.Update(intern);
+        public async Task<int> UpdateInternInfoAsync(InternInfo entity)
+        {           
+            _context.InternInfos?.Update(entity);
             return await _context.SaveChangesAsync();
         }
 
-        //public async Task<InternInfo?> GetInternInfo(string id)
-        //{
-        //    return await _context.InternInfos
-        //            .Where(intern => intern.Id == id)
-        //                .Include(intern => intern.KiThucTap)
-        //                .Include(intern => intern.Truong)
-        //            .FirstOrDefaultAsync();
-        //}
+        public async Task<InternInfo?> GetInternInfo(string id)
+        {
+            return await _context.InternInfos
+                    .Where(intern => intern.Id == id)
+                        //.Include(intern => intern.KiThucTap)
+                    .FirstOrDefaultAsync();
+        }
 
         public Task<int> AddListInternInfoAsync(List<InternInfo> interns)
         {

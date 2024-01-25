@@ -30,7 +30,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 NgayBatDau = request.NgayBatDau,
                 NgayKetThuc = request.NgayKetThuc,
-                // IdTruong = existingTruong.Id
+                //IdTruong = existingTruong.Id
             };
 
             var result = _kiRepository.AddKiThucTap(ki);

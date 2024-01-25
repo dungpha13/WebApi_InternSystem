@@ -10,16 +10,20 @@ namespace AmazingTech.InternSystem.Controllers
     public class EnumController : ControllerBase
     {
         [HttpGet("getAll")]
-        public IActionResult GetAllEnums()
+       
+       public IActionResult GetAllEnums()
         {
             var enumTypes = typeof(Enums).GetNestedTypes(BindingFlags.Public | BindingFlags.Static)
-                                                    .Where(t => t.IsEnum);
+                                       .Where(t => t.IsEnum);
 
-            var result = new Dictionary<string, List<string>>();
+            var result = new Dictionary<string, Dictionary<string, string>>();
 
             foreach (var enumType in enumTypes)
             {
-                var enumValues = Enum.GetNames(enumType).ToList();
+                var enumValues = Enum.GetValues(enumType).Cast<object>()
+                                     .Select((value, index) => new { Index = index + 1, Value = value })
+                                     .ToDictionary(pair => pair.Index.ToString(), pair => pair.Value.ToString());
+
                 result[enumType.Name] = enumValues;
             }
 

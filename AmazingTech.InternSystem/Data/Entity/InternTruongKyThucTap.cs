@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
@@ -7,6 +8,7 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [ForeignKey("InternInfo")]
         public string IdIntern { get; set; }
+        [JsonIgnore]
         public InternInfo Intern { get; set; }
 
         [ForeignKey("TruongHoc")]

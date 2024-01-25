@@ -40,7 +40,6 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("create")]
-        [HttpPost("")]
         [Authorize]
         public async Task<IActionResult> AddNewInternInfo(AddInternInfoDTO model)
         {

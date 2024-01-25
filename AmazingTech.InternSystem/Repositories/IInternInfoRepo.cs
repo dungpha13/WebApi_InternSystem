@@ -14,7 +14,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public Task<int> AddInternInfoAsync(string user, InternInfo entity);
 
-        public Task<int> UpdateInternInfoAsync(string mssv, UpdateInternInfoDTO model);
+        public Task<int> UpdateInternInfoAsync(InternInfo model);
 
         public Task<int> DeleteInternInfoAsync(InternInfo entity);
 
