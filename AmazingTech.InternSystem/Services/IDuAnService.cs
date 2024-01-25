@@ -8,7 +8,7 @@ namespace AmazingTech.InternSystem.Services
 {
     public interface IDuAnService
     {
-        IActionResult SearchProject(DuAnFilterCriteria criteria);
+        IActionResult SearchProject(string ten, string leaderId);
         IActionResult GetAllDuAns();
         IActionResult GetDuAnById(string id);
         IActionResult CreateDuAn(string user, DuAnModel createDuAn);

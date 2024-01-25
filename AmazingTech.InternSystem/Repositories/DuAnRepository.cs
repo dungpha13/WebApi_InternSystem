@@ -46,32 +46,41 @@ namespace AmazingTech.InternSystem.Repositories
             return _dbContext.DuAns.FirstOrDefault(d => d.Ten == projectName && d.DeletedBy == null);
         }
 
-        public List<DuAn> SearchProject(DuAnFilterCriteria criteria)
+        public List<DuAn> SearchProject(string ten, string leaderId)
         {
-            var query = _dbContext.DuAns
-                .Include(d => d.Leader)
-                //.Include(d => d.UserDuAns)
-                //    .ThenInclude(uda => uda.User)
-                //.Include(d => d.CongNgheDuAns)
-                //    .ThenInclude(cnda => cnda.CongNghe)
-                .AsQueryable();
+            var query = _dbContext.DuAns.AsQueryable();
 
-            if (!string.IsNullOrEmpty(criteria.Ten))
-                query = query.Where(d => d.Ten.Contains(criteria.Ten));
+            if (!string.IsNullOrEmpty(ten))
+            {
+                query = query.Where(d => d.Ten.Contains(ten));
+            }
 
-            if (!string.IsNullOrEmpty(criteria.LeaderId))
-                query = query.Where(d => d.LeaderId.Contains(criteria.LeaderId));
+            if (!string.IsNullOrEmpty(leaderId))
+            {
+                query = query.Where(d => d.LeaderId.Contains(leaderId));
+            }
 
-            if (criteria.ThoiGianBatDau != null)
-                query = query.Where(d => d.ThoiGianBatDau >= criteria.ThoiGianBatDau);
+            //if (criteria.ThoiGianBatDau != null)
+            //{
+            //    query = query.Where(d => d.ThoiGianBatDau >= criteria.ThoiGianBatDau);
+            //}
 
-            if (criteria.ThoiGianKetThuc != null)
-                query = query.Where(d => d.ThoiGianKetThuc <= criteria.ThoiGianKetThuc);
+            //if (criteria.ThoiGianKetThuc != null)
+            //{
+            //    query = query.Where(d => d.ThoiGianKetThuc <= criteria.ThoiGianKetThuc);
+            //}
 
             // Sorting
             query = query.OrderBy(d => d.Ten);
 
-            return query.ToList();
+            var result = query.Select(d => new DuAn
+            {
+                Id = d.Id,
+                Ten = d.Ten,
+                LeaderId = d.LeaderId,
+            });
+            return result.ToList();
+            
         }
 
         public int CreateDuAn(string user, DuAn createDuAn)

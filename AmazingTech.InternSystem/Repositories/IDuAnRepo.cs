@@ -10,7 +10,7 @@ namespace AmazingTech.InternSystem.Repositories
         // DuAn methods
         List<DuAn> GetAllDuAns();
         DuAn GetDuAnById(string id);
-        List<DuAn> SearchProject(DuAnFilterCriteria criteria);
+        List<DuAn> SearchProject(string ten, string leaderId);
         DuAn GetDuAnByName(string projectName);
         int CreateDuAn(string user, DuAn createDuAn);
         int UpdateDuAn(string user, string duAnId, DuAn updatedDuAn);

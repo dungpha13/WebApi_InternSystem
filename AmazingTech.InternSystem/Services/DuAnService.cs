@@ -23,11 +23,10 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public IActionResult SearchProject(DuAnFilterCriteria criteria)
+        public IActionResult SearchProject(string ten, string leaderId)
         {
-            var duAns = _duAnRepo.SearchProject(criteria);
-            var duAnModels = _mapper.Map<List<DuAnModel>>(duAns);
-            return new OkObjectResult(duAnModels);
+            var duAns = _duAnRepo.SearchProject(ten, leaderId);
+            return new OkObjectResult(duAns);
         }
 
         public IActionResult GetAllDuAns()

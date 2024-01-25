@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -97,16 +98,16 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchProject([FromBody] DuAnFilterCriteria criteria)
+        public IActionResult SearchProject(string ten, string leaderId)
         {
             try
             {
-                var duAns = _duAnService.SearchProject(criteria);
+                var duAns = _duAnService.SearchProject(ten, leaderId);
                 return Ok(duAns);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest("We can't get the product.");
             }
         }
 
