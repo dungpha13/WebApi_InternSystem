@@ -434,9 +434,7 @@ namespace AmazingTech.InternSystem.Services
             List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
             return new ObjectResult(lichPhongVans);
                 }
-                
-            }
-        }
+             
 
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email)
         {
