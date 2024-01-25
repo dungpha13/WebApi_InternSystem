@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Repositories;
 using AutoMapper;
@@ -31,75 +32,72 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult GetAllDuAns()
         {
-            //List<DuAn> duAns = _duAnRepo.GetAllDuAns();
-            //return new OkObjectResult(duAns);
-            var duAns = _duAnRepo.GetAllDuAns();
-            var duAnResponseDTOs = _mapper.Map<List<DuAnResponseDTO>>(duAns);
-            var formattedResponse = new { value = duAnResponseDTOs };
-            return new OkObjectResult(formattedResponse);
+            List<DuAn> duAns = _duAnRepo.GetAllDuAns();
+            return new OkObjectResult(duAns);
         }
 
         public IActionResult GetDuAnById(string id)
         {
-            //var duAn = _duAnRepo.GetDuAnById(id);
-            //return new OkObjectResult(duAn);
             var duAn = _duAnRepo.GetDuAnById(id);
-
-            if (duAn == null)
-            {
-                return new NotFoundResult();
-            }
-
-            var duAnResponseDTO = _mapper.Map<DuAnResponseDTO>(duAn);
-            return new OkObjectResult(duAnResponseDTO);
+            return new OkObjectResult(duAn);
         }
 
-        public IActionResult CreateDuAn(AddDuAnModel createDuAn)
+        public IActionResult CreateDuAn(string user, DuAnModel createDuAn)
         {
-            //_duAnRepo.CreateDuAn(_mapper.Map<DuAn>(createDuAn));
-            //return new OkResult();
-            int result = _duAnRepo.CreateDuAn(_mapper.Map<DuAn>(createDuAn));
-
-            if (result == -1)
+            try
             {
-                return new BadRequestObjectResult("Project with the same name already exists");
+                DuAn duAn = _mapper.Map<DuAn>(createDuAn);
+
+                var existingDuAn = _duAnRepo.GetDuAnByName(duAn.Ten);
+                if (existingDuAn != null)
+                {
+                    return new BadRequestObjectResult("The project name already exists");
+                }
+
+                var result = _duAnRepo.CreateDuAn(user, duAn);
+
+                if (result == -1)
+                {
+                    return new BadRequestObjectResult("Project with the same name already exists");
+                }
+                else if (result == 0)
+                {
+                    return new BadRequestObjectResult("An error occurred while creating the project");
+                }
+
+                return new OkResult();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating project: {ex.Message}");
+
+                return new StatusCodeResult(500);
+            }
+        }
+
+        public IActionResult UpdateDuAn(string user, string id, DuAnModel updatedDuAn)
+        {
+            DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
+            var result = _duAnRepo.UpdateDuAn(user, id, duAn);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("An error occurred while updating the project");
             }
 
             return new OkResult();
         }
 
-        public IActionResult UpdateDuAn(UpdateDuAnModel updatedDuAn)
+        public IActionResult DeleteDuAn(string user, string id)
         {
-            var existDuAn = _duAnRepo.GetDuAnById(updatedDuAn.Id);
+            var result = _duAnRepo.DeleteDuAn(user, id);
 
-            if (existDuAn is null)
+            if (result == 0)
             {
-                return new BadRequestObjectResult("Id null!");
+                return new BadRequestObjectResult("An error occurred while deleting the project");
             }
 
-            existDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
-            existDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
-
-            _duAnRepo.UpdateDuAn(existDuAn);
-            return new NoContentResult();
+            return new OkResult();
         }
-
-        public IActionResult DeleteDuAn(string id)
-        {
-            var existDuAn = _duAnRepo.GetDuAnById(id);
-
-            if (existDuAn is not null)
-            {
-                _duAnRepo.DeleteDuAn(existDuAn);
-            }
-
-            return new NoContentResult();
-        }
-
-        //public Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds)
-        //{
-        //    // Implement the logic for exporting projects to Excel.
-        //    // Example: return _duAnRepo.ExportProjectsToExcelAsync(duAnIds);
-        //}
     }
 }

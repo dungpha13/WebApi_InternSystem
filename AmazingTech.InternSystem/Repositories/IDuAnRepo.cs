@@ -11,23 +11,9 @@ namespace AmazingTech.InternSystem.Repositories
         List<DuAn> GetAllDuAns();
         DuAn GetDuAnById(string id);
         List<DuAn> SearchProject(DuAnFilterCriteria criteria);
-        int CreateDuAn(DuAn createDuAn);
-        int UpdateDuAn(DuAn updatedDuAn);
-        int DeleteDuAn(DuAn deleteDuAn);
-        // Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds);
-
-        //// DuAn in ZaloGroup methods
-        // Task<List<DuAnModel>> GetProjectsInGroupAsync(string nhomZaloId);
-        // Task AddProjectToGroupAsync(string nhomZaloId, DuAnModel duAnModel);
-        // Task<DuAnModel?> GetProjectInGroupAsync(string nhomZaloId, string duAnId);
-        // Task UpdateProjectInGroupAsync(string nhomZaloId, DuAnModel updatedDuAn);
-        // Task RemoveProjectFromGroupAsync(string nhomZaloId, string duAnId);
-
-        //// User in DuAn methods
-        // Task<List<UserDuAn>> GetUsersInProjectAsync(string duAnId);
-        // Task AddUserToProjectAsync(string duAnId, string userId, string viTriId);
-        // Task<UserDuAn?> GetUserInProjectAsync(string duAnId, string userId);
-        // Task UpdateUserInProjectAsync(string duAnId, UserDuAn updatedUserDuAn);
-        // Task RemoveUserFromProjectAsync(string duAnId, string userId);
+        DuAn GetDuAnByName(string projectName);
+        int CreateDuAn(string user, DuAn createDuAn);
+        int UpdateDuAn(string user, string duAnId, DuAn updatedDuAn);
+        int DeleteDuAn(string user, string duAnId);
     }
 }

@@ -25,11 +25,6 @@ namespace AmazingTech.InternSystem.Repositories
 
         public List<DuAn> GetAllDuAns()
         {
-            //using (var context = new AppDbContext())
-            //{
-            //    var duAns = context.Set<DuAn>().Include(duAn => duAn.Leader).ToList();
-            //    return duAns;
-            //}
             var duAns = _dbContext.DuAns
                 .Include(duAn => duAn.Leader)
                 .ToList();
@@ -37,36 +32,18 @@ namespace AmazingTech.InternSystem.Repositories
             return duAns;
         }
 
-        public DuAn? GetDuAnById(string id)
+        public DuAn GetDuAnById(string id)
         {
-            //var duAn = await _dbContext.DuAns
-                //.Include(d => d.Leader)
-                //.Include(d => d.UserDuAns)
-                //    .ThenInclude(uda => uda.User)
-                //.Include(d => d.CongNgheDuAns)
-                //    .ThenInclude(cnda => cnda.CongNghe)
-                //.FirstOrDefaultAsync(c => c.Id == id);
-
-            //return duAn;
-            using (var context = new AppDbContext())
-            {
-                //return context.DuAns.FirstOrDefault(duan => duan.Id == id);
-                //return context.DuAns.Include(d => d.Leader)
-                //                    .Include(d => d.UserDuAns)
-                //                        .ThenInclude(uda => uda.User)
-                //                    .Include(d => d.CongNgheDuAns)
-                //                        .ThenInclude(cnda => cnda.CongNghe)
-                //                    .FirstOrDefault(c => c.Id == id);
-                var duAn = _dbContext.DuAns
-                .Include(d => d.Leader)
-                .Include(d => d.UserDuAns)
-                    .ThenInclude(uda => uda.User)
-                .Include(d => d.CongNgheDuAns)
-                    .ThenInclude(cnda => cnda.CongNghe)
+            var duAn = _dbContext.DuAns
+                .Include(duAn => duAn.Leader)
                 .FirstOrDefault(c => c.Id == id);
 
-                return duAn;
-            }
+            return duAn;
+        }
+
+        public DuAn GetDuAnByName(string projectName)
+        {
+            return _dbContext.DuAns.FirstOrDefault(d => d.Ten == projectName && d.DeletedBy == null);
         }
 
         public List<DuAn> SearchProject(DuAnFilterCriteria criteria)
@@ -97,53 +74,73 @@ namespace AmazingTech.InternSystem.Repositories
             return query.ToList();
         }
 
-        public int CreateDuAn(DuAn createDuAn)
+        public int CreateDuAn(string user, DuAn createDuAn)
         {
-            //_dbContext.Set<DuAn>().Add(createDuAn);
-            //return _dbContext.SaveChanges();
-            var existingDuAn = _dbContext.DuAns.FirstOrDefault(d => d.Ten == createDuAn.Ten);
-
-            if (existingDuAn != null)
+            try
             {
-                return -1;
+                var existingDuAn = GetDuAnByName(createDuAn.Ten);
+                if (existingDuAn != null)
+                {
+                    return -1;
+                }
+
+                createDuAn.CreatedBy = user;
+                createDuAn.LastUpdatedBy = user;
+                createDuAn.LastUpdatedTime = DateTime.Now;
+
+                _dbContext.DuAns.Add(createDuAn);
+                _dbContext.SaveChanges();
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating project: {ex.Message}");
+                return 0;
+            }
+        }
+
+        public int UpdateDuAn(string user, string duAnId, DuAn updatedDuAn)
+        {
+            var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedBy == null);
+            if (existingDuAn == null)
+            {
+                return 0;
             }
 
-            _dbContext.Set<DuAn>().Add(createDuAn);
+            if (updatedDuAn.Ten != null)
+            {
+                existingDuAn.Ten = updatedDuAn.Ten;
+                var check = _dbContext.DuAns.SingleOrDefault(x => x.Ten == existingDuAn.Ten && x.DeletedBy == null && x.Id != existingDuAn.Id);
+                if (check != null)
+                {
+                    return 0;
+                }
+            }
+
+            existingDuAn.LeaderId = updatedDuAn.LeaderId;
+            existingDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
+            existingDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
+            existingDuAn.LastUpdatedBy = user;
+            existingDuAn.LastUpdatedTime = DateTime.Now;
+
             return _dbContext.SaveChanges();
         }
 
-        public int UpdateDuAn(DuAn updatedDuAn)
+        public int DeleteDuAn(string user, string duAnId)
         {
-            //_dbContext.DuAns.Update(updatedDuAn);
-            //return _dbContext.SaveChanges();
-            var existDuAn = _dbContext.DuAns.FirstOrDefault(c => c.Id == updatedDuAn.Id);
-
-            if (existDuAn != null)
+            var duAnToDelete = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedBy == null);
+            if (duAnToDelete == null)
             {
-                existDuAn.Ten = updatedDuAn.Ten;
-                existDuAn.LeaderId = updatedDuAn.LeaderId;
-                existDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
-                existDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
-
-                return _dbContext.SaveChanges();
+                return 0;
             }
 
-            return 0;
-        }
+            duAnToDelete.DeletedBy = user;
+            duAnToDelete.DeletedTime = DateTime.Now;
 
-        public int DeleteDuAn(DuAn deleteDuAn)
-        {
-            //_dbContext.DuAns.Remove(deleteDuAn);
-            //return _dbContext.SaveChanges();
-            var duAnToDelete = _dbContext.DuAns.FirstOrDefault(c => c.Id == deleteDuAn.Id);
-
-            if (duAnToDelete != null)
-            {
-                duAnToDelete.DeletedTime = DateTime.Now;
-                duAnToDelete.DeletedBy = deleteDuAn.DeletedBy;
-                return _dbContext.SaveChanges();
-            }
-            return 0;
+            _dbContext.Remove(duAnToDelete);
+            _dbContext.SaveChanges();
+            return 1;
         }
     }
 }

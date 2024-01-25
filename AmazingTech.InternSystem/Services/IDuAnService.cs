@@ -11,9 +11,8 @@ namespace AmazingTech.InternSystem.Services
         IActionResult SearchProject(DuAnFilterCriteria criteria);
         IActionResult GetAllDuAns();
         IActionResult GetDuAnById(string id);
-        IActionResult CreateDuAn(AddDuAnModel createDuAn);
-        IActionResult UpdateDuAn(UpdateDuAnModel updatedDuAn);
-        IActionResult DeleteDuAn(string id);
-        // Task<byte[]> ExportProjectsToExcelAsync(List<string> duAnIds);
+        IActionResult CreateDuAn(string user, DuAnModel createDuAn);
+        IActionResult UpdateDuAn(string user, string id, DuAnModel updatedDuAn);
+        IActionResult DeleteDuAn(string user, string id);
     }
 }
