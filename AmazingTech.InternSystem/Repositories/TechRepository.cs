@@ -50,7 +50,7 @@ namespace AmazingTech.InternSystem.Repositories
         public async Task<int> CreateCongNgheAsync(string user, CongNghe CongNgheModel)
         {
             var check = _context.CongNghes.Where(x => x.Ten == CongNgheModel.Ten && x.DeletedBy == null).FirstOrDefault();
-            if (check != null) { throw new Exception("Tech has been existed"); }
+            if (check != null) { return 0; }
             CongNgheModel.CreatedBy = user;
             CongNgheModel.LastUpdatedBy = user;
             CongNgheModel.LastUpdatedTime = DateTime.Now;
@@ -65,9 +65,9 @@ namespace AmazingTech.InternSystem.Repositories
            if (existingCongNghe == null) {  return 0;}           
            if (updatedCongNghe.Ten != null) existingCongNghe.Ten = updatedCongNghe.Ten;
            var check = _context.CongNghes.Where(x => x.Ten == existingCongNghe.Ten && x.DeletedBy == null).FirstOrDefault();
-           if (check != null) { throw new Exception("Tech has been existed"); }
-           if (updatedCongNghe.IdViTri != null) existingCongNghe.IdViTri = updatedCongNghe.IdViTri;
-           if (updatedCongNghe.ImgUrl != null) existingCongNghe.ImgUrl = updatedCongNghe.ImgUrl;
+           if (check != null) { return 0; }
+            existingCongNghe.IdViTri = updatedCongNghe.IdViTri;
+            existingCongNghe.ImgUrl = updatedCongNghe.ImgUrl;
             existingCongNghe.LastUpdatedBy = user;
             existingCongNghe.LastUpdatedTime = DateTime.Now;
             return await _context.SaveChangesAsync();

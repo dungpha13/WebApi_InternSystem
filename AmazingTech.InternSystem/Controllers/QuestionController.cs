@@ -22,7 +22,8 @@ namespace AmazingTech.InternSystem.Controllers
 
         }
 
-        [HttpGet]    
+        [HttpGet]  
+        [Authorize]
         [Route("get/{idCongNghe}")]
         public async Task<IActionResult> GetAllQuestion(string idCongNghe)
         {

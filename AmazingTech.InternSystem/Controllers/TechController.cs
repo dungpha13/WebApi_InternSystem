@@ -42,7 +42,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var save = await _service.CreateTech(tech, user);
-             return Ok(save == 1 ? "Success" : "failed");
+             return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
         }
 
         [HttpPut]
@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var save = await _service.UpdateTech(user, id, tech);
-            return Ok(save == 1 ? "Success" : "failed");
+            return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
         }
 
         [HttpDelete]
