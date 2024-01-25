@@ -27,7 +27,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("get")]
         public async Task<IActionResult> GetAllTech()
         {
@@ -36,7 +36,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("create")]
         public async Task<IActionResult> CreateTech([FromBody] TechModel tech)
         {
@@ -46,7 +46,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateTech(string id, TechModel tech)
         {
@@ -56,7 +56,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("delete/{id}")]
         public async Task<IActionResult> DeleteTech(string id)
         {

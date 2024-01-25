@@ -22,8 +22,8 @@ namespace AmazingTech.InternSystem.Controllers
 
         }
 
-        [HttpGet]  
-        [Authorize]
+        [HttpGet]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("get/{idCongNghe}")]
         public async Task<IActionResult> GetAllQuestion(string idCongNghe)
         {
@@ -32,7 +32,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("create/{idCongNghe}")]
         public async Task<IActionResult> CreateQuestion(string idCongNghe,[FromBody] QuestionDTO cauhoi)
         {
@@ -42,7 +42,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("update/{idCongNghe}/{idCauHoi}")]
         public async Task<IActionResult> UpdateTech(string idCongNghe, string idCauHoi, [FromBody] QuestionDTO cauhoi)
         {
@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("delete/{idCongNghe}/{idCauHoi}")]
         public async Task<IActionResult> DeleteTech(string idCongNghe, string idCauHoi)
         {
