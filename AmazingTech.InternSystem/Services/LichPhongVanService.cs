@@ -132,7 +132,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
             }
-            var ScheduleisExist = _lichPhongVanRepository.GetScheduleByInterviewerIdAndIntervieweeId(accountId, InternId);
+            var ScheduleisExist = _lichPhongVanRepository.GetScheduleByIntervieweeId(InternId);
             if (ScheduleisExist != null)
             {
                 throw new BadHttpRequestException("This intern already has interview schedule");
@@ -344,7 +344,7 @@ namespace AmazingTech.InternSystem.Services
         }
         public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate)
         {
-            var listUserWithOutInterview = _userRepository.GetUsersWithoutInterview(startDate, endDate);
+            var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview(startDate, endDate);
             List<User> InternWithoutInterview = new List<User>();
             foreach (var item in listUserWithOutInterview)
             {
@@ -362,7 +362,7 @@ namespace AmazingTech.InternSystem.Services
         }
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate)
         {
-            var listUserWithOutInterview = _userRepository.GetUsersWithoutInterview(startDate, endDate);
+            var listUserWithOutInterview = _userRepository.GetHrOrMentorWithoutInterview(startDate, endDate);
             List<User> InternWithoutInterview = new List<User>();
             foreach (var item in listUserWithOutInterview)
             {
