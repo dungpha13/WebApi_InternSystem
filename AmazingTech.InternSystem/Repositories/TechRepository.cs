@@ -1,9 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml.Packaging.Ionic.Zip;
 
 
 
@@ -79,13 +77,17 @@ namespace AmazingTech.InternSystem.Repositories
         public async Task<int> DeleteCongNgheAsync(string user,  string congNgheId )
         {
             var congNgheToDelete = await _context.CongNghes.FirstOrDefaultAsync(c => c.Id == congNgheId && c.DeletedBy == null);
-            if (congNgheToDelete == null) { return 0; }
-            
-             congNgheToDelete.DeletedBy = user;
-             congNgheToDelete.DeletedTime = DateTime.Now;
-             return await _context.SaveChangesAsync();
-            
-            
+            if (congNgheToDelete == null) { return 0; }            
+            congNgheToDelete.DeletedBy = user;
+            congNgheToDelete.DeletedTime = DateTime.Now;
+            var cauhoiCongnghe = _context.cauhoiCongnghes.Where(x => x.IdCongNghe == congNgheId ).ToList();
+            foreach (CauhoiCongnghe obj in cauhoiCongnghe)
+            {
+                obj.DeletedBy = user;
+                obj.DeletedTime = DateTime.Now;                                 
+            }         
+            await _context.SaveChangesAsync();
+            return 1;
         }
 
   }
