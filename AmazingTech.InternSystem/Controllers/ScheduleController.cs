@@ -71,14 +71,15 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("api/lich-phong-vans/SendResultInterviewEmail")]
         public IActionResult SendRessultInterviewEmail([FromQuery] string email)
         {
-            var result = _guiLichPhongVanService.SendResultInterviewEmail(email);
-
-            if (result)
+            try
             {
+                _guiLichPhongVanService.SendResultInterviewEmail(email);
                 return Ok(new { Message = "Send email successfully." });
             }
-
-            return BadRequest(new { Message = "Send email unsuccessfully" });
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
         }
 
 

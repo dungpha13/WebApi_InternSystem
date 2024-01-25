@@ -10,7 +10,7 @@ namespace AmazingTech.InternSystem.Repositories
         public User GetUserByName(string name);
         public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime);
-        public List<User> GetUsersWithoutInterview(DateTime startTime, DateTime endTime);
+        public List<User> GetInternsWithoutInterview(DateTime startTime, DateTime endTime);
     }
     public class UserRepository : IUserRepository
     {
@@ -88,7 +88,7 @@ namespace AmazingTech.InternSystem.Repositories
                 return result;
             }
         }
-        public List<User> GetUsersWithoutInterview(DateTime startTime, DateTime endTime)
+        public List<User> GetInternsWithoutInterview(DateTime startTime, DateTime endTime)
         {
             using (var context = new AppDbContext())
             {
@@ -102,12 +102,12 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var result = context.Set<User>()
-                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.HR.ToUpper()) || r.Name.Equals(Roles.MENTOR)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
-                      .Take(5)
-                      .ToList();
-                return result;
+                var usersWithoutInterview = context.Set<User>()
+                    .Where(user => !context.Set<LichPhongVan>().Any(interview => interview.NguoiPhongVan.Id == user.Id && startTime <= interview.ThoiGianPhongVan && interview.ThoiGianPhongVan <= endTime))
+                    .ToList();
+                return usersWithoutInterview;
             }
         }
+
     }
 }
