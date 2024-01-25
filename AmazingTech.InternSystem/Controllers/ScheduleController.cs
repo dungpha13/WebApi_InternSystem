@@ -140,6 +140,12 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("GetAll")]
+        public IActionResult GetAllLichPhongvan()
+        {
+            return _guiLichPhongVanService.AllLichPhongVan();
+        }
 
     }
 }

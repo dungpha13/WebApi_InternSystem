@@ -22,8 +22,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public bool? DaXacNhanMail { get; set; }
         public InterviewForm InterviewForm { get; set; }
 
-        public InterviewForm InterviewForm { get; set; }
-
         public Status TrangThai { get; set; } // Chua PV/Da PV
         public TimeSpan TimeDuration { get; set; }
 

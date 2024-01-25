@@ -10,7 +10,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
 namespace AmazingTech.InternSystem.Services
 {
     public interface IGuiLichPhongVanService
@@ -24,10 +23,11 @@ namespace AmazingTech.InternSystem.Services
         public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate);
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
         public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
+
+        IActionResult AllLichPhongVan();
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
-    
         private readonly UserManager<User> _userManager;
         private readonly IUserRepository _userRepository;
         private readonly ILichPhongVanRepository _lichPhongVanRepository;
@@ -40,48 +40,37 @@ namespace AmazingTech.InternSystem.Services
             _userRepository = userRepository;
             _lichPhongVanRepository = lichPhongVanRepository;
             _httpContextAccessor = httpContextAccessor;
-
         }
-
         public bool ConfirmEmail(string id)
         {
             var lichPhongVan = _lichPhongVanRepository.GetScheduleByIntervieweeId(id);
-
             if (lichPhongVan == null)
             {
                 return false;
             }
-
             // Update user status (e.g., set DaXacNhanMail to true)
             lichPhongVan.DaXacNhanMail = true;
             _lichPhongVanRepository.UpdateLichPhongVan(lichPhongVan);
-
             return true;
         }
-
         public bool SendResultInterviewEmail(string email)
         {
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-
             var InternId = _userRepository.GetUserIdByEmail(email);
             var user = _userRepository.GetUserById(InternId);
-
             if (InternId == null)
             {
                 throw new BadHttpRequestException("This Mail is not exist in database");
             }
-
             if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN.ToUpper()))) // không phải là HR hay Admin thì không lịch đc tạo 
             {
                 throw new BadHttpRequestException("You don't have permission to send email");
             }
-
             string context = "Chào bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi rất hân hạnh khi bạn đã quyết định tham gia chương trình thực tập tại Công ty của chúng tôi." +
                     "\r\n\r\nĐây là kết quả sau buổi phỏng vấn của bạn: ĐẠT YÊU CẦU THAM GIA THỰC TẬP\r\n\r\n" +
                     "A. THÔNG TIN VỀ KỲ THỰC TẬP:\r\n\r\n " +
@@ -94,17 +83,14 @@ namespace AmazingTech.InternSystem.Services
                     "Lưu ý: Chúng tôi muốn bạn biết rằng vị trí bạn mong muốn ban đầu và vị trí bạn thực tập không cố định, có thể được điều chỉnh dựa trên năng lực của bạn và yêu cầu dự án của công ty trong quá trình thực tập. \r\n\r\n" +
                     "Chúng tôi tin rằng bạn sẽ mang đến một giá trị đặc biệt cho công ty của chúng tôi và hy vọng rằng bạn sẽ có một trải nghiệm thực tập thú vị, bổ ích tại Amazing Tech.\r\n\r\n" +
                     "Trân trọng.\r\n\r\n" +
-                    "<div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div style=\"color:rgb(34,34,34)\"><table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background:transparent;font-size:14px;border-spacing:0px;border-collapse:collapse;font-family:Arial,sans-serif;color:rgb(46,154,164);max-width:500px\"><tbody><tr><td colspan=\"2\" width=\"500\" style=\"padding:0px 0px 4px;border-bottom:1px solid rgb(47,154,163)\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:18pt\"><span style=\"font-weight:700\"><font color=\"#0b5394\">--<br>Amazing Tech</font></span></span><br></font><span style=\"color:rgb(58,67,69);font-family:Tahoma,sans-serif;font-size:13.3333px;font-weight:700\">Software Development Company</span>&nbsp;&nbsp;<font face=\"tahoma, sans-serif\"><span style=\"font-size:10pt\">&nbsp;&nbsp;<font color=\"#6fa8dc\">&nbsp;</font><font color=\"#0b5394\">|</font>&nbsp;</span><a href=\"http://amazingtech.vn/\" rel=\"noopener\" style=\"color:rgb(17,85,204);background-color:transparent;font-size:10pt;font-weight:bold\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=http://amazingtech.vn/&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw1vaYI2qEOK2T13SAzEBs2K\"><span style=\"font-size:10pt\"><font color=\"#0b5394\">amazingtech.vn</font></span></a></font></td></tr><tr><td width=\"120\" style=\"padding:22px 0px 0px\"><p style=\"margin:0px;padding:0px\"><font face=\"tahoma, sans-serif\"><img border=\"0\" alt=\"Photo\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NYIQZghSrU6IZdMz9suNlE9PjPuyZ1EdHCVmzj1vU2jZHotFhiSOIh7oGk9mHRBWejqWtG8D56PF6Q3q59IV4nwG1DVQ2MRcXQl_NltCnkIt-h6k3jG4aAtPnP9QkKcWec1tfc=s0-d-e1-ft#https://amazingtech.vn/Content/amazingtech/assets/img/logo-amazing-tech-v2.png\" style=\"border:0px;vertical-align:middle;max-width:90px\" class=\"CToWUd\" data-bit=\"iit\"></font></p></td><td style=\"padding:25px 0px 0px\"><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><font color=\"#0b5394\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\">T:</span>&nbsp;</font>&nbsp;<span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">(028) 9999 - 7939</span></font></p><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\"><font color=\"#0b5394\">M:</font></span>&nbsp;<span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">(+84) 888 181 100</span></font></p><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\"><font color=\"#0b5394\">E:</font></span><font color=\"#3d85c6\">&nbsp;</font><a href=\"mailto:amazingtech.hr@gmail.com\" style=\"color:rgb(16,16,16);background-color:transparent;font-size:9pt;line-height:10pt\" target=\"_blank\"><span style=\"font-size:9pt;line-height:10pt\">amazingtech.hr@gmail.com</span></a></font></p><p style=\"margin:0px;line-height:10pt;padding-bottom:2px;padding-top:0px\"><font face=\"tahoma, sans-serif\"><font color=\"#0b5394\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\">A:</span>&nbsp;</font><span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">74 Nguyễn Cửu Đàm, Phường Tân Sơn Nhì, Quận Tân Phú, TP.HCM</span></font></p><p style=\"margin:0px;line-height:10pt;padding-bottom:2px;padding-top:0px\"><span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\"><font face=\"tahoma, sans-serif\">&nbsp; &nbsp; &nbsp;S9.02A Vinhome Grand Park, Nguyễn Xiển, Phường Phước Thiện, Quận Thủ Đức, TP.HCM</font></span></p><p style=\"margin:4px 0px 0px;padding-bottom:0px;padding-top:0px\"><font face=\"tahoma, sans-serif\"><a href=\"https://www.facebook.com/amazingtech74\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.facebook.com/amazingtech74&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw0PsTtrffG8GO6TFt1mZkDe\"><img border=\"0\" width=\"20\" alt=\"facebook icon\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Nb-H8iXOIGiIIOjCq60PcYJdwAiL3JI9ca8Zvfz7PzPeRO7EP5yLfmQlXiaR8gk8shP-__vXefTiEmbGIHRo-lRY8PhPrnocnAIhlpItBw65ruLKdU7nElsW1pxywyN9YiYA_O7zIbih2al=s0-d-e1-ft#https://www.mail-signatures.com/signature-generator/img/templates/brands-voice/fb.png\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;&nbsp;<a href=\"https://www.youtube.com/@amazingtechvietnam\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.youtube.com/@amazingtechvietnam&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw0Zu2_6T3U_WB0AOHMaEeUq\"><img border=\"0\" width=\"20\" alt=\"youtube icon\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NaAgTDtnkTEwIcx8mxmO4-t06QPEl5sXLKF7gnOvFVQ8c31ca2W8BQmyAIlOBlSAjvOrXh_A452L86DfYtVK0dug2BbivN6r8XOyEEjnuvCDGtihKh_bNird28dMxannXIagpI_NkDRXrF4=s0-d-e1-ft#https://www.mail-signatures.com/signature-generator/img/templates/brands-voice/yt.png\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;&nbsp;<a href=\"https://www.linkedin.com/company/amazingtech74\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.linkedin.com/company/amazingtech74&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw2Tb7NjZTwhK_taupiJr9iw\"><img border=\"0\" width=\"20\" alt=\"linkedin icon\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Na22lJt_btcmFPUMmTXijHqUbMnhZF2iNtgvomlgswJg-7vB888Zz5mYQcCEZUJa3yv8bugefIkEYkRQaxxeNYbBGXdytU5BAgd5UyfBRUSkr4Whm9q6UjET04sVtiekVBDhGzB-6L_JUwn=s0-d-e1-ft#https://www.mail-signatures.com/signature-generator/img/templates/brands-voice/ln.png\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;</font></p></td></tr><tr><td colspan=\"2\" style=\"padding:25px 0px 0px\"><a href=\"https://amazingtech.vn/\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://amazingtech.vn/&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw11h_SNDADPSAg0WiKKnBHk\"><font face=\"tahoma, sans-serif\"><img border=\"0\" alt=\"Banner\" width=\"527\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NZT7FwFWtXD-LTbufKOqpFfhg4b1eEPlZOVdgqqEYnGh-4T6jGP9ZYxGLs3OM5QSw2rwPVXTRBWooBDxsi466XySJNe9bvDYVVSqpql6UIqKEITfpN3U68wh91TZUyh=s0-d-e1-ft#https://amazingtech.vn/Content/amazingtech/assets/img/icon-1-1024x761.png\" height=\"392\" style=\"border:0px;vertical-align:middle;margin-right:0px\" class=\"CToWUd\" data-bit=\"iit\"></font></a></td></tr></tbody></table></div></div></div>";
-
+                    "<div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div style=\"color:rgb(34,34,34)\"><table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background:transparent;font-size:14px;border-spacing:0px;border-collapse:collapse;font-family:Arial,sans-serif;color:rgb(46,154,164);max-width:500px\"><tbody><tr><td colspan=\"2\" width=\"500\" style=\"padding:0px 0px 4px;border-bottom:1px solid rgb(47,154,163)\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:18pt\"><span style=\"font-weight:700\"><font color=\"#0b5394\">--<br>Amazing Tech</font></span></span><br></font><span style=\"color:rgb(58,67,69);font-family:Tahoma,sans-serif;font-size:13.3333px;font-weight:700\">Software Development Company</span>&nbsp;&nbsp;<font face=\"tahoma, sans-serif\"><span style=\"font-size:10pt\">&nbsp;&nbsp;<font color=\"#6fa8dc\">&nbsp;</font><font color=\"#0b5394\">|</font>&nbsp;</span><a href=\"http://amazingtech.vn/\" rel=\"noopener\" style=\"color:rgb(17,85,204);background-color:transparent;font-size:10pt;font-weight:bold\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=http://amazingtech.vn/&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw1vaYI2qEOK2T13SAzEBs2K\"><span style=\"font-size:10pt\"><font color=\"#0b5394\">amazingtech.vn</font></span></a></font></td></tr><tr><td width=\"120\" style=\"padding:22px 0px 0px\"><p style=\"margin:0px;padding:0px\"><font face=\"tahoma, sans-serif\"><img border=\"0\" alt=\"Photo\" src=\"https://ci3.googleusercontent.com/.../ADKq...\" style=\"border:0px;vertical-align:middle;max-width:90px\" class=\"CToWUd\" data-bit=\"iit\"></font></p></td><td style=\"padding:25px 0px 0px\"><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><font color=\"#0b5394\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\">T:</span>&nbsp;</font>&nbsp;<span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">(028) 9999 - 7939</span></font></p><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\"><font color=\"#0b5394\">M:</font></span>&nbsp;<span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">(+84) 888 181 100</span></font></p><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\"><font color=\"#0b5394\">E:</font></span><font color=\"#3d85c6\">&nbsp;</font><a href=\"mailto:amazingtech.hr@gmail.com\" style=\"color:rgb(16,16,16);background-color:transparent;font-size:9pt;line-height:10pt\" target=\"_blank\"><span style=\"font-size:9pt;line-height:10pt\">amazingtech.hr@gmail.com</span></a></font></p><p style=\"margin:0px;line-height:10pt;padding-bottom:2px;padding-top:0px\"><font face=\"tahoma, sans-serif\"><font color=\"#0b5394\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\">A:</span>&nbsp;</font><span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">74 Nguyễn Cửu Đàm, Phường Tân Sơn Nhì, Quận Tân Phú, TP.HCM</span></font></p><p style=\"margin:0px;line-height:10pt;padding-bottom:2px;padding-top:0px\"><span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\"><font face=\"tahoma, sans-serif\">&nbsp; &nbsp; &nbsp;S9.02A Vinhome Grand Park, Nguyễn Xiển, Phường Phước Thiện, Quận Thủ Đức, TP.HCM</font></span></p><p style=\"margin:4px 0px 0px;padding-bottom:0px;padding-top:0px\"><font face=\"tahoma, sans-serif\"><a href=\"https://www.facebook.com/amazingtech74\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.facebook.com/amazingtech74&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw0PsTtrffG8GO6TFt1mZkDe\"><img border=\"0\" width=\"20\" alt=\"facebook icon\" src=\"https://ci3.googleusercontent.com/.../ADKq_Nb...\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;&nbsp;<a href=\"https://www.youtube.com/@amazingtechvietnam\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.youtube.com/@amazingtechvietnam&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw0Zu2_6T3U_WB0AOHMaEeUq\"><img border=\"0\" width=\"20\" alt=\"youtube icon\" src=\"https://ci3.googleusercontent.com/.../ADKq...\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;&nbsp;<a href=\"https://www.linkedin.com/company/amazingtech74\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.linkedin.com/company/amazingtech74&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw2Tb7NjZTwhK_taupiJr9iw\"><img border=\"0\" width=\"20\" alt=\"linkedin icon\" src=\"https://ci3.googleusercontent.com/.../ADKq_Na22lJt...\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;</font></p></td></tr><tr><td colspan=\"2\" style=\"padding:25px 0px 0px\"><a href=\"https://amazingtech.vn/\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://amazingtech.vn/&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw11h_SNDADPSAg0WiKKnBHk\"><font face=\"tahoma, sans-serif\"><img border=\"0\" alt=\"Banner\" width=\"527\" src=\"https://ci3.googleusercontent.com/.../ADKq_NZT7FwFWtXD...\" height=\"392\" style=\"border:0px;vertical-align:middle;margin-right:0px\" class=\"CToWUd\" data-bit=\"iit\"></font></a></td></tr></tbody></table></div></div></div>";
             string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
-
             _emailService.SendResultInterviewEmail(context, email, subject);
-
             return true;
         }
         public void AddLichPhongVan(LichPhongVanRequestModel model)
         {
-            if(model.ThoiGianPhongVan < DateTime.Now)
+            if (model.ThoiGianPhongVan < DateTime.Now)
             {
                 throw new BadHttpRequestException("The date of interview must be in the future");
             }
@@ -114,9 +100,7 @@ namespace AmazingTech.InternSystem.Services
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
-
             }
-
             if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0))
             {
                 throw new BadHttpRequestException("You need to fill all information");
@@ -177,7 +161,6 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You don't have permission to create schedule for this interviewer");
             }
-
             var NewLichPhongVan = new LichPhongVan()
             {
                 Id = Guid.NewGuid().ToString("N"),
@@ -193,9 +176,7 @@ namespace AmazingTech.InternSystem.Services
                 LastUpdatedTime = DateTime.Now,
                 CreatedTime = DateTime.Now,
                 TimeDuration = TimeSpan.FromMinutes(model.TimeDuration),
-
             };
-
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,\r\n\r\nĐại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi." +
                 "\r\n\r\nChúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi. Chúng tôi gửi đến bạn một số thông tin và tài liệu cần thiết:\r\n\r\n" +
@@ -208,21 +189,15 @@ namespace AmazingTech.InternSystem.Services
                 ;
             string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
             _emailService.SendMail(context, model.Email, subject, InternId);
-
-
         }
         public List<LichPhongVanResponseModel> getmyInterviewSchedule()
-
-        public List<LichPhongVanResponseModel> getLichPhongVanByIdNgPhongVan()
         {
-
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //string accountId = "1";
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-
             var lichphongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(accountId);
             var lichphongvanList = new List<LichPhongVanResponseModel>();
             foreach (var item in lichphongvan)
@@ -245,7 +220,7 @@ namespace AmazingTech.InternSystem.Services
         }
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request)
         {
-            if(request.ThoiGianPhongVan < DateTime.Now)
+            if (request.ThoiGianPhongVan < DateTime.Now)
             {
                 throw new BadHttpRequestException("The date of interview must be in the future");
             }
@@ -285,7 +260,6 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This intern doesn't have any interview schedule");
             }
-
             if (request.ThoiGianPhongVan == null || request.DiaDiemPhongVan.Length == 0 || request.Email == null || TimeSpan.FromMinutes(request.TimeDuration) <= new TimeSpan(0, 0, 0))
             {
                 throw new BadHttpRequestException("You need to fill all information");
@@ -315,7 +289,6 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You don't have permission to Update schedule");
             }
-
             lichphongvan.IdNguoiPhongVan = Interviewer.Id;
             lichphongvan.InterviewForm = request.interviewForm;
             lichphongvan.LastUpdatedTime = DateTime.Now;
@@ -351,7 +324,6 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("Please, Enter the Id");
             }
-
             var accountLogin = _userRepository.GetUserById(accountId);
             var schedule = _lichPhongVanRepository.GetScheduleById(ScheduleId);
             if (schedule == null)
@@ -371,7 +343,7 @@ namespace AmazingTech.InternSystem.Services
             foreach (var item in listUserWithOutInterview)
             {
                 var UserRole = _userManager.GetRolesAsync(item).Result[0];
-                if(UserRole == Roles.INTERN)
+                if (UserRole == Roles.INTERN)
                 {
                     InternWithoutInterview.Add(item);
                 }
@@ -400,47 +372,35 @@ namespace AmazingTech.InternSystem.Services
             }
             return InternWithoutInterview;
         }
-
         public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm)
         {
-                ID = x.Id,
-                NguoiPhongVan = x.NguoiPhongVan.HoVaTen,
-                NguoiDuocPhongVan = x.NguoiDuocPhongVan.HoVaTen,
-                ThoiGianPhongVan = x.ThoiGianPhongVan,
-                DiaDiemPhongVan = x.DiaDiemPhongVan,
-                InterviewForm = x.ToString(),
-                TrangThai = x.TrangThai.ToString(),
-                KetQua = x.KetQua.ToString()
-            }).ToList();
-
-            if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes<30)
+            if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes < 30)
             {
                 throw new BadHttpRequestException("The end time cannot be earlier than the start time and The time from start to end must not be less than 30 minutes.");
             }
-            if(startTime.Date != endTime.Date)
+            if (startTime.Date != endTime.Date)
             {
                 throw new BadHttpRequestException("Start and end times must be the same day");
             }
-            if(startTime.TimeOfDay < new TimeSpan(9, 0, 0))
+            if (startTime.TimeOfDay < new TimeSpan(9, 0, 0))
             {
                 startTime = startTime.Date.Add(new TimeSpan(9, 0, 0));
             }
-            if(endTime.TimeOfDay < new TimeSpan(17,0, 0))
+            if (endTime.TimeOfDay < new TimeSpan(17, 0, 0))
             {
                 endTime = endTime.Date.Add(new TimeSpan(17, 0, 0));
             }
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
-            if(accountRole != Roles.ADMIN)
+            if (accountRole != Roles.ADMIN)
             {
                 throw new BadHttpRequestException("Only admin can use this function");
             }
-           
             var listHrOrMentorWithoutInterview = GetHrOrMentorWithoutInternView(startTime.AddMinutes(-30), endTime.AddMinutes(30));
             foreach (var item in listHrOrMentorWithoutInterview)
             {
                 var startTime2 = startTime;
-                var listInternWithoutInterview = GetInternWithoutInternView(startTime,endTime);
-                if(listInternWithoutInterview.Count ==0)
+                var listInternWithoutInterview = GetInternWithoutInternView(startTime, endTime);
+                if (listInternWithoutInterview.Count == 0)
                 {
                     break;
                 }
@@ -457,14 +417,18 @@ namespace AmazingTech.InternSystem.Services
                     };
                     startTime2 = startTime2.AddMinutes(30);
                     AddLichPhongVan(lichphongvan);
-                    if(startTime2.AddMinutes(30) > endTime)
+                    if (startTime2.AddMinutes(30) > endTime)
                     {
-                        
                         break;
                     }
                 }
-                
             }
+        }
+
+        public IActionResult AllLichPhongVan()
+        {
+            List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
+            return new ObjectResult(lichPhongVans);
         }
     }
 }

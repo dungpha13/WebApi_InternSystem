@@ -71,8 +71,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddControllers();
-            builder.Services.AddScoped<ILichPhongRepository, LichPhongRepository>();
-            builder.Services.AddScoped<ILichPhongService, LichPhongService>();
+           
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
