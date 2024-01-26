@@ -4,6 +4,7 @@ using AmazingTech.InternSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazingTech.InternSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240124025844_Test")]
+    partial class Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1174,19 +1176,19 @@ namespace AmazingTech.InternSystem.Migrations
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.InternInfo", "Intern")
                         .WithMany("InternTruongKyThucTaps")
                         .HasForeignKey("IdIntern")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.KiThucTap", "KiThucTap")
                         .WithMany("InternTruongKyThucTaps")
                         .HasForeignKey("IdKiThucTap")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.TruongHoc", "TruongHoc")
                         .WithMany("InternTruongKyThucTaps")
                         .HasForeignKey("IdTruongHoc")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Intern");

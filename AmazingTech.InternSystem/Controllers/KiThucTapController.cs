@@ -23,12 +23,12 @@ namespace AmazingTech.InternSystem.Controllers
             return _kiThucTapService.GetAllKiThucTaps();
         }
 
-        [HttpGet]
-        [Route("get-by-truong/{idTruong}")]
-        public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
-        {
-            return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
-        }
+        //[HttpGet]
+        //[Route("get-by-truong/{idTruong}")]
+        //public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
+        //{
+        //    return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
+        //}
 
         [HttpGet("get/{id}")]
         public IActionResult GetKiThucTap(string id)
@@ -43,15 +43,15 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("update/{id}")]
-        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki)
+        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
         {
-            return _kiThucTapService.UpdateKiThucTap(ki);
+            return _kiThucTapService.UpdateKiThucTap(ki, id);
         }
 
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteKiThucTap(string id)
+        public async Task<IActionResult> DeleteKiThucTap(string id)
         {
-            return _kiThucTapService.DeleteKiThucTap(id);
+            return await _kiThucTapService.DeleteKiThucTap(id);
         }
 
     }

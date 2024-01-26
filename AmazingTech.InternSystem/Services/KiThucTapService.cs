@@ -23,14 +23,14 @@ namespace AmazingTech.InternSystem.Services
 
             if (existingTruong is null)
             {
-                return new BadRequestObjectResult($"Truong voi id {request.IdTruong} ton tai");
+                return new BadRequestObjectResult($"Truong voi id {request.IdTruong} khong ton tai");
             }
 
             KiThucTap ki = new KiThucTap()
             {
                 NgayBatDau = request.NgayBatDau,
                 NgayKetThuc = request.NgayKetThuc,
-                IdTruong = existingTruong.Id
+                //IdTruong = existingTruong.Id
             };
 
             var result = _kiRepository.AddKiThucTap(ki);
@@ -43,7 +43,7 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult("Success");
         }
 
-        public IActionResult DeleteKiThucTap(string id)
+        public async Task<IActionResult> DeleteKiThucTap(string id)
         {
             var existingKi = _kiRepository.GetKiThucTap(id);
 
@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            var result = _kiRepository.DeleteKiThucTap(existingKi);
+            var result = await _kiRepository.DeleteKiThucTap(existingKi);
 
             if (result == 0)
             {
@@ -82,19 +82,20 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult GetKiThucTapsByTruong(string idTruong)
         {
-            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(_ => _.IdTruong.Equals(idTruong)).ToList();
+            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(ktt => ktt.IdTruong.Equals(idTruong)).ToList();
             return new OkObjectResult(kis);
         }
 
-        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki)
+        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
         {
-            var existingKi = _kiRepository.GetKiThucTap(ki.Id);
+            var existingKi = _kiRepository.GetKiThucTap(id);
 
             if (existingKi is null)
             {
-                return new BadRequestObjectResult($"KiThucTap voi id {ki.Id} khong ton tai");
+                return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
+            existingKi.Ten = ki.Name;
             existingKi.NgayBatDau = ki.NgayBatDau;
             existingKi.NgayKetThuc = ki.NgayKetThuc;
 

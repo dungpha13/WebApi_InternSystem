@@ -33,8 +33,10 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public string[] IdNhomZalo { get; set; }
 
+        [Required]
+        public string IdTruong { get; set; }
+
         public string? Status { get; set; }
        
-
     }
 }

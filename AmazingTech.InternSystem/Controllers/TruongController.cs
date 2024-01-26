@@ -44,9 +44,9 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteTruong(string id)
+        public async Task<IActionResult> DeleteTruong(string id)
         {
-            return _truongService.DeleteTruong(id);
+            return await _truongService.DeleteTruong(id);
         }
     }
 }

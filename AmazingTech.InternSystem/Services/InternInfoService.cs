@@ -57,7 +57,7 @@ namespace AmazingTech.InternSystem.Services
             InternInfo intern = await _internRepo.GetInternInfoAsync(mssv);
             if (intern == null)
             {
-                return new BadRequestObjectResult($"Khong tim thay Intern voi mssv: {mssv} !");
+                return new BadRequestObjectResult($"Không tìm thấy Intern với mssv: '{mssv}' !");
             }
             return new OkObjectResult(_mapper.Map<InternInfoDTO>(intern));
         }
@@ -71,9 +71,59 @@ namespace AmazingTech.InternSystem.Services
             var existIntern = await _internRepo.GetInternInfoAsync(entity.MSSV);
             if (existIntern != null)
             {
-                return new BadRequestObjectResult("MSSV da ton tai trong danh sach!");
+                return new BadRequestObjectResult("MSSV đã tồn tại trong danh sách!");
             }
 
+            List<InternInfo> interns = await _internRepo.GetAllInternsInfoAsync();
+            if (interns.Any(intern => intern.EmailTruong == model.EmailTruong))
+            {
+                return new BadRequestObjectResult("Email này đã được sử dụng!");
+            }
+
+            //Check input IdViTri
+            foreach (var viTriId in model.ViTrisId)
+            {
+                var isViTriExist = await _dbContext.ViTris.AnyAsync(vt => vt.Id == viTriId);
+
+                if (!isViTriExist)
+                {
+                    return new BadRequestObjectResult($"Vị trí với id: '{viTriId}' không tồn tại!");
+                }
+                
+            }
+
+            //Check input IdDuAn
+            foreach (var duAnId in model.IdDuAn)
+            {
+                var isDuAnExist = await _dbContext.DuAns.AnyAsync(da => da.Id == duAnId);
+
+                if (!isDuAnExist)
+                {
+                    return new BadRequestObjectResult($"Dự án với id '{duAnId}' không tồn tại!");
+                }
+
+            }
+
+            //Check input IdNhomZalo
+            foreach (var nhomZaloId in model.IdNhomZalo)
+            {
+                var isNhomZaloExist = await _dbContext.NhomZalos.AnyAsync(nz => nz.Id == nhomZaloId);
+
+                if (!isNhomZaloExist)
+                { 
+                    return new BadRequestObjectResult($"Nhóm Zalo với id '{nhomZaloId}' không tồn tại!"); 
+                }
+               
+            }
+          
+            //Check input IdTruong
+            var isTruongHocExist = await _dbContext.TruongHocs.AnyAsync(th => th.Id == model.IdTruong);
+
+            if (!isTruongHocExist)
+            {
+                return new BadRequestObjectResult($"Trường học với id '{model.IdTruong}' không tồn tại!");
+            }
+          
 
             // Tao tai khoan cho Intern
             var account = new RegisterUserRequestDTO
@@ -91,9 +141,8 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult("User ID is Null");
             }
 
+ 
             entity.UserId = userId;
-
-
 
             //Add UserViTri
             foreach (var viTriId in model.ViTrisId)
@@ -107,8 +156,9 @@ namespace AmazingTech.InternSystem.Services
                 _dbContext.UserViTris.Add(userViTri);
             }
 
+
             //Add NhomZalo
-            foreach(var nhomZaloId in model.IdNhomZalo)
+            foreach (var nhomZaloId in model.IdNhomZalo)
             {
                 var userNhomZalo = new UserNhomZalo
                 {
@@ -121,22 +171,23 @@ namespace AmazingTech.InternSystem.Services
 
 
             //Add UserDuAn
-            foreach(var duAnId in model.IdDuAn)
+            foreach (var duAnId in model.IdDuAn)
             {
                 var userDuAn = new UserDuAn
                 {
-                    UserId = userId,
+                    UserId = userId!,
                     IdDuAn = duAnId
                 };
 
                 _dbContext.InternDuAns.Add(userDuAn);
             }
 
+            //Add InternInfo
             int rs = await _internRepo.AddInternInfoAsync(user, entity);
 
             if (rs == 0)
             {
-                return new BadRequestObjectResult("Them sinh vien that bai!");
+                return new BadRequestObjectResult("Thêm sinh viên thất bại!");
             }
 
             return new OkObjectResult(entity);
@@ -148,17 +199,17 @@ namespace AmazingTech.InternSystem.Services
             var intern = await _dbContext.InternInfos!.FirstOrDefaultAsync(i => i.MSSV == mssv);
             if (intern == null)
             {
-                return new BadRequestObjectResult($"Khong tim thay Intern voi mssv: {mssv} !");
+                return new BadRequestObjectResult($"Không tìm thấy Intern với mssv: {mssv} !");
             }
 
             int rs = await _internRepo.DeleteInternInfoAsync(intern);
 
             if (rs == 0)
             {
-                return new BadRequestObjectResult($"Intern mssv: {mssv} da duoc xoa!");
+                return new BadRequestObjectResult($"Intern mssv: {mssv} đã được xóa!");
             }
 
-            return new OkObjectResult($"Xoa thanh cong Intern mssv: {mssv} !");
+            return new OkObjectResult($"Xóa thành công Intern mssv: {mssv} !");
         }
 
         //Update Intern
@@ -168,7 +219,7 @@ namespace AmazingTech.InternSystem.Services
             var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
             if (intern == null)
             {
-                return new BadRequestObjectResult($"Intern voi MSSV: '{mssv}' khong ton tai!");
+                return new BadRequestObjectResult($"Intern với MSSV: '{mssv}' không tồn tại!");
             }
 
 
@@ -196,7 +247,7 @@ namespace AmazingTech.InternSystem.Services
                 }
                 else
                 {
-                    return new BadRequestObjectResult($"Vi tri voi id: '{viTriId}' khong ton tai!");
+                    return new BadRequestObjectResult($"Vị trí với id: '{viTriId}' không tồn tại!");
                 }
             }
 
@@ -223,7 +274,7 @@ namespace AmazingTech.InternSystem.Services
                 }
                 else
                 {
-                    return new BadRequestObjectResult($"Nhom Zalo voi id '{nhomZaloId}' khong ton tai!");
+                    return new BadRequestObjectResult($"Nhóm Zalo với id '{nhomZaloId}' không tồn tại!");
                 }
             }
 
@@ -250,20 +301,28 @@ namespace AmazingTech.InternSystem.Services
                 }
                 else
                 {
-                    return new BadRequestObjectResult($"Du an voi id '{duAnId}' khong ton tai!");
+                    return new BadRequestObjectResult($"Dự án với id '{duAnId}' không tồn tại!");
                 }
             }
 
-            
-            var updateIntern = await _internRepo.UpdateInternInfoAsync(mssv, model);
+            //Check input IdTruong
+            var isTruongHocExist = await _dbContext.TruongHocs.AnyAsync(th => th.Id == model.IdTruong);
+
+            if (!isTruongHocExist)
+            {
+                return new BadRequestObjectResult($"Trường học với id '{model.IdTruong}' không tồn tại!");
+            }
+            var entity = _mapper.Map(model, intern);
+
+            var updateIntern = await _internRepo.UpdateInternInfoAsync(entity);
 
 
                 if (updateIntern == 0)
                 {
-                    return new BadRequestObjectResult($"Intern mssv: {mssv} cap nhat that bai!");
+                    return new BadRequestObjectResult($"Intern mssv: {mssv} cập nhật thất bại!");
                 }
 
-                return new OkObjectResult($"Cap nhat thanh cong Intern mssv: {mssv} !");
+                return new OkObjectResult($"Cập nhật thành công Intern với mssv: '{mssv}' !");
             
         }
 
@@ -278,10 +337,10 @@ namespace AmazingTech.InternSystem.Services
 
             if (rs == 0)
             {
-                return new BadRequestObjectResult("Them Comment that bai!");
+                return new BadRequestObjectResult("Thêm Comment thất bại!");
             }
 
-            return new OkObjectResult($"Them moi Comment cho MSSV: '{mssv}' thanh cong!");
+            return new OkObjectResult($"Thêm mới Comment cho MSSV: '{mssv}' thành công!");
         }
 
         //Get Comments of Intern by MSSV

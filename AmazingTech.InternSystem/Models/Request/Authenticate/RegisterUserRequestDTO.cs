@@ -13,14 +13,13 @@ namespace swp391_be.API.Models.Request.Authenticate
         public string PhoneNumber { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress, ErrorMessage = "Please input a right email address")]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "username is required"), MinLength(2), MaxLength(30)]
         public string Username { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]

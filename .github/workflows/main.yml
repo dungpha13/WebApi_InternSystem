@@ -1,9 +1,9 @@
 name: Build and Deploy InternSystem
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,7 +29,6 @@ jobs:
        run: 'if ! command -v sshpass &> /dev/null; then sudo apt-get install -y sshpass; fi'
      - name: Pull and run Docker image
        run: |
-        if [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.base.ref }}" == "master" ]; then
           sshpass -p ${{secrets.SSH_PASSWORD}} ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "
           
           docker stop ${{secrets.DOCKER_IMAGE}}-backend-api || true
@@ -39,7 +38,6 @@ jobs:
           docker pull ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
           docker run -d -p 8071:80 --name ${{secrets.DOCKER_IMAGE}}-backend-api ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
           "
-        fi
      # - name: Connect to EC2 Instance, update Docker
      #   uses: appleboy/ssh-action@master
      #   with:

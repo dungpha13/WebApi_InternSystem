@@ -22,20 +22,22 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public int DeleteKiThucTap(KiThucTap kiThucTap)
+        public async Task<int> DeleteKiThucTap(KiThucTap kiThucTap)
         {
-            _context.KiThucTaps.Remove(kiThucTap);
-            return _context.SaveChanges();
+            var currentTime = DateTime.Now;
+
+            kiThucTap.DeletedBy = "Admin";
+            kiThucTap.DeletedTime = currentTime;
+
+            _context.KiThucTaps.Update(kiThucTap);
+            return await _context.SaveChangesAsync();
         }
 
         public List<KiThucTap> GetAllKiThucTaps()
         {
             using (var context = new AppDbContext())
             {
-                var kis = context.Set<KiThucTap>()
-                    .Include(ki => ki.Truong)
-                    .Include(ki => ki.Interns)
-                    .ToList();
+                var kis = context.Set<KiThucTap>().Where(u => u.DeletedBy == null).Include(ki => ki.Interns).ToList();
                 return kis;
             }
         }
@@ -45,9 +47,8 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.KiThucTaps
-                        .Include(ktt => ktt.Truong)
                         .Include(ktt => ktt.Interns)
-                        .FirstOrDefault(ktt => ktt.Id == id);
+                        .FirstOrDefault(ktt => ktt.Id == id && ktt.DeletedBy == null);
             }
         }
 

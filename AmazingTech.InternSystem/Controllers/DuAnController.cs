@@ -13,9 +13,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -37,28 +39,6 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get")]
-        //public IActionResult GetAllDuAns()
-        //{
-        //    var duAns = _duAnService.GetAllDuAns();
-
-        //    if (duAns != null)
-        //    {
-        //        var duAnResponseDTOs = _mapper.Map<List<DuAnResponseDTO>>(duAns);
-
-        //        var formattedOutput = duAnResponseDTOs.Select(duAn => new
-        //        {
-        //            id = duAn.Id,
-        //            ten = duAn.Ten,
-        //            leaderId = duAn.LeaderId,
-        //            leaderName = duAn.LeaderName,
-        //            thoiGianBatDau = duAn.ThoiGianBatDau,
-        //            thoiGianKetThuc = duAn.ThoiGianKetThuc
-        //        }).ToList();
-
-        //        return Ok(formattedOutput);
-        //    }
-        //    return duAns;
-        //}
         public IActionResult GetAllDuAns()
         {
             var result = _duAnService.GetAllDuAns();
@@ -76,7 +56,7 @@ namespace AmazingTech.InternSystem.Controllers
                             id = duAn.Id,
                             ten = duAn.Ten,
                             leaderId = duAn.LeaderId,
-                            leaderName = duAn.Leader?.HoVaTen,
+                            leaderName = duAn.Leader.HoVaTen,
                             thoiGianBatDau = duAn.ThoiGianBatDau,
                             thoiGianKetThuc = duAn.ThoiGianKetThuc
                         })
@@ -90,55 +70,67 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get/{id}")]
-        //public IActionResult GetDuAnById(string id)
-        //{
-        //    try
-        //    {
-        //        var duAn = _duAnService.GetDuAnById(id);
-
-        //        if (duAn == null)
-        //            return NotFound("DuAn not found");
-
-        //        var duAnResponseDTO = _mapper.Map<DuAnResponseDTO>(duAn);
-
-        //        return Ok(new { value = new List<DuAnResponseDTO> { duAnResponseDTO } });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "Internal Server Error");
-        //    }
-        //}
         public IActionResult GetDuAnById(string id)
         {
-            var duAn = _duAnService.GetDuAnById(id);
+            var result = _duAnService.GetDuAnById(id);
 
-            if (duAn == null)
-                return NotFound("DuAn not found");
+            if (result is OkObjectResult okResult)
+            {
+                var duAn = okResult.Value as DuAn;
 
-            return Ok(duAn);
+                if (duAn != null)
+                {
+                    var formattedResponse = new
+                    {
+                        id = duAn.Id,
+                        ten = duAn.Ten,
+                        leaderId = duAn.LeaderId,
+                        leaderName = duAn.Leader.HoVaTen,
+                        thoiGianBatDau = duAn.ThoiGianBatDau,
+                        thoiGianKetThuc = duAn.ThoiGianKetThuc
+                    };
+
+                    return Ok(formattedResponse);
+                }
+            }
+
+            return result;
         }
 
         [HttpGet("search")]
-        public IActionResult SearchProject([FromBody] DuAnFilterCriteria criteria)
+        public IActionResult SearchProject(string ten, string leaderId)
         {
             try
             {
-                var duAns = _duAnService.SearchProject(criteria);
+                var duAns = _duAnService.SearchProject(ten, leaderId);
                 return Ok(duAns);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest("We can't get the product.");
             }
         }
 
         [HttpPost("create")]
-        public IActionResult CreateDuAn([FromBody] AddDuAnModel createDuAn)
+        public IActionResult CreateDuAn([FromBody] DuAnModel createDuAn)
         {
             try
             {
-                _duAnService.CreateDuAn(createDuAn);
-                return Ok("DuAn created successfully");
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var result = _duAnService.CreateDuAn(user, createDuAn);
+
+                if (result is BadRequestObjectResult badRequestResult)
+                {
+                    return badRequestResult;
+                }
+                else if (result is OkResult)
+                {
+                    return Ok("DuAn created successfully");
+                }
+                else
+                {
+                    return StatusCode(500, "Internal Server Error");
+                }
             }
             catch (Exception ex)
             {
@@ -147,11 +139,12 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public IActionResult UpdateDuAn([FromBody] UpdateDuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn(string id, [FromBody] DuAnModel updatedDuAn)
         {
             try
             {
-                _duAnService.UpdateDuAn(updatedDuAn);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.UpdateDuAn(user, id, updatedDuAn);
                 return Ok("DuAn updated successfully");
             }
             catch (Exception ex)
@@ -165,12 +158,12 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                _duAnService.DeleteDuAn(id);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.DeleteDuAn(user, id);
                 return Ok("DuAn deleted successfully");
             }
             catch (Exception ex)
             {
-                // Log the exception
                 return StatusCode(500, "Internal Server Error");
             }
         }
@@ -181,8 +174,8 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 var projects = await _dbContext.DuAns
-                    .Include(d => d.ViTris)
-                    .Include(d => d.CongNgheDuAns)
+                    //.Include(d => d.ViTris)
+                    //.Include(d => d.CongNgheDuAns)
                     .Include(d => d.Leader)
                     .ToListAsync();
 
@@ -203,7 +196,7 @@ namespace AmazingTech.InternSystem.Controllers
                         sheet1.Cell(row, 2).Value = project.Ten;
                         sheet1.Cell(row, 3).Value = project.ThoiGianBatDau?.ToShortDateString();
                         sheet1.Cell(row, 4).Value = project.ThoiGianKetThuc?.ToShortDateString();
-                        sheet1.Cell(row, 5).Value = project.Leader?.UserName;
+                        sheet1.Cell(row, 5).Value = project.Leader?.HoVaTen;
 
                         row++;
                     }

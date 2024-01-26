@@ -37,7 +37,7 @@ namespace AmazingTech.InternSystem.Controllers
             _userManager = userManager;
             _dbContext = dbContext;
             _roleManager = roleManager;
-            IUserService _userService = userService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -146,6 +146,12 @@ namespace AmazingTech.InternSystem.Controllers
                 {
                     return BadRequest(new ErrorResponse { Succeeded = false, Errors = "This current user doesn't have a role." });
                 }
+
+                if (!existingUser.isConfirmed)
+                {
+                    return BadRequest("Hay cho Admin duyet.");
+                }
+
                 return new OkObjectResult(new
                 {
                     accessToken = JwtGenerator.GenerateToken(existingUser, roles.ToList())

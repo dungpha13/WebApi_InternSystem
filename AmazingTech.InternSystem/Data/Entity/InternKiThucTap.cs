@@ -1,6 +1,5 @@
-﻿namespace AmazingTech.InternSystem.Data.Entity
+namespace AmazingTech.InternSystem.Data.Entity;
+
+public class InternKiThucTap
 {
-    public class InternKiThucTap
-    {
-    }
 }

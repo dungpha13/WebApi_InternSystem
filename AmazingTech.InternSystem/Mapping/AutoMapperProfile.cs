@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
@@ -29,6 +30,7 @@ namespace AmazingTech.InternSystem.Mapping
             .ForMember(dest => dest.DeletedTime, opt => opt.MapFrom(src => src.DeletedTime.HasValue ? src.DeletedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
             .ForMember(dest => dest.ViTri, opt => opt.MapFrom(src => src.User!.UserViTris.Select(x => x.ViTri.Ten).ToArray()))
             .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.User!.UserNhomZalos.Select(x => x.NhomZalo.TenNhom).ToArray()))
+            .ForMember(dest => dest.TruongHoc, opt => opt.MapFrom(src => src.Truong.Ten))
             .ForMember(dest => dest.DuAn, opt => opt.MapFrom(src => src.User!.UserDuAns.Select(x => x.DuAn.Ten).ToArray()))
             .ForMember(dest => dest.GioiTinh, opt => opt.MapFrom(src => src.GioiTinh ? "Nam" : "Nữ"));
 
@@ -53,8 +55,10 @@ namespace AmazingTech.InternSystem.Mapping
             .ForMember(dest => dest.ThoiGianKetThuc, opt => opt.MapFrom(src => src.ThoiGianKetThuc.HasValue ? src.ThoiGianKetThuc.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null));
 
 
-            CreateMap<DuAn, AddDuAnModel>().ReverseMap();
-            CreateMap<DuAn, UpdateDuAnModel>().ReverseMap();
+            CreateMap<DuAn, DuAnModel>().ReverseMap();
+
+            CreateMap<TechModel, CongNghe>().ReverseMap();
+            CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
         }
     }
 }

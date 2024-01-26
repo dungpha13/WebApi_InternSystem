@@ -1,5 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.Response;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,8 @@ namespace AmazingTech.InternSystem.Repositories
         public LichPhongVan GetScheduleByIntervieweeId(string intervieeid);
 
         public List<LichPhongVan> GetAllLichPhongVan();
+
+        public List<LichPhongVan> GetListScheduleByInterviewer(string interviewerid);
 
         public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
     }
@@ -40,7 +44,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan == id).ToList();
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan == id && x.DeletedTime == null).ToList();
                 return list;
             }
         }
@@ -97,6 +101,14 @@ namespace AmazingTech.InternSystem.Repositories
                 var lichphongvans = context.Set<LichPhongVan>().ToList();
                 Console.WriteLine("Lich Phonng Van: " + lichphongvans);
                 return lichphongvans;
+            }
+        }
+
+        public List<LichPhongVan> GetListScheduleByInterviewer(string interviewerid)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan == interviewerid).ToList();
             }
         }
 

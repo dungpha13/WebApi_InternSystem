@@ -89,6 +89,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                var group = await _nhomZaloService.GetGroupByIdAsync(id);
+
+                if (group == null)
+                {
+                    return NotFound($"Zalo group with ID {id} not found.");
+                }
+
                 await _nhomZaloService.DeleteZaloAsync(id);
                 return Ok("Zalo group deleted successfully");
             }
@@ -105,6 +112,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+
+                if (nhomZalo == null)
+                {
+                    return NotFound($"Zalo Group with ID {nhomZaloId} not found.");
+                }
+
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
                 return Ok(users);
             }
@@ -169,6 +183,14 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+                var user = await _nhomZaloService.GetUserInGroupAsync(nhomZaloId, userId);
+
+                if (nhomZalo == null || user == null)
+                {
+                    return NotFound($"Zalo Group or User with IDs {nhomZaloId} and {userId} not found.");
+                }
+
                 await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, userId);
                 return Ok($"User removed from Zalo group {nhomZaloId} successfully");
             }

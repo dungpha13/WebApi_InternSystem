@@ -12,21 +12,33 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public DateTime NgaySinh { get; set; }
         [Required]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")] //Kiểm tra sđt chính xác 10 ký tự và phải là chữ số
         public string Sdt { get; set; }
+        [Required]
         public string DiaChi { get; set; }
+        [Required]
         public bool GioiTinh { get; set; }
 
         [Required]
         [EmailAddress]        
         
         public string EmailTruong { get; set; }
-
+        [Required]
         public string LinkCV { get; set; }
+        [Required]
         public string TrinhDoTiengAnh { get; set; }
 
         [JsonPropertyName("idViTri")]
+        [Required]
         public string[] ViTrisId{ get; set; }
+        [Required]
         public string[] IdDuAn { get; set; }
-        public string[] IdNhomZalo { get; set; } 
+        [Required]
+        public string[] IdNhomZalo { get; set; }
+
+        //[Required]
+        //public string Role { get; set; }
+
+        public string IdTruong { get; set; }
     }
 }

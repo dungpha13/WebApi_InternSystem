@@ -5,27 +5,33 @@ namespace AmazingTech.InternSystem.Data.Enum
   
     public class Enums
     {
-        public enum Status
+       public enum IdDuAn
         {
-            Not_Yet,
-            Done
-        }
-        public enum Result
-        {
-            Success,
-            Failed
-        }
-        public enum InterviewForm
-        {
-            Online,
-            Offline
+            InternSystem,
+            HumanResource,
+            ThepMienNam
         }
 
-        public enum Rank
+        public enum IdNhomZalo
         {
-            Intern,
-            Senior,
-            Junior
+            InternT1_2024,
+            HRMT1_2024,
+            ThepMN
+        }
+
+        public enum IdViTri
+        {
+            BackEnd,
+            FrontEnd,
+            Tester,
+            BA
+        }
+
+        public enum IdTruong
+        {
+            FPT,
+            KhoaHocTuNhien,
+            CNTT
         }
     }
 
@@ -36,8 +42,8 @@ namespace AmazingTech.InternSystem.Data.Enum
     }
     public enum Result
     {
-        Success,
-        Failed
+        Failed,
+        Pass
     }
     public enum InterviewForm
     {

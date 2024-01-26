@@ -24,6 +24,7 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
       
         public string[] DuAn { get; set; }
         public string[] NhomZalo { get; set; }
+        public string TruongHoc { get; set; }
         public string Status { get; set; }
 
         //public ICollection<Comment> Comments { get; set; }

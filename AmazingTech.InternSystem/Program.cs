@@ -40,7 +40,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IAppDbContext, AppDbContext>();
             builder.Services.AddDbContext<AppDbContext>();
 
-
+            builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddScoped<ITruongService, TruongService>();
             builder.Services.AddScoped<ITruongRepository, TruongRepository>();
@@ -70,8 +70,9 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<INameService, NameService>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-            builder.Services.AddControllers();
-           
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
+            builder.Services.AddControllers();;
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 

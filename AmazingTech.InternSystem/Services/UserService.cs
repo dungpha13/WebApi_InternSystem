@@ -24,13 +24,13 @@ namespace AmazingTech.InternSystem.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly ITruongRepository _truongRepository;
         private readonly IInternInfoRepo _internInfoRepo;
 
-        public UserService(UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager, 
-            EmailService emailService,
+        public UserService(UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IEmailService emailService,
             ITruongRepository truongRepository,
             IInternInfoRepo internInfoRepo)
         {
@@ -64,17 +64,28 @@ namespace AmazingTech.InternSystem.Services
             };
 
             var roleExists = await _roleManager.RoleExistsAsync(registerUser.Role);
+            var roleName = registerUser.Role;
 
             if (registerUser.Role.Equals("Intern") || registerUser.Role.Equals("School"))
             {
                 newUser.isConfirmed = true;
-            } 
-            else 
-            if (registerUser.Role.Equals("Admin") 
-                || registerUser.Role.Equals("HR") 
-                || registerUser.Role.Equals("Mentor")) 
+                if (!roleExists)
+                {
+                    var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+                    roleExists = true;
+                }
+            }
+            else
+            if (registerUser.Role.Equals("Admin")
+                || registerUser.Role.Equals("HR")
+                || registerUser.Role.Equals("Mentor"))
             {
                 newUser.isConfirmed = false;
+                if (!roleExists)
+                {
+                    var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+                    roleExists = true;
+                }
             }
 
             if (!roleExists)
@@ -109,12 +120,14 @@ namespace AmazingTech.InternSystem.Services
             // tạo intern info nếu như user là intern
             if (registerUser.Role.Equals("Intern"))
             {
+                var truong = _truongRepository.GetAllTruongs().Where(t => t.Ten.Equals(registerUser.Truong)).SingleOrDefault();
                 var createdUser = await _userManager.FindByNameAsync(newUser.UserName);
 
                 int result = await _internInfoRepo.AddInternInfoAsync(createdUser.Id, new InternInfo
                 {
+                    HoTen = registerUser.HoVaTen,
                     MSSV = registerUser.Mssv,
-                    
+                    IdTruong = truong.Id
                 });
             }
 
@@ -135,6 +148,11 @@ namespace AmazingTech.InternSystem.Services
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginUser.Password))
             {
                 return new BadRequestObjectResult(new { Succeeded = false, Errors = "Invalid username/email or password." });
+            }
+
+            if (!user.isConfirmed)
+            {
+                return new BadRequestObjectResult("Hay cho Admin duyet.");
             }
 
             var roles = await _userManager.GetRolesAsync(user);

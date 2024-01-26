@@ -8,6 +8,8 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [ForeignKey("User")]
         public string? UserId { get; set; }
+
+        [JsonIgnore]
         public User? User { get; set; }
         public string HoTen { get; set; }
         public DateTime? NgaySinh { get; set; }
@@ -30,7 +32,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<Comment>? Comments { get; set; }
-
         [ForeignKey("Truong")]
         public string? IdTruong { get; set; }
         public TruongHoc? Truong { get; set; }

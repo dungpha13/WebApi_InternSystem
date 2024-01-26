@@ -27,7 +27,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("get")]
         public async Task<IActionResult> GetAllTech()
         {
@@ -36,27 +36,27 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("create")]
         public async Task<IActionResult> CreateTech([FromBody] TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var save = await _service.CreateTech(tech, user);
-             return Ok(save == 1 ? "Success" : "failed");
+             return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateTech(string id, TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var save = await _service.UpdateTech(user, id, tech);
-            return Ok(save == 1 ? "Success" : "failed");
+            return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = Roles.ADMIN)]
         [Route("delete/{id}")]
         public async Task<IActionResult> DeleteTech(string id)
         {
