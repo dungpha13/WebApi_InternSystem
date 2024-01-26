@@ -79,8 +79,8 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 return;
             }
 
-            _appDbContext.NhomZalos.Remove(nhomZalo);
             nhomZalo.DeletedTime = DateTime.Now;
+            //_appDbContext.NhomZalos.Remove(nhomZalo);
             await _appDbContext.SaveChangesAsync();
         }
 
@@ -152,7 +152,8 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 return;
             }
 
-            _appDbContext.UserNhomZalos.Remove(userNhomZalo);
+            userNhomZalo.LeftTime = DateTime.Now;
+            //_appDbContext.UserNhomZalos.Remove(userNhomZalo);
             await _appDbContext.SaveChangesAsync();
         }
     }
