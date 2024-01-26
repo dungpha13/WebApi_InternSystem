@@ -34,6 +34,7 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok("Send Successful");
             } catch (BadHttpRequestException ex)
             {
+                StatusCode(400);
                 return Ok(ex.Message);
             }
 
@@ -49,6 +50,7 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok(result);
             } catch (Exception ex)
             {
+                StatusCode(400);
                 return Ok(ex.Message);
             }
         }
@@ -96,6 +98,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
+                StatusCode(400);
                 return Ok(ex.Message);
             }
         }
@@ -111,6 +114,7 @@ namespace AmazingTech.InternSystem.Controllers
 
             } catch (Exception ex)
             {
+                StatusCode(400);
                 return Ok(ex.Message); }
         }
         [HttpPost]
@@ -137,6 +141,7 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok("Successful");
             }catch (Exception ex)
             {
+                StatusCode(400);
                 return Ok(ex.Message);
             }
         }
@@ -167,6 +172,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (BadHttpRequestException ex)
             {
+
                 return Ok(ex.Message);
             }
         }
