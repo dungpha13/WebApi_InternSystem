@@ -156,7 +156,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(option =>
@@ -197,14 +197,14 @@ namespace AmazingTech.InternSystem
                 options.ClientSecret = builder.Configuration["Google:ClientSecret"];
                 //options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Events = new OAuthEvents
-                {
-                    OnRedirectToAuthorizationEndpoint = context =>
-                    {
-                        context.Response.StatusCode = 401; // Set the status code to 401 instead of redirecting
-                        return Task.CompletedTask;
-                    }
-                };
+                //options.Events = new OAuthEvents
+                //{
+                //    OnRedirectToAuthorizationEndpoint = context =>
+                //    {
+                //        context.Response.StatusCode = 401; // Set the status code to 401 instead of redirecting
+                //        return Task.CompletedTask;
+                //    }
+                //};
             });
 
 

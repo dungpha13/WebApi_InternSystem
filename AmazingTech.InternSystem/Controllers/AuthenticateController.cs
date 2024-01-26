@@ -120,6 +120,7 @@ namespace AmazingTech.InternSystem.Controllers
         //Login with google
         [HttpGet]
         [Route("login-with-google")]
+        [AllowAnonymous]
         public IActionResult LoginWithGoogle()
         {
             var properties = new AuthenticationProperties

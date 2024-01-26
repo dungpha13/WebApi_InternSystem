@@ -74,7 +74,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("list/{kiThucTapId}")]
-        [Authorize(Roles ="School,HR")]
+        [Authorize(Roles ="School,HR,Admin")]
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
         {
             return await _internInfoService.AddListInternInfo(file, kiThucTapId);
