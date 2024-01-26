@@ -184,13 +184,14 @@ namespace AmazingTech.InternSystem.Controllers
                 return Ok(ex.Message);
             }
         }
-        
 
-        [HttpGet("get/{idNguoiDuocPhongVan}")]
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
+        [Route("api/lich-phong-vans/GetScheduleByIdNguoiDuocPhongVan/{id}")]
         
-        public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
+        public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string id)
         {
-            var lichPhongVanList = _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
+            var lichPhongVanList = _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(id);
             return new OkObjectResult(lichPhongVanList);
         }
     }
