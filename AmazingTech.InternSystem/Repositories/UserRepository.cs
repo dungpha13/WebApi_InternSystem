@@ -8,7 +8,7 @@ namespace AmazingTech.InternSystem.Repositories
         public string GetUserIdByEmail(string email);
         public User GetUserById(string id);
         public User GetUserByName(string name);
-        public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
+        //public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetInternsWithoutInterview();
     }
@@ -78,25 +78,30 @@ namespace AmazingTech.InternSystem.Repositories
                 }
             }
         }
-        public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime)
-        {
-            using (var context = new AppDbContext())
-            {
-                var result = context.Set<User>()
-                      //.Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
-                      .ToList();
-                return result;
-            }
-        }
+        //public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime)
+        //{
+        //    using (var context = new AppDbContext())
+        //    {
+        //        var result = context.Set<User>()
+        //              .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+        //              .ToList();
+        //        return result;
+        //    }
+        //}
         public List<User> GetInternsWithoutInterview()
         {
-            using (var context = new AppDbContext())
-            {
-                var usersWithoutInterview = context.Set<User>()
-                    .Where(user => !context.Set<LichPhongVan>().Any(interview => interview.NguoiDuocPhongVan.Id == user.Id))
-                    .ToList();
-                return usersWithoutInterview;
-            }
+           
+                using (var context = new AppDbContext())
+                {
+                    var usersWithInterviewButNoSchedule = context.Set<User>()
+                        .Where(user => context.Set<LichPhongVan>()
+                            .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id
+                                             && (
+                                                  interview.DeletedBy != null)))
+                        .ToList();
+                    return usersWithInterviewButNoSchedule;
+                }
+           
         }
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime)
         {

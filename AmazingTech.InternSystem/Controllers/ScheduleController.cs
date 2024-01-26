@@ -146,10 +146,11 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 _guiLichPhongVanService.AutoCreateSchedule(start, end, diadiemphongvan,interviewForm);
                 return Ok("Successful");
-            }catch (Exception ex)
+            }
+           catch (BadHttpRequestException ex)
             {
-                StatusCode(400);
-                return Ok(ex.Message);
+
+                return BadRequest(ex.Message);
             }
         }
         //[HttpGet]

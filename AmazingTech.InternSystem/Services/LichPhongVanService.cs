@@ -21,7 +21,7 @@ namespace AmazingTech.InternSystem.Services
         public void deleteSchedudle(string ScheduleId);
         public bool ConfirmEmail(string id);
         public void SendResultInterviewEmail(string email);
-        public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate);
+        public List<User> GetInternWithoutInternView();
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
         public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
 
@@ -358,7 +358,7 @@ namespace AmazingTech.InternSystem.Services
             schedule.DeletedTime = DateTime.Now;
             _lichPhongVanRepository.UpdateLichPhongVan(schedule);
         }
-        public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate)
+        public List<User> GetInternWithoutInternView()
         {
             var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview();
             List<User> InternWithoutInterview = new List<User>();
@@ -421,7 +421,7 @@ namespace AmazingTech.InternSystem.Services
             foreach (var item in listHrOrMentorWithoutInterview)
             {
                 var startTime2 = startTime;
-                var listInternWithoutInterview = GetInternWithoutInternView(startTime, endTime);
+                var listInternWithoutInterview = GetInternWithoutInternView();
                 if (listInternWithoutInterview.Count == 0)
                 {
                     break;
