@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AmazingTech.InternSystem.Services;
 using AmazingTech.InternSystem.Models.Request.Authenticate;
+using DocumentFormat.OpenXml.Office2013.Excel;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -31,13 +32,15 @@ namespace AmazingTech.InternSystem.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthenticateController(UserManager<User> userManager,
             AppDbContext dbContext,
             RoleManager<IdentityRole> roleManager,
             IUserService userService,
             IEmailService emailService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _dbContext = dbContext;
@@ -45,6 +48,7 @@ namespace AmazingTech.InternSystem.Controllers
             _userService = userService;
             _emailService = emailService;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
@@ -211,16 +215,22 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpPost("change-password/{id}")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO requestDTO, [FromRoute] string id, [FromHeader(Name = "Authentication")] string authenHeader)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO requestDTO, [FromRoute] string id)
         {
-            //Check user
-            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
-            string uid = JwtGenerator.ExtractUserIdFromToken(token);
-            string role = JwtGenerator.ExtractUserRoleFromToken(token);
+            //Check user is changing own password
+            string uid = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string role = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            if (uid == null || role == null)
+            {
+                return BadRequest("Can't verify token");
+            }
 
             if (!uid.Equals(id) && !role.Equals("Admin"))
             {
-                return Forbid("You don't have permission to change this user's password.");
+                return BadRequest(new
+                {
+                    message = "You don't have permission to change this user password."
+                });
             }
 
             //Check if user is exist or not
@@ -240,7 +250,7 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 return BadRequest(new
                 {
-                    message = "Passwords not matched."
+                    message = "Wrong old password."
                 });
             }
 
@@ -288,7 +298,7 @@ namespace AmazingTech.InternSystem.Controllers
 
             var result = await _userManager.ResetPasswordAsync(user, resetPasswordDTO.ResetToken, resetPasswordDTO.NewPassword);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return BadRequest(new
                 {
