@@ -6,6 +6,7 @@ using AmazingTech.InternSystem.Repositories;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Office2010.CustomUI;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
@@ -129,16 +130,9 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("This Mail is not exist in database");
             }
             var Intern = _userRepository.GetUserById(InternId);
-            var InternRole = _userManager.GetRolesAsync(Intern).Result;
-            int countRole = 0;
-            foreach (var item in InternRole)
-            {
-                if (item.ToUpper() != Roles.INTERN.ToUpper())
-                {
-                    countRole++;
-                }
-            }
-            if (countRole > 0)
+            var InternRole = _userManager.GetRolesAsync(Intern).Result[0];
+            
+            if (InternRole.ToUpper() != Roles.INTERN.ToUpper())
             {
                 throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
             }
@@ -156,17 +150,12 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You don't have permission to create schedule");
             }
-            var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result;
-            var count = 0;
+            var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result[0];
+        
             // Người Phỏng Vấn phải là HR hoặc Mentor
-            foreach (var item in InterViewListRole)
-            {
-                if (!(item.ToUpper() == Roles.HR.ToUpper() || item.ToUpper() == Roles.MENTOR.ToUpper()))
-                {
-                    count++;
-                }
-            }
-            if (count != 0)
+          
+            
+            if (!(InterViewListRole.ToUpper() == Roles.HR.ToUpper() || InterViewListRole.ToUpper() == Roles.MENTOR.ToUpper()))
             {
                 throw new BadHttpRequestException("This interviewer has no right to be the interviewer");
             }
@@ -256,16 +245,9 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("This intern doesn't exist in data");
             }
             var Intern = _userRepository.GetUserById(InternId);
-            var InternRole = _userManager.GetRolesAsync(Intern).Result;
-            int countRole = 0;
-            foreach (var item in InternRole)
-            {
-                if (item.ToUpper() != Roles.INTERN.ToUpper())
-                {
-                    countRole++;
-                }
-            }
-            if (countRole > 0)
+            var InternRole = _userManager.GetRolesAsync(Intern).Result[0];
+         
+            if (InternRole.ToUpper() != Roles.INTERN.ToUpper())
             {
                 throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
             }
@@ -283,15 +265,8 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
             }
             int count = 0;
-            var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result;
-            foreach (var item in InterViewListRole)
-            {
-                if (!(item.ToUpper() == Roles.HR.ToUpper() || item.ToUpper() == Roles.MENTOR))
-                {
-                    count++;
-                }
-            }
-            if (count != 0)
+            var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result[0];
+            if (!(InterViewListRole.ToUpper() == Roles.HR.ToUpper() || InterViewListRole.ToUpper() == Roles.MENTOR.ToUpper()))
             {
                 throw new BadHttpRequestException("This interviewer has no right to be the interviewer");
             }
@@ -408,7 +383,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 startTime = startTime.Date.Add(new TimeSpan(9, 0, 0));
             }
-            if (endTime.TimeOfDay < new TimeSpan(17, 0, 0))
+            if (endTime.TimeOfDay > new TimeSpan(17, 0, 0))
             {
                 endTime = endTime.Date.Add(new TimeSpan(17, 0, 0));
             }
@@ -440,7 +415,7 @@ namespace AmazingTech.InternSystem.Services
                     };
                     startTime2 = startTime2.AddMinutes(30);
                     AddLichPhongVan(lichphongvan);
-                    if (startTime2.AddMinutes(30) > endTime)
+                    if (startTime2.AddMinutes(30) >= endTime)
                     {
                         break;
                     }

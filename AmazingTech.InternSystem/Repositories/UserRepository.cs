@@ -90,18 +90,17 @@ namespace AmazingTech.InternSystem.Repositories
         //}
         public List<User> GetInternsWithoutInterview()
         {
-           
-                using (var context = new AppDbContext())
-                {
-                    var usersWithInterviewButNoSchedule = context.Set<User>()
-                        .Where(user => context.Set<LichPhongVan>()
-                            .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id
-                                             && (
-                                                  interview.DeletedBy != null)))
-                        .ToList();
-                    return usersWithInterviewButNoSchedule;
-                }
-           
+
+            using (var context = new AppDbContext())
+            {
+                var usersWithoutInterviewOrDeletedInterview = context.Set<User>()
+                    .Where(user => !context.Set<LichPhongVan>()
+                        .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id)
+                        || context.Set<LichPhongVan>()
+                            .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id && interview.DeletedBy != null))
+                    .ToList();
+                return usersWithoutInterviewOrDeletedInterview;
+            }
         }
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime)
         {
