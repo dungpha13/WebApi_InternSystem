@@ -81,6 +81,7 @@ namespace AmazingTech.InternSystem.Services
                 };
                 var network = new NetworkCredential(EmailSettingModel.Instance.Smtp.EmailAddress, EmailSettingModel.Instance.Smtp.Password);
                 smtp.Credentials = network;
+                smtp.DeliveryFormat = SmtpDeliveryFormat.International;
 
                 smtp.Send(mailMessage);
             }
@@ -145,6 +146,7 @@ namespace AmazingTech.InternSystem.Services
                     Host = EmailSettingModel.Instance.Smtp.Host,
                     Port = EmailSettingModel.Instance.Smtp.Port,
                 };
+                smtp.DeliveryFormat = SmtpDeliveryFormat.International;
                 var network = new NetworkCredential(EmailSettingModel.Instance.Smtp.EmailAddress, EmailSettingModel.Instance.Smtp.Password);
                 smtp.Credentials = network;
 
