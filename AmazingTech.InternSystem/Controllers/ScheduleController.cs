@@ -157,7 +157,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Route("api/lich-phong-vans/")]
+        [Route("api/lich-phong-vans/SendListOfInternsToMentor")]
         public IActionResult SendListOfInternsToMentor([FromQuery] string email)
         {
             try
