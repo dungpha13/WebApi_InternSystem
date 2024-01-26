@@ -66,7 +66,7 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> AddInternInfo(string user, AddInternInfoDTO model)
         {
             var entity = _mapper.Map<InternInfo>(model);
-            
+
 
             var existIntern = await _internRepo.GetInternInfoAsync(entity.MSSV);
             if (existIntern != null)
@@ -89,7 +89,7 @@ namespace AmazingTech.InternSystem.Services
                 {
                     return new BadRequestObjectResult($"Vị trí với id: '{viTriId}' không tồn tại!");
                 }
-                
+
             }
 
             //Check input IdDuAn
@@ -110,12 +110,12 @@ namespace AmazingTech.InternSystem.Services
                 var isNhomZaloExist = await _dbContext.NhomZalos.AnyAsync(nz => nz.Id == nhomZaloId);
 
                 if (!isNhomZaloExist)
-                { 
-                    return new BadRequestObjectResult($"Nhóm Zalo với id '{nhomZaloId}' không tồn tại!"); 
+                {
+                    return new BadRequestObjectResult($"Nhóm Zalo với id '{nhomZaloId}' không tồn tại!");
                 }
-               
+
             }
-          
+
             //Check input IdTruong
             var isTruongHocExist = await _dbContext.TruongHocs.AnyAsync(th => th.Id == model.IdTruong);
 
@@ -123,11 +123,11 @@ namespace AmazingTech.InternSystem.Services
             {
                 return new BadRequestObjectResult($"Trường học với id '{model.IdTruong}' không tồn tại!");
             }
-          
+
 
             // Tao tai khoan cho Intern
             var account = new RegisterUserRequestDTO
-            {  
+            {
                 HoVaTen = entity.HoTen,
                 Username = entity.EmailTruong,
                 Email = entity.EmailCaNhan,
@@ -141,7 +141,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult("User ID is Null");
             }
 
- 
+
             entity.UserId = userId;
 
             //Add UserViTri
@@ -317,20 +317,20 @@ namespace AmazingTech.InternSystem.Services
             var updateIntern = await _internRepo.UpdateInternInfoAsync(entity);
 
 
-                if (updateIntern == 0)
-                {
-                    return new BadRequestObjectResult($"Intern mssv: {mssv} cập nhật thất bại!");
-                }
+            if (updateIntern == 0)
+            {
+                return new BadRequestObjectResult($"Intern mssv: {mssv} cập nhật thất bại!");
+            }
 
-                return new OkObjectResult($"Cập nhật thành công Intern với mssv: '{mssv}' !");
-            
+            return new OkObjectResult($"Cập nhật thành công Intern với mssv: '{mssv}' !");
+
         }
 
 
         //Comment on Intern
         public async Task<IActionResult> AddCommentInternInfo(CommentInternInfoDTO comment, string idCommentor, string mssv)
         {
-           
+
 
             var entity = _mapper.Map<Comment>(comment);
             int rs = await _commentRepo.AddCommentIntern(entity, idCommentor, mssv);
@@ -427,9 +427,9 @@ namespace AmazingTech.InternSystem.Services
                         var startRow = worksheet.Dimension.Start.Row;
                         var startCol = worksheet.Dimension.Start.Column;
                         var endRow = worksheet.Dimension.End.Row;
-                        var endCol = worksheet.Dimension.End.Row;
+                        var endCol = worksheet.Dimension.End.Column;
 
-                        var range = worksheet.Cells["A1:O21"];
+                        var range = worksheet.Cells[startRow, startCol, endRow, endCol];
 
                         List<InternInfo> internList = range.ToCollectionWithMappings<InternInfo>(row =>
                         {

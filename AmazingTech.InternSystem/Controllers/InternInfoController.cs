@@ -28,9 +28,9 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> GetAllInternsInfo()
         {
-          
+
             return await _internInfoService.GetAllInternInfo();
-          
+
         }
 
         [HttpGet("get/{mssv}")]
@@ -45,7 +45,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return await _internInfoService.AddInternInfo(userId, model); 
+            return await _internInfoService.AddInternInfo(userId, model);
         }
 
         [HttpDelete("delete/{mssv}")]
@@ -69,7 +69,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpPost("{mssv}/comments")]
         [Authorize]
-        public async Task<IActionResult> AddCommentsInternInfo(CommentInternInfoDTO comment ,string mssv)
+        public async Task<IActionResult> AddCommentsInternInfo(CommentInternInfoDTO comment, string mssv)
         {
             string userIdCommentor = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
