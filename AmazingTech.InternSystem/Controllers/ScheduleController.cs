@@ -142,11 +142,19 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Roles = Roles.ADMIN + "," + Roles.HR)]
         public IActionResult GetAllLichPhongvan()
         {
             return _guiLichPhongVanService.AllLichPhongVan();
+            
         }
 
+        [HttpGet("get/{idNguoiDuocPhongVan}")]
+        
+        public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
+        {
+            return _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
+        }
     }
 }
 

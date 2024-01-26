@@ -25,6 +25,7 @@ namespace AmazingTech.InternSystem.Services
         public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
 
         IActionResult AllLichPhongVan();
+        IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -427,8 +428,39 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult AllLichPhongVan()
         {
+            /*List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
+            return new ObjectResult(lichPhongVans);*/
+
             List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
-            return new ObjectResult(lichPhongVans);
+
+            List<LichPhongVanResponseModel> lichPhongVanResponseModels = lichPhongVans.Select(lpv => new LichPhongVanResponseModel
+            {
+                ID = lpv.Id,
+                NguoiPhongVan = _userRepository.GetUserById(lpv.IdNguoiPhongVan).HoVaTen,
+                NguoiDuocPhongVan = _userRepository.GetUserById(lpv.IdNguoiDuocPhongVan).HoVaTen,
+                ThoiGianPhongVan = lpv.ThoiGianPhongVan,
+                TimeDuration = lpv.TimeDuration,
+                DiaDiemPhongVan = lpv.DiaDiemPhongVan,
+                InterviewForm = lpv.InterviewForm != null ? lpv.InterviewForm.ToString() : string.Empty,
+                TrangThai = lpv.TrangThai != null ? lpv.TrangThai.ToString() : string.Empty,
+                KetQua = lpv.KetQua != null ? lpv.KetQua.ToString() : string.Empty,
+
+
+            }
+                ).ToList();
+            return new OkObjectResult(lichPhongVanResponseModels);
+
+        }
+       
+
+        public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
+        {
+            var lichPhongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(idNguoiDuocPhongVan);
+            if (lichPhongvan is null)
+            {
+                return new BadRequestObjectResult($"Lich phong van oi id {idNguoiDuocPhongVan} khong ton tai");
+            }
+            return new OkObjectResult(lichPhongvan);
         }
     }
 }

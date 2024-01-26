@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories
@@ -16,6 +17,8 @@ namespace AmazingTech.InternSystem.Repositories
         public LichPhongVan GetScheduleByIntervieweeId(string intervieeid);
 
         public List<LichPhongVan> GetAllLichPhongVan();
+
+        public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -94,6 +97,15 @@ namespace AmazingTech.InternSystem.Repositories
                 var lichphongvans = context.Set<LichPhongVan>().ToList();
                 Console.WriteLine("Lich Phonng Van: " + lichphongvans);
                 return lichphongvans;
+            }
+        }
+
+        public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
+        {
+            using (var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == idNguoiDuocPhongVan).ToList();
+                return list;
             }
         }
     }
