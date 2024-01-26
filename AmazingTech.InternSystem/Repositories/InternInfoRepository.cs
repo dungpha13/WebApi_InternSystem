@@ -63,9 +63,43 @@ namespace AmazingTech.InternSystem.Repositories
             return interns;
         }
 
+        public async Task<List<InternInfo>> GetAllDeletedInternsInfoAsync()
+        {
+            var interns = await _context.InternInfos!
+                .Where(intern => intern.DeletedBy != null)
+                .OrderByDescending(intern => intern.CreatedTime)
+                .Include(intern => intern.User!.UserViTris)
+                    .ThenInclude(uservitri => uservitri.ViTri)
+                .Include(intern => intern.User!.UserNhomZalos)
+                    .ThenInclude(usernhomzalo => usernhomzalo.NhomZalo)
+                .Include(intern => intern.User!.UserDuAns)
+                    .ThenInclude(userduan => userduan.DuAn)
+                .Include(intern => intern.Truong)
+                .ToListAsync();
+            return interns;
+        }
+
         public async Task<InternInfo> GetInternInfoAsync(string MSSV)
         {
             var intern = await _context.InternInfos
+                             .Where(intern => intern.DeletedBy == null)
+                             .Include(intern => intern.User)
+                             .Include(intern => intern.User!.UserViTris)
+                                .ThenInclude(uservitri => uservitri.ViTri)
+                            .Include(intern => intern.User!.UserNhomZalos)
+                                .ThenInclude(usernhomzalo => usernhomzalo.NhomZalo)
+                            .Include(intern => intern.User!.UserDuAns)
+                                .ThenInclude(userduan => userduan.DuAn)
+                            .Include(intern => intern.Truong)
+                             .FirstOrDefaultAsync(i => i.MSSV == MSSV);
+
+            return intern;
+        }
+
+        public async Task<InternInfo> GetDeletedInternInfoAsync(string MSSV)
+        {
+            var intern = await _context.InternInfos
+                             .Where(intern => intern.DeletedBy != null)
                              .Include(intern => intern.User)
                              .Include(intern => intern.User!.UserViTris)
                                 .ThenInclude(uservitri => uservitri.ViTri)
