@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AmazingTech.InternSystem.Services;
+using AmazingTech.InternSystem.Models.Request.Authenticate;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -24,20 +25,26 @@ namespace AmazingTech.InternSystem.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly AppDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailService _emailService;
         private readonly IUserService _userService;
 
         public AuthenticateController(UserManager<User> userManager,
             AppDbContext dbContext,
             RoleManager<IdentityRole> roleManager,
-            IUserService userService)
+            IUserService userService,
+            IEmailService emailService,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _dbContext = dbContext;
             _roleManager = roleManager;
             _userService = userService;
+            _emailService = emailService;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -144,7 +151,7 @@ namespace AmazingTech.InternSystem.Controllers
                 var roles = await _userManager.GetRolesAsync(existingUser);
                 if (roles == null || !roles.Any())
                 {
-                    return BadRequest(new ErrorResponse { Succeeded = false, Errors = "This current user doesn't have a role." });
+                    return BadRequest(new { message = "This current user doesn't have a role." });
                 }
 
                 if (!existingUser.isConfirmed)
@@ -171,14 +178,14 @@ namespace AmazingTech.InternSystem.Controllers
 
             if (!identityResult.Succeeded)
             {
-                return BadRequest(new ErrorResponse { Succeeded = false, Errors = identityResult.Errors });
+                return BadRequest(new { message = identityResult.Errors });
             }
 
             identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
 
             if (!identityResult.Succeeded)
             {
-                return BadRequest(new ErrorResponse { Succeeded = false, Errors = identityResult.Errors });
+                return BadRequest(new { message = identityResult.Errors });
             }
 
             await SaveUserToken(identityUser);
@@ -190,7 +197,7 @@ namespace AmazingTech.InternSystem.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles == null || !roles.Any())
                 {
-                    return BadRequest(new ErrorResponse { Succeeded = false, Errors = "This current user doesn't have a role." });
+                    return BadRequest(new { message = "This current user doesn't have a role." });
                 }
 
                 return new OkObjectResult(new
@@ -202,10 +209,96 @@ namespace AmazingTech.InternSystem.Controllers
             return new BadRequestObjectResult("Error");
         }
 
-        public class ErrorResponse
+        [HttpPost("change-password/{id}")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO requestDTO, [FromRoute] string id, [FromHeader(Name = "Authentication")] string authenHeader)
         {
-            public bool Succeeded { get; set; }
-            public object Errors { get; set; }
+            //Check user
+            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
+            string uid = JwtGenerator.ExtractUserIdFromToken(token);
+            string role = JwtGenerator.ExtractUserRoleFromToken(token);
+
+            if (!uid.Equals(id) && !role.Equals("Admin"))
+            {
+                return Forbid("You don't have permission to change this user's password.");
+            }
+
+            //Check if user is exist or not
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id.Equals(id));
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    message = "User not found."
+                });
+            }
+
+            //Update password
+            var changePassResult = await _userManager.ChangePasswordAsync(user, requestDTO.OldPassword, requestDTO.Password);
+
+            if (!changePassResult.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    message = "Passwords not matched."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Password is updated."
+            });
+        }
+
+        [HttpGet("forgot-password/{email}")]
+        public async Task<IActionResult> ForgotPassword([FromRoute] string email)
+        {
+            // Check user with email exists
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "No user with that email." });
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var feUrl = _configuration.GetValue<string>("Frontend:Default");
+            string link = feUrl + $"reset-password?id={user.Id}&token={token}";
+            string subject = "Reset Your Password";
+            string content = $"Click the link to reset your password: {link}";
+            _emailService.SendMail2(content, email, subject);
+
+            return Ok(new
+            {
+                message = "Sent reset link to your email."
+            });
+        }
+
+        [HttpPost("reset-password/{userId}")]
+        public async Task<IActionResult> ResetPassword(string userId, [FromBody] ResetPasswordDTO resetPasswordDTO)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    message = "This user is no longer existed."
+                });
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordDTO.ResetToken, resetPasswordDTO.NewPassword);
+
+            if(!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    message = "Cannot verify token."
+                });
+            }
+            return Ok(new
+            {
+                message = "Password reset successfully."
+            });
         }
     }
 }

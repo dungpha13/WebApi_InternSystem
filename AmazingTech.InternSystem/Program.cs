@@ -137,7 +137,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
                 .AddSignInManager()
-                .AddTokenProvider<DataProtectorTokenProvider<User>>("Kong")
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -150,8 +150,9 @@ namespace AmazingTech.InternSystem
                 options.Password.RequiredLength = 12;
                 options.Password.RequiredUniqueChars = 1;
                 options.User.RequireUniqueEmail = false;
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
 
-            });
+            }).Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromMinutes(15));
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

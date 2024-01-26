@@ -6,6 +6,7 @@ using AmazingTech.InternSystem.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
 using swp391_be.API.Models.Request.Authenticate;
 using System.IdentityModel.Tokens.Jwt;
@@ -254,6 +255,29 @@ namespace AmazingTech.InternSystem.Services
         {
             public string Token { get; set; }
             public DateTime InvalidatedAt { get; set; }
+        }
+
+        public static string ExtractTokenFromHeader(string authHeader)
+        {
+            return authHeader.Substring("Bearer ".Length).Trim();
+        }
+
+        public static string ExtractUserIdFromToken(string token)
+        {
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
+
+            // Extract the user ID claim
+            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        public static string ExtractUserRoleFromToken(string token)
+        {
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
+
+            // Extract the user ID claim
+            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         }
     }
 }

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using swp391_be.API.Models.Request.User;
 using AmazingTech.InternSystem.Services.Name;
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Spreadsheet;
+using AmazingTech.InternSystem.Models.Request.Authenticate;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -106,68 +109,43 @@ namespace AmazingTech.InternSystem.Controllers
             return BadRequest(identityResult);
         }
 
-        //[HttpPost]
-        //[Route("Update/{id:Guid}")]
-        //public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDTO updateUserRequestDTO, [FromRoute] Guid id)
-        //{
-        //    //If all value is null then nothing to update
-        //    if (string.IsNullOrEmpty(updateUserRequestDTO.HoVaTen)
-                
-        //        && string.IsNullOrEmpty(updateUserRequestDTO.PhoneNumber)
-        //        && string.IsNullOrEmpty(updateUserRequestDTO.Password)
-        //        && updateUserRequestDTO.Gender != null
-        //        && string.IsNullOrEmpty(updateUserRequestDTO.Bio))
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            succeeded = false,
-        //            errors = "There is nothing to update."
-        //        });
-        //    }
+        [HttpPut]
+        [Route("update/{id:Guid}")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDTO updateUserRequestDTO, [FromRoute] Guid id)
+        {
+            //Check if user is exist or not
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    succeeded = false,
+                    errors = "User not found."
+                });
+            }
 
-        //    //Check if user is exist or not
-        //    var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
-        //    var errors = new List<string>();
-        //    if (user == null)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            succeeded = false,
-        //            errors = "This user doesn't exist, so we can't update."
-        //        });
-        //    }
+            //If null then will not update the value
+            user.HoVaTen = updateUserRequestDTO.HoVaTen ?? user.HoVaTen;
+            user.PhoneNumber = updateUserRequestDTO.PhoneNumber ?? user.PhoneNumber;
+            user.Email = updateUserRequestDTO.EmailAddress ?? user.Email;
+            user.NormalizedEmail = updateUserRequestDTO.EmailAddress?.ToUpper() ?? user.Email;
 
-        //    //Update First Name - Last Name - Phone Number
-        //    //If null then will not update the value
-        //    try
-        //    {
-        //        int status = await _userManager.Users.AsQueryable()
-        //         .Where(u => u.Id == id.ToString())
-        //         .ExecuteUpdateAsync(property =>
-        //             property.SetProperty(e => e.HoVaTen, e => (e.HoVaTen != updateUserRequestDTO.HoVaTen && updateUserRequestDTO.HoVaTen != null)
-        //                         ? updateUserRequestDTO.HoVaTen
-        //                         : e.HoVaTen)
+            var result = await _userManager.UpdateAsync(user);
 
-        //                     .SetProperty(e => e.PhoneNumber, e => (updateUserRequestDTO.PhoneNumber != null && user.PhoneNumber != updateUserRequestDTO.PhoneNumber)
-        //                         ? updateUserRequestDTO.PhoneNumber
-        //                         : e.PhoneNumber));
-                            
-                            
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            succeeded = false,
-        //            errors = e.ToString()
-        //        });
-        //    }
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    succeeded = false,
+                    errors = result.Errors
+                });
+            }
 
-        //    return Ok(new
-        //    {
-        //        succeeded = true
-        //    });
-        //}
+            return Ok(new
+            {
+                succeeded = true
+            });
+        }
 
         //[HttpPost]
         //[Route("update/role/{email}/{role}")]
@@ -266,27 +244,5 @@ namespace AmazingTech.InternSystem.Controllers
 
         //    return Ok(result);
         //}
-
-
-
-        //[HttpGet]
-        //[Route("avatar/{UserId}")]
-        //public async Task<IActionResult> GetUserAvatar([FromRoute] string UserId)
-        //{
-        //    var existingUser = _userManager.FindByIdAsync(UserId);
-
-        //    var imgUrl = existingUser.Result.ImageUrl;
-
-        //    if (existingUser.Result == null) return Ok(null);
-
-
-        //    return Ok(new
-        //    {
-        //        imageUrl = imgUrl
-        //    });
-        //}
-
-
-
     }
 }
