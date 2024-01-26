@@ -454,7 +454,7 @@ namespace AmazingTech.InternSystem.Services
             return new ObjectResult(lichPhongVans);*/
 
             List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
-            return new ObjectResult(lichPhongVans);
+
             List<LichPhongVanResponseModel> lichPhongVanResponseModels = lichPhongVans.Select(lpv => new LichPhongVanResponseModel
             {
                 ID = lpv.Id,
