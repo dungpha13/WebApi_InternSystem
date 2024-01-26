@@ -10,6 +10,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/truongs")]
     [ApiController]
+    // [Authorize(Roles = "School,HR,Admin")]
     public class TruongController : ControllerBase
     {
         private readonly ITruongService _truongService;

@@ -28,9 +28,10 @@ namespace AmazingTech.InternSystem.Services
 
             KiThucTap ki = new KiThucTap()
             {
+                Ten = request.Name,
                 NgayBatDau = request.NgayBatDau,
                 NgayKetThuc = request.NgayKetThuc,
-                //IdTruong = existingTruong.Id
+                IdTruong = existingTruong.Id
             };
 
             var result = _kiRepository.AddKiThucTap(ki);

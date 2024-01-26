@@ -1,6 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.KiThucTap;
 using AmazingTech.InternSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/ki-thuc-taps")]
     [ApiController]
+    // [Authorize(Roles = "Admin,School,HR")]
     public class KiThucTapController : ControllerBase
     {
         private readonly IKiThucTapService _kiThucTapService;
