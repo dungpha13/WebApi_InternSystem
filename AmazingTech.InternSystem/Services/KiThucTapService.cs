@@ -86,13 +86,13 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(kis);
         }
 
-        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki)
+        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
         {
-            var existingKi = _kiRepository.GetKiThucTap(ki.Id);
+            var existingKi = _kiRepository.GetKiThucTap(id);
 
             if (existingKi is null)
             {
-                return new BadRequestObjectResult($"KiThucTap voi id {ki.Id} khong ton tai");
+                return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
             existingKi.Ten = ki.Name;

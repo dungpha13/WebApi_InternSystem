@@ -43,9 +43,9 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("update/{id}")]
-        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki)
+        public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
         {
-            return _kiThucTapService.UpdateKiThucTap(ki);
+            return _kiThucTapService.UpdateKiThucTap(ki, id);
         }
 
         [HttpDelete("delete/{id}")]
