@@ -42,8 +42,8 @@ namespace AmazingTech.InternSystem.Data.Enum
     }
     public enum Result
     {
-        Success,
-        Failed
+        Failed,
+        Pass
     }
     public enum InterviewForm
     {
