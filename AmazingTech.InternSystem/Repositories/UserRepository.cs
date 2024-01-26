@@ -10,7 +10,7 @@ namespace AmazingTech.InternSystem.Repositories
         public User GetUserByName(string name);
         public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime);
-        public List<User> GetInternsWithoutInterview(DateTime startTime, DateTime endTime);
+        public List<User> GetInternsWithoutInterview();
     }
     public class UserRepository : IUserRepository
     {
@@ -88,12 +88,12 @@ namespace AmazingTech.InternSystem.Repositories
                 return result;
             }
         }
-        public List<User> GetInternsWithoutInterview(DateTime startTime, DateTime endTime)
+        public List<User> GetInternsWithoutInterview()
         {
             using (var context = new AppDbContext())
             {
                 var usersWithoutInterview = context.Set<User>()
-                    .Where(user => !context.Set<LichPhongVan>().Any(interview => interview.NguoiDuocPhongVan.Id == user.Id && startTime <= interview.ThoiGianPhongVan && interview.ThoiGianPhongVan <= endTime))
+                    .Where(user => !context.Set<LichPhongVan>().Any(interview => interview.NguoiDuocPhongVan.Id == user.Id))
                     .ToList();
                 return usersWithoutInterview;
             }

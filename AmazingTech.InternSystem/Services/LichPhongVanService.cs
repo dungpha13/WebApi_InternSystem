@@ -344,7 +344,7 @@ namespace AmazingTech.InternSystem.Services
         }
         public List<User> GetInternWithoutInternView(DateTime startDate, DateTime endDate)
         {
-            var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview(startDate, endDate);
+            var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview();
             List<User> InternWithoutInterview = new List<User>();
             foreach (var item in listUserWithOutInterview)
             {
