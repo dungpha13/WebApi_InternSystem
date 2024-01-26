@@ -163,6 +163,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Route("api/lich-phong-vans/GetAllLichPhongVan")]
+        [Authorize(Roles = Roles.ADMIN + "," + Roles.HR)]
         public IActionResult GetAllLichPhongvan()
         {
             return _guiLichPhongVanService.AllLichPhongVan();
@@ -180,9 +181,16 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (BadHttpRequestException ex)
             {
-
                 return Ok(ex.Message);
             }
+        }
+        
+
+        [HttpGet("get/{idNguoiDuocPhongVan}")]
+        
+        public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
+        {
+            return _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
         }
     }
 }
