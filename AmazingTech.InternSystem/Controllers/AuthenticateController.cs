@@ -300,5 +300,44 @@ namespace AmazingTech.InternSystem.Controllers
                 message = "Password reset successfully."
             });
         }
+
+        [HttpPost("confirm-account/{userId}")]
+        [Authorize(Roles = Roles.ADMIN)]
+        public async Task<IActionResult> ConfirmAccount([FromRoute] string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    message = "User not found."
+                });
+            }
+
+            if (user.isConfirmed)
+            {
+                return BadRequest(new
+                {
+                    message = "This user has already been confirmed."
+                });
+            }
+
+            user.isConfirmed = true;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    message = "An error occured."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Confirm successfully."
+            });
+        }
     }
 }

@@ -12,6 +12,7 @@ using AmazingTech.InternSystem.Services.Name;
 using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Spreadsheet;
 using AmazingTech.InternSystem.Models.Request.Authenticate;
+using AmazingTech.InternSystem.Services;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -111,8 +112,18 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpPut]
         [Route("update/{id:Guid}")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDTO updateUserRequestDTO, [FromRoute] Guid id)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDTO updateUserRequestDTO, [FromRoute] Guid id, [FromHeader(Name = "Authentication")] string authenHeader)
         {
+            //Check user
+            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
+            string uid = JwtGenerator.ExtractUserIdFromToken(token);
+            string role = JwtGenerator.ExtractUserRoleFromToken(token);
+
+            if (!uid.Equals(id) && !role.Equals("Admin"))
+            {
+                return Forbid("You don't have permission to change this user's password.");
+            }
+
             //Check if user is exist or not
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
             if (user == null)
