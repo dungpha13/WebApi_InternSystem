@@ -14,54 +14,55 @@ namespace AmazingTech.InternSystem.Repositories
             _context = context;
         }
 
-        public async Task CreateViTriAsync(ViTri viTriModel)
+        public async Task<List<ViTri>> GetAllVitri()
         {
-            var vitriEntity = new ViTri {
-                Id = Guid.NewGuid().ToString("N"),
-                    Ten = viTriModel.Ten,
-                    LinkNhomZalo = viTriModel.LinkNhomZalo,
-                    UserViTris = viTriModel.UserViTris,
-                    CreatedBy = viTriModel.CreatedBy,
-                    LastUpdatedBy = viTriModel.LastUpdatedBy,
-                    LastUpdatedTime = viTriModel.LastUpdatedTime,
-            };
-            _context.ViTris.Add(vitriEntity);
-            await _context.SaveChangesAsync();
+            return await _context.ViTris.Where(x => x.DeletedBy == null).ToListAsync();
         }
-
-        public async Task DeleteViTriAsync(string viTriId, ViTri viTridelete)
+        public async Task<int> CreateViTri(ViTri viTri)
         {
-            var vitridexoa = await _context.ViTris.FirstOrDefaultAsync(c => c.Id == viTriId);
-            if(vitridexoa != null)
+            _context.ViTris.Add(viTri);
+            return await _context.SaveChangesAsync();
+
+        }
+        public async Task<int> UpdateViTri(string viTriId, ViTri updatedViTri)
+        {
+            var vitri = _context.ViTris.FirstOrDefault(x => x.Id == viTriId && x.DeletedBy == null);
+            if (vitri == null)
             {
-                vitridexoa.DeletedBy = viTridelete.DeletedBy;
-                vitridexoa.DeletedTime = DateTime.Now;
-                await _context.SaveChangesAsync();
+                return 0;
             }
+            vitri.Ten = updatedViTri.Ten;
+            vitri.LinkNhomZalo = updatedViTri.LinkNhomZalo;
+            return await _context.SaveChangesAsync();
         }
-
-        public async Task<List<ViTri>> GetAllViTriAsync()
+        public async Task<int> DeleteViTri(string viTriId, string user)
         {
-            return await _context.ViTris.ToListAsync();
-        }
-
-        public async Task<ViTri> GetViTriByIdAsync(string vitriId)
-        {
-            var vitri = await _context.ViTris.Include(c => c.UserViTris).FirstOrDefaultAsync(c => c.Id == vitriId);
-            return vitri;
-        }
-
-        public async Task UpdateViTriAsync(string viTriId, ViTri updatedViTri)
-        {
-            var existingViTri = await _context.ViTris.FirstOrDefaultAsync(c => c.Id == viTriId);
-            if(existingViTri != null)
+            var vitri = _context.ViTris.FirstOrDefault(x => x.Id == viTriId && x.DeletedBy == null);
+            if (vitri == null)
             {
-                if(updatedViTri.Ten != null)existingViTri.Ten = updatedViTri.Ten;
-                if (updatedViTri.Ten != null) existingViTri.LinkNhomZalo = updatedViTri.LinkNhomZalo;
-                existingViTri.LastUpdatedBy = updatedViTri.LastUpdatedBy;
-                existingViTri.LastUpdatedTime = updatedViTri.LastUpdatedTime;
-                await _context.SaveChangesAsync();
+                return 0;
             }
+            vitri.DeletedBy = user;
+            vitri.DeletedTime = DateTime.Now;
+            return await _context.SaveChangesAsync();
+
+        }
+        public async Task<List<InternInfo>> UserViTriView(string id)
+        {
+            var user = await _context.Users.Where(x => x.UserViTris.Where(p => p.UsersId == x.Id).Any() && x.DeletedTime == null).ToListAsync();
+            var intern = await _context.InternInfos.Where(x => x.DeletedTime == null).ToListAsync();
+            List<InternInfo> internInfos = new List<InternInfo>();
+            foreach (User obj in user)
+            {
+                foreach (InternInfo obj1 in intern)
+                {
+                    if (obj1.UserId == obj.Id)
+                    {
+                        internInfos.Add(obj1);
+                    }
+                }
+            }
+            return internInfos;
         }
     }
 }
