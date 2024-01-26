@@ -190,7 +190,8 @@ namespace AmazingTech.InternSystem.Controllers
         
         public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
         {
-            return _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
+            var lichPhongVanList = _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
+            return new OkObjectResult(lichPhongVanList);
         }
     }
 }

@@ -116,8 +116,9 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == idNguoiDuocPhongVan).ToList();
-                return list;
+                return context.Set<LichPhongVan>()
+                    .AsNoTracking()
+                    .Where(x => x.IdNguoiDuocPhongVan == idNguoiDuocPhongVan).ToList();
             }
         }
     }

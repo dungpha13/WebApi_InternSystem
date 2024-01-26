@@ -27,7 +27,7 @@ namespace AmazingTech.InternSystem.Services
 
         IActionResult AllLichPhongVan();
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email);
-        IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
+        public List<LichPhongVanResponseModel> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -540,14 +540,23 @@ namespace AmazingTech.InternSystem.Services
         
        
 
-        public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
+        public List<LichPhongVanResponseModel> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
         {
-            var lichPhongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgPhongVan(idNguoiDuocPhongVan);
-            if (lichPhongvan is null)
+            var lichPhongVanList = _lichPhongVanRepository.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
+            return lichPhongVanList.Select(lpv => new LichPhongVanResponseModel
             {
-                return new BadRequestObjectResult($"Lich phong van oi id {idNguoiDuocPhongVan} khong ton tai");
-            }
-            return new OkObjectResult(lichPhongvan);
+                ID = lpv.Id,
+                NguoiPhongVan = _userRepository.GetUserById(lpv.IdNguoiPhongVan).HoVaTen,
+                NguoiDuocPhongVan = _userRepository.GetUserById(lpv.IdNguoiDuocPhongVan).HoVaTen,
+                ThoiGianPhongVan = lpv.ThoiGianPhongVan,
+                TimeDuration = lpv.TimeDuration,
+                DiaDiemPhongVan = lpv.DiaDiemPhongVan,
+                InterviewForm = lpv.InterviewForm.ToString() ?? string.Empty,
+                TrangThai = lpv.TrangThai.ToString() ?? string.Empty,
+                KetQua = lpv.KetQua.ToString() ?? string.Empty,
+            }).ToList();
         }
+
+        
     }
 }
