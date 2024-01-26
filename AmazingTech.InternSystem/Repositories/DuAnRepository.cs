@@ -147,7 +147,7 @@ namespace AmazingTech.InternSystem.Repositories
             duAnToDelete.DeletedBy = user;
             duAnToDelete.DeletedTime = DateTime.Now;
 
-            _dbContext.Remove(duAnToDelete);
+            //_dbContext.Remove(duAnToDelete);
             _dbContext.SaveChanges();
             return 1;
         }

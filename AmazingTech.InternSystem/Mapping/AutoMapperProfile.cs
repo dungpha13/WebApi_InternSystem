@@ -4,6 +4,7 @@ using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Models.Response.User;
+using AmazingTech.InternSystem.Models.VItri;
 using AmazingTech.InternSystem.Repositories;
 using AutoMapper;
 
@@ -56,7 +57,7 @@ namespace AmazingTech.InternSystem.Mapping
 
 
             CreateMap<DuAn, DuAnModel>().ReverseMap();
-
+            CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
         }

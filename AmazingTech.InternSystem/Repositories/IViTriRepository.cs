@@ -1,14 +1,17 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.VItri;
 
 namespace AmazingTech.InternSystem.Repositories
 {
-    public interface IViTriRepository 
+    public interface IViTriRepository
     {
-        Task<List<ViTri>> GetAllViTriAsync();
-        Task<ViTri> GetViTriByIdAsync(string vitriId);
-        Task CreateViTriAsync(ViTri viTri);
-        Task UpdateViTriAsync(string viTriId, ViTri updatedViTri);
+        Task<List<ViTri>> GetAllVitri();
 
-        Task DeleteViTriAsync(string viTriId, ViTri viTridelete);
+        Task<int> CreateViTri(ViTri viTri);
+
+        Task<int> UpdateViTri(string viTriId, ViTri updatedViTri);
+
+        Task<int> DeleteViTri(string viTriId, string user);
+        Task<List<InternInfo>> UserViTriView(string id);
     }
 }

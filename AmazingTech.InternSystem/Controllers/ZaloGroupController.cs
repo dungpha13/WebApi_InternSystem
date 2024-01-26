@@ -112,12 +112,12 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+                //var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
 
-                if (nhomZalo == null)
-                {
-                    return NotFound($"Zalo Group with ID {nhomZaloId} not found.");
-                }
+                //if (nhomZalo == null)
+                //{
+                //    return NotFound($"Zalo Group with ID {nhomZaloId} not found.");
+                //}
 
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
                 return Ok(users);
