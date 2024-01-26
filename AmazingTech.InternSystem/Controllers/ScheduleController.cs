@@ -70,6 +70,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/SendResultInterviewEmail")]
         public IActionResult SendRessultInterviewEmail([FromQuery] string email)
         {
@@ -87,7 +88,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpPut]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/Change-schudele")]
         public IActionResult UpdateScheduel(LichPhongVanRequestModel model)
         {
@@ -103,7 +104,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpDelete]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/Delete-schedule")]
         public IActionResult DeleteSchedule(string scheduleId)
         {
@@ -155,13 +156,14 @@ namespace AmazingTech.InternSystem.Controllers
         //}
 
         [HttpGet]
-        [Route("GetAll")]
+        [Route("api/lich-phong-vans/GetAllLichPhongVan")]
         public IActionResult GetAllLichPhongvan()
         {
             return _guiLichPhongVanService.AllLichPhongVan();
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/SendListOfInternsToMentor")]
         public IActionResult SendListOfInternsToMentor([FromQuery] string email)
         {
