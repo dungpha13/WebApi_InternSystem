@@ -1,6 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
@@ -9,11 +10,13 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
     {
         private readonly AppDbContext _appDbContext;
         private readonly ILogger<NhomZaloRepository> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public NhomZaloRepository(AppDbContext appDbContext, ILogger<NhomZaloRepository> logger)
+        public NhomZaloRepository(AppDbContext appDbContext, ILogger<NhomZaloRepository> logger, UserManager<User> userManager)
         {
             _appDbContext = appDbContext;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // Zalo methods
@@ -29,9 +32,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task AddNewZaloAsync(NhomZalo zalo)
         {
-            var checkMentor = await _appDbContext.Users
-                .Where(x => x.Id == zalo.IdMentor && x.Roles.Equals("Mentor"))
-                .FirstOrDefaultAsync();
+            var checkMentor = await _userManager.FindByIdAsync(zalo.IdMentor);
 
             var zaloAdd = new NhomZalo()
             {

@@ -21,7 +21,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? VerificationTokenExpires { get; set; }
 
         public bool isConfirmed { get; set; }
-        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+        //public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
        // public virtual ICollection<ViTri> ViTris { get; set; } = new List<ViTri>();
         public ICollection<Comment> Comments { get; set; }
         //public InternInfo? InternInfo { get; set; }

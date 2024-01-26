@@ -72,9 +72,6 @@ namespace AmazingTech.InternSystem.Data
             //    .UsingEntity(j => j.ToTable("UserRole"));
 
             modelBuilder.Entity<LichPhongVan>()
-                .HasKey(lp => new { lp.IdNguoiDuocPhongVan, lp.IdNguoiPhongVan });
-
-            modelBuilder.Entity<LichPhongVan>()
                 .HasOne(lp => lp.NguoiPhongVan)
                 .WithMany(u => u.LichPhongVans_PhongVan)
                 .HasForeignKey(lp => lp.IdNguoiPhongVan)

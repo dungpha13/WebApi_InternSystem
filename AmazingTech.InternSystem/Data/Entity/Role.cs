@@ -11,7 +11,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string Id { get; set; }
         [NotMapped]
         public Roles Name { get; set; }
-        public virtual ICollection<User> Users { get; set; } = new List<User>();
+        //public virtual ICollection<User> Users { get; set; } = new List<User>();
     }
 
     [Keyless]

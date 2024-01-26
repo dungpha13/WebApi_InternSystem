@@ -83,7 +83,7 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 var result = context.Set<User>()
-                      .Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
+                      //.Where(x => x.Roles.Any(r => r.Name.Equals(Roles.INTERN)) && !context.Set<LichPhongVan>().AsNoTracking().Any(l => l.NguoiDuocPhongVan.Id == x.Id && startTime <= l.ThoiGianPhongVan && l.ThoiGianPhongVan <= endTime))
                       .ToList();
                 return result;
             }
