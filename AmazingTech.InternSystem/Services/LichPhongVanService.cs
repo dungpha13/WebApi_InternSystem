@@ -335,6 +335,7 @@ namespace AmazingTech.InternSystem.Services
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (ScheduleId == null)
             {
+                
                 throw new BadHttpRequestException("Please, Enter the Id");
             }
             var accountLogin = _userRepository.GetUserById(accountId);
@@ -343,7 +344,12 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This schedule is not existed");
             }
-            if (accountId != schedule.IdNguoiPhongVan || (accountRole != Roles.ADMIN && (accountRole != Roles.HR.ToUpper())))
+            if (accountId != schedule.IdNguoiPhongVan && accountRole == Roles.HR.ToUpper())
+            {
+
+                throw new BadHttpRequestException("You don't have permission to delete this schedule");
+            }
+            if (!(accountRole == Roles.HR.ToUpper() || accountRole == Roles.ADMIN))
             {
                 throw new BadHttpRequestException("You don't have permission to delete this schedule");
             }

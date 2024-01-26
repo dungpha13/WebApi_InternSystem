@@ -7,6 +7,7 @@ using DocumentFormat.OpenXml.Office2016.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -32,10 +33,11 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 _guiLichPhongVanService.AddLichPhongVan(model);
                 return Ok("Send Successful");
-            } catch (BadHttpRequestException ex)
+            }
+            catch (BadHttpRequestException ex)
             {
-                StatusCode(400);
-                return Ok(ex.Message);
+
+                return BadRequest(ex.Message);
             }
 
         }
@@ -48,10 +50,11 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 var result = _guiLichPhongVanService.getmyInterviewSchedule();
                 return Ok(result);
-            } catch (Exception ex)
+            }
+            catch (BadHttpRequestException ex)
             {
-                StatusCode(400);
-                return Ok(ex.Message);
+
+                return BadRequest(ex.Message);
             }
         }
 
@@ -78,9 +81,10 @@ namespace AmazingTech.InternSystem.Controllers
                 _guiLichPhongVanService.SendResultInterviewEmail(email);
                 return Ok(new { Message = "Send email successfully." });
             }
-            catch (Exception ex)
+            catch (BadHttpRequestException ex)
             {
-                return Ok(ex.Message);
+
+                return BadRequest(ex.Message);
             }
         }
 
@@ -96,10 +100,10 @@ namespace AmazingTech.InternSystem.Controllers
                 var result = _guiLichPhongVanService.UpdateSchedule(model);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (BadHttpRequestException ex)
             {
-                StatusCode(400);
-                return Ok(ex.Message);
+
+                return BadRequest(ex.Message);
             }
         }
         [HttpDelete]
@@ -112,10 +116,12 @@ namespace AmazingTech.InternSystem.Controllers
                 _guiLichPhongVanService.deleteSchedudle(scheduleId);
                 return Ok("Delete Succesful");
 
-            } catch (Exception ex)
+            }
+            catch (BadHttpRequestException ex)
             {
-                StatusCode(400);
-                return Ok(ex.Message); }
+
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost]
         [Route("api/send-mail-test")]
