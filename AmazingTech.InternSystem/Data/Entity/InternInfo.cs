@@ -34,6 +34,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public ICollection<Comment>? Comments { get; set; }
         [ForeignKey("Truong")]
         public string? IdTruong { get; set; }
+        [JsonIgnore]
         public TruongHoc? Truong { get; set; }
 
         [ForeignKey("KiThucTap")]

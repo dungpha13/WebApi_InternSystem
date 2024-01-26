@@ -10,7 +10,9 @@ namespace AmazingTech.InternSystem.Repositories
     public interface IInternInfoRepo
     {
         public Task<List<InternInfo>> GetAllInternsInfoAsync();
+        public Task<List<InternInfo>> GetAllDeletedInternsInfoAsync();
         public Task<InternInfo> GetInternInfoAsync(string MSSV);
+        public Task<InternInfo> GetDeletedInternInfoAsync(string MSSV);
 
         public Task<int> AddInternInfoAsync(string user, InternInfo entity);
 

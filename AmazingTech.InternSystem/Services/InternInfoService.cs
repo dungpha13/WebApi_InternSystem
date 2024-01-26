@@ -9,6 +9,7 @@ using AutoMapper;
 using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using swp391_be.API.Models.Request.Authenticate;
@@ -51,13 +52,32 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(_mapper.Map<List<InternInfoDTO>>(interns));
         }
 
-        //Get Intern by Id
+        //Get all Deleted Intern
+        public async Task<IActionResult> GetAllDeletedInternInfo()
+        {
+            List<InternInfo> interns = await _internRepo.GetAllDeletedInternsInfoAsync();
+            return new OkObjectResult(_mapper.Map<List<InternInfoDTO>>(interns));
+        }
+
+
+        //Get Intern by MSSV
         public async Task<IActionResult> GetInternInfo(string mssv)
         {
             InternInfo intern = await _internRepo.GetInternInfoAsync(mssv);
             if (intern == null)
             {
-                return new BadRequestObjectResult($"Không tìm thấy Intern với mssv: '{mssv}' !");
+                return new BadRequestObjectResult($"Intern với mssv: '{mssv}' không tìm thấy hoặc đã bị xóa!");
+            }
+            return new OkObjectResult(_mapper.Map<InternInfoDTO>(intern));
+        }
+
+        //Get Intern by MSSV
+        public async Task<IActionResult> GetDeletedInternInfo(string mssv)
+        {
+            InternInfo intern = await _internRepo.GetDeletedInternInfoAsync(mssv);
+            if (intern == null)
+            {
+                return new BadRequestObjectResult($"Intern với mssv: '{mssv}' không tìm thấy!");
             }
             return new OkObjectResult(_mapper.Map<InternInfoDTO>(intern));
         }

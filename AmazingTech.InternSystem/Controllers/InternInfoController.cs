@@ -33,11 +33,24 @@ namespace AmazingTech.InternSystem.Controllers
 
         }
 
+        [HttpGet("getAllDeletedIntern")]
+        public async Task<IActionResult> GetAllDeletedInternsInfo()
+        {
+            return await _internInfoService.GetAllDeletedInternInfo();
+        }
+      
         [HttpGet("get/{mssv}")]
         public async Task<IActionResult> GetInternInfo(string mssv)
         {
             return await _internInfoService.GetInternInfo(mssv);
         }
+
+        [HttpGet("getDeletedIntern/{mssv}")]
+        public async Task<IActionResult> GetDeletedInternInfo(string mssv)
+        {
+            return await _internInfoService.GetDeletedInternInfo(mssv);
+        }
+
 
         [HttpPost("create")]
         [Authorize]

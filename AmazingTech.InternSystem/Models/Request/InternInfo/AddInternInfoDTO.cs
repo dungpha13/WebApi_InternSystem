@@ -38,7 +38,7 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
 
         //[Required]
         //public string Role { get; set; }
-
+        [Required]
         public string IdTruong { get; set; }
     }
 }
