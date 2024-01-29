@@ -93,7 +93,7 @@ namespace AmazingTech.InternSystem.Controllers
                 UserName = createUserRequestDTO.Username,
                 HoVaTen = createUserRequestDTO.HoVaTen,
                 PhoneNumber = createUserRequestDTO.PhoneNumber,
-                EmailConfirmed = true,
+                Email = createUserRequestDTO.Email,
             };
 
             var identityResult = await _userManager.CreateAsync(identityUser, createUserRequestDTO.Password);
