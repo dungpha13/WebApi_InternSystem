@@ -195,6 +195,17 @@ namespace AmazingTech.InternSystem.Controllers
             var lichPhongVanList = _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(id);
             return new OkObjectResult(lichPhongVanList);
         }
+        [HttpGet]
+    
+        [Route("api/test/get-intern-only")]
+        public IActionResult GetIntern()
+        {
+            var intern = _guiLichPhongVanService.GetInternOnly();
+            var intern2 = _guiLichPhongVanService.GetInternWithoutInternView();
+            List<int> check = new List<int>();
+           check.Add(intern.Count); check.Add(intern2.Count);
+            return Ok(check);
+        }
     }
 }
 

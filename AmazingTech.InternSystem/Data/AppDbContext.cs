@@ -24,7 +24,7 @@ namespace AmazingTech.InternSystem.Data
         public DatabaseFacade DatabaseFacade => throw new NotImplementedException();
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
+     
         public DbSet<CongNghe> CongNghes { get; set; } = null!;
         public DbSet<NhomZalo> NhomZalos { get; set; }
         public DbSet<UserNhomZalo> UserNhomZalos { get; set; }

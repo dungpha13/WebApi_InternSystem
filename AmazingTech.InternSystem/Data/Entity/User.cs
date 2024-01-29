@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using System.Xml.Linq;
 
 namespace AmazingTech.InternSystem.Data.Entity
@@ -21,10 +23,9 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? VerificationTokenExpires { get; set; }
 
         public bool isConfirmed { get; set; }
-        //public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
-       // public virtual ICollection<ViTri> ViTris { get; set; } = new List<ViTri>();
+
         public ICollection<Comment> Comments { get; set; }
-        //public InternInfo? InternInfo { get; set; }
+
         public ICollection<LichPhongVan> LichPhongVans_PhongVan { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_DuocPhongVan { get; set; }
         public ICollection<ThongBao> ThongBao_NguoiGui { get; set; }
@@ -32,5 +33,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public ICollection<UserDuAn> UserDuAns { get; set; }
         public ICollection<UserViTri> UserViTris { get; set; }
         public ICollection<UserNhomZalo> UserNhomZalos { get; set; }
+
+
     }
 }
