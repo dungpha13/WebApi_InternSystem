@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
+using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using System.Collections.Generic;
 
@@ -19,95 +20,61 @@ namespace AmazingTech.InternSystem.Services
         // ZaloGroup methods
         public async Task<List<NhomZalo>> GetAllZaloAsync()
         {
-            try
-            {
-                return await _nhomZaloRepo.GetAllZaloAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetAllZaloAsync: {ex.Message}");
-                throw;
-            }
+            return await _nhomZaloRepo.GetAllZaloAsync();
         }
 
         public async Task<NhomZalo?> GetGroupByIdAsync(string id)
         {
-            try
-            {
-                return await _nhomZaloRepo.GetGroupByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetGroupByIdAsync: {ex.Message}");
-                throw;
-            }
+            return await _nhomZaloRepo.GetGroupByIdAsync(id);
         }
 
-        public async Task AddNewZaloAsync(NhomZalo zalo)
+        public async Task AddNewZaloAsync(NhomZaloDTO zaloDTO)
         {
-            try
+            var zalo = new NhomZalo
             {
-                await _nhomZaloRepo.AddNewZaloAsync(zalo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in AddNewZaloAsync: {ex.Message}");
-                throw;
-            }
+                TenNhom = zaloDTO.TenNhom,
+                LinkNhom = zaloDTO.LinkNhom,
+                IdMentor = zaloDTO.IdMentor
+            };
+
+            await _nhomZaloRepo.AddNewZaloAsync(zalo);
         }
 
-        public async Task UpdateZaloAsync(string id, NhomZalo zalo)
+        public async Task UpdateZaloAsync(string id, NhomZaloDTO zaloDTO)
         {
-            try
+            var zalo = new NhomZalo
             {
-                await _nhomZaloRepo.UpdateZaloAsync(id, zalo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in UpdateZaloAsync: {ex.Message}");
-                throw;
-            }
+                Id = id,
+                TenNhom = zaloDTO.TenNhom,
+                LinkNhom = zaloDTO.LinkNhom,
+                IdMentor = zaloDTO.IdMentor
+            };
+
+            await _nhomZaloRepo.UpdateZaloAsync(id, zalo);
         }
 
         public async Task DeleteZaloAsync(string id)
         {
-            try
-            {
-                await _nhomZaloRepo.DeleteZaloAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in DeleteZaloAsync: {ex.Message}");
-                throw;
-            }
+            await _nhomZaloRepo.DeleteZaloAsync(id);
         }
 
 
         // User in ZaloGroup methods
         public async Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId)
         {
-            try
-            {
-                return await _nhomZaloRepo.GetUsersInGroupAsync(nhomZaloId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetUsersInGroupAsync: {ex.Message}");
-                throw;
-            }
+            return await _nhomZaloRepo.GetUsersInGroupAsync(nhomZaloId);
         }
 
-        public async Task AddUserToGroupAsync(string nhomZaloId, UserNhomZalo user)
+        public async Task AddUserToGroupAsync(string nhomZaloId, UserNhomZaloDTO userDTO)
         {
-            try
+            var user = new UserNhomZalo
             {
-                await _nhomZaloRepo.AddUserToGroupAsync(nhomZaloId, user);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in AddUserToGroupAsync: {ex.Message}");
-                throw;
-            }
+                UserId = userDTO.UserId,
+                IdNhomZalo = nhomZaloId,
+                JoinedTime = userDTO.JoinedTime
+            };
+
+            await _nhomZaloRepo.AddUserToGroupAsync(nhomZaloId, user);
         }
 
         public async Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId)
@@ -123,30 +90,22 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
-        public async Task UpdateUserInGroupAsync(string nhomZaloId, UserNhomZalo updatedUser)
+        public async Task UpdateUserInGroupAsync(string nhomZaloId, UserNhomZaloDTO updatedUserDTO)
         {
-            try
+            var updatedUser = new UserNhomZalo
             {
-                await _nhomZaloRepo.UpdateUserInGroupAsync(nhomZaloId, updatedUser);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in UpdateUserInGroupAsync: {ex.Message}");
-                throw;
-            }
+                UserId = updatedUserDTO.UserId,
+                IdNhomZalo = nhomZaloId,
+                JoinedTime = updatedUserDTO.JoinedTime,
+                LeftTime = updatedUserDTO.LeftTime
+            };
+
+            await _nhomZaloRepo.UpdateUserInGroupAsync(nhomZaloId, updatedUser);
         }
 
         public async Task RemoveUserFromGroupAsync(string nhomZaloId, string userId)
         {
-            try
-            {
-                await _nhomZaloRepo.RemoveUserFromGroupAsync(nhomZaloId, userId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in RemoveUserFromGroupAsync: {ex.Message}");
-                throw;
-            }
+            await _nhomZaloRepo.RemoveUserFromGroupAsync(nhomZaloId, userId);
         }
     }
 }

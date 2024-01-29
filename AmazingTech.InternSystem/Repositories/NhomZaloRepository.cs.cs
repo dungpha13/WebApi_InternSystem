@@ -1,8 +1,10 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static AmazingTech.InternSystem.Data.Enum.Enums;
 
 namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 {
@@ -32,20 +34,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task AddNewZaloAsync(NhomZalo zalo)
         {
-            var checkMentor = await _userManager.FindByIdAsync(zalo.IdMentor);
-
-            var zaloAdd = new NhomZalo()
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                TenNhom = zalo.TenNhom,
-                CreatedBy = zalo.CreatedBy,
-                IdMentor = checkMentor?.Id,
-                LinkNhom = zalo.LinkNhom,
-                LastUpdatedBy = zalo.CreatedBy,
-                LastUpdatedTime = DateTime.Now
-            };
-
-            await _appDbContext.NhomZalos.AddAsync(zaloAdd);
+            await _appDbContext.NhomZalos.AddAsync(zalo);
             await _appDbContext.SaveChangesAsync();
         }
 
@@ -103,14 +92,10 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 return;
             }
 
-            var userNhomZalo = new UserNhomZalo()
-            {
-                UserId = user.UserId,
-                IdNhomZalo = nhomZaloId,
-                JoinedTime = DateTime.Now,
-            };
+            user.IdNhomZalo = nhomZaloId;
+            user.JoinedTime = DateTime.Now;
 
-            await _appDbContext.UserNhomZalos.AddAsync(userNhomZalo);
+            await _appDbContext.UserNhomZalos.AddAsync(user);
             await _appDbContext.SaveChangesAsync();
         }
 
@@ -135,7 +120,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             userNhomZalo.UserId = updatedUser.UserId;
             userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
-            userNhomZalo.JoinedTime = updatedUser.JoinedTime;
+            userNhomZalo.JoinedTime = updatedUser.JoinedTime ?? userNhomZalo.JoinedTime; 
             userNhomZalo.LeftTime = updatedUser.LeftTime;
 
             await _appDbContext.SaveChangesAsync();

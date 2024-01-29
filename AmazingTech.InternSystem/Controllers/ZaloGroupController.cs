@@ -1,7 +1,12 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -17,7 +22,6 @@ namespace AmazingTech.InternSystem.Controllers
             _nhomZaloService = nhomZaloService;
             _logger = logger;
         }
-
 
         // Manage ZaloGroup
         [HttpGet("get")]
@@ -55,12 +59,12 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> CreateZaloGroupAsync([FromBody] NhomZalo zalo)
+        public async Task<ActionResult> CreateZaloGroupAsync([FromBody] NhomZaloDTO zaloDTO)
         {
             try
             {
-                await _nhomZaloService.AddNewZaloAsync(zalo);
-                return CreatedAtAction(nameof(GetZaloGroupByIdAsync), new { id = zalo.Id }, zalo);
+                await _nhomZaloService.AddNewZaloAsync(zaloDTO);
+                return Ok("Zalo group created successfully");
             }
             catch (Exception ex)
             {
@@ -70,11 +74,11 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult> UpdateZaloGroupAsync(string id, [FromBody] NhomZalo zalo)
+        public async Task<ActionResult> UpdateZaloGroupAsync(string id, [FromBody] NhomZaloDTO zaloDTO)
         {
             try
             {
-                await _nhomZaloService.UpdateZaloAsync(id, zalo);
+                await _nhomZaloService.UpdateZaloAsync(id, zaloDTO);
                 return Ok("Zalo group updated successfully");
             }
             catch (Exception ex)
@@ -89,13 +93,6 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                var group = await _nhomZaloService.GetGroupByIdAsync(id);
-
-                if (group == null)
-                {
-                    return NotFound($"Zalo group with ID {id} not found.");
-                }
-
                 await _nhomZaloService.DeleteZaloAsync(id);
                 return Ok("Zalo group deleted successfully");
             }
@@ -112,13 +109,6 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                //var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
-
-                //if (nhomZalo == null)
-                //{
-                //    return NotFound($"Zalo Group with ID {nhomZaloId} not found.");
-                //}
-
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
                 return Ok(users);
             }
@@ -130,11 +120,11 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("add-user-to-zalo/{nhomZaloId}/users")]
-        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZalo user)
+        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZaloDTO userDTO)
         {
             try
             {
-                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user);
+                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, userDTO);
                 return Ok($"User added to Zalo group {nhomZaloId} successfully");
             }
             catch (Exception ex)
@@ -164,11 +154,11 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update-user-in-zalo-group/{nhomZaloId}/users")]
-        public async Task<ActionResult> UpdateUserInZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZalo updatedUser)
+        public async Task<ActionResult> UpdateUserInZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZaloDTO updatedUserDTO)
         {
             try
             {
-                await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, updatedUser);
+                await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, updatedUserDTO);
                 return Ok($"User in Zalo group {nhomZaloId} updated successfully");
             }
             catch (Exception ex)
@@ -178,19 +168,11 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("delete-user-in-zalo-group{nhomZaloId}/users/{userId}")]
+        [HttpDelete("delete-user-in-zalo-group/{nhomZaloId}/users/{userId}")]
         public async Task<ActionResult> RemoveUserFromZaloGroupAsync(string nhomZaloId, string userId)
         {
             try
             {
-                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
-                var user = await _nhomZaloService.GetUserInGroupAsync(nhomZaloId, userId);
-
-                if (nhomZalo == null || user == null)
-                {
-                    return NotFound($"Zalo Group or User with IDs {nhomZaloId} and {userId} not found.");
-                }
-
                 await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, userId);
                 return Ok($"User removed from Zalo group {nhomZaloId} successfully");
             }
