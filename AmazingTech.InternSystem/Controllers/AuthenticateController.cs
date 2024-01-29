@@ -205,6 +205,11 @@ namespace AmazingTech.InternSystem.Controllers
                     return BadRequest(new { message = "This current user doesn't have a role." });
                 }
 
+                string subject = "Welcome to AmazingTech, " + $"{user.HoVaTen}";
+                string content = "Thank you for registering your account, enjoys!";
+
+                _emailService.SendMail2(content, user.Email, subject);
+
                 return new OkObjectResult(new
                 {
                     accessToken = JwtGenerator.GenerateToken(user, roles.ToList())

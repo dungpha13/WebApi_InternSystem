@@ -134,7 +134,10 @@ namespace AmazingTech.InternSystem.Services
 
             await SaveUserToken(newUser);
 
-            _emailService.SendRegistrationSuccessfulMail(newUser);
+            string subject = "Welcome to AmazingTech, " + $"{newUser.HoVaTen}";
+            string content = "Thank you for registering your account, enjoys!";
+
+            _emailService.SendMail2(content, newUser.Email, subject);
 
             return new OkObjectResult(new { Succeeded = true, Message = "Registration successful." });
         }
