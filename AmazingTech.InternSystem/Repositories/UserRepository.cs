@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.EntityFrameworkCore;
 namespace AmazingTech.InternSystem.Repositories
 {
@@ -11,6 +12,8 @@ namespace AmazingTech.InternSystem.Repositories
         //public List<User> GetInternWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetInternsWithoutInterview();
+        public User GetUserByEmail(string email);
+
     }
     public class UserRepository : IUserRepository
     {
@@ -30,6 +33,21 @@ namespace AmazingTech.InternSystem.Repositories
                 else
                 {
                     return user.Id;
+                }
+            }
+        }
+        public User GetUserByEmail(string email)
+        {
+            using (var context = new AppDbContext())
+            {
+                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email).FirstOrDefault();
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return user;
                 }
             }
         }
@@ -107,11 +125,13 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 var usersWithoutInterview = context.Set<User>()
+                    .Include(user => user.LichPhongVans_PhongVan) // Thêm phương thức Include để join bảng LichPhongVan
                     .Where(user => !context.Set<LichPhongVan>().Any(interview => interview.NguoiPhongVan.Id == user.Id && startTime <= interview.ThoiGianPhongVan && interview.ThoiGianPhongVan <= endTime))
                     .ToList();
                 return usersWithoutInterview;
             }
         }
-
+   
     }
+
 }

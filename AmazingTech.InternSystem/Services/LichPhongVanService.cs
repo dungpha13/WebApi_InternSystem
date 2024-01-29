@@ -16,7 +16,9 @@ namespace AmazingTech.InternSystem.Services
 {
     public interface IGuiLichPhongVanService
     {
+        public List<User> GetInternOnly();
         public void AddLichPhongVan(LichPhongVanRequestModel model);
+
         public List<LichPhongVanResponseModel> getmyInterviewSchedule();
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request);
         public void deleteSchedudle(string ScheduleId);
@@ -141,7 +143,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This intern already has interview schedule");
             }
-            var Interviewer = _userRepository.GetUserByName(model.HoVaTenNgPhongVan);
+            var Interviewer = _userRepository.GetUserByEmail(model.MailNgPhongVan);
             if (Interviewer == null)
             {
                 throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
@@ -232,7 +234,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
             }
-            var Interviewer = _userRepository.GetUserByName(request.HoVaTenNgPhongVan);
+            var Interviewer = _userRepository.GetUserByEmail(request.MailNgPhongVan);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var accountLogin = _userRepository.GetUserById(accountId);
             ; string InternId = _userRepository.GetUserIdByEmail(request.Email);
@@ -336,38 +338,19 @@ namespace AmazingTech.InternSystem.Services
         public List<User> GetInternWithoutInternView()
         {
             var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview();
-            List<User> InternWithoutInterview = new List<User>();
-            foreach (var item in listUserWithOutInterview)
-            {
-                var UserRole = _userManager.GetRolesAsync(item).Result[0];
-                if (UserRole == Roles.INTERN)
-                {
-                    InternWithoutInterview.Add(item);
-                }
-                else
-                {
-                    continue;
-                }
-            }
+            var InternWithoutInterview = listUserWithOutInterview.Where(listUserWithOutInterview => _userManager.IsInRoleAsync(listUserWithOutInterview, Roles.INTERN).Result).ToList();
+ 
+         
             return InternWithoutInterview;
         }
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate)
         {
             var listUserWithOutInterview = _userRepository.GetHrOrMentorWithoutInterview(startDate, endDate);
-            List<User> InternWithoutInterview = new List<User>();
-            foreach (var item in listUserWithOutInterview)
-            {
-                var UserRole = _userManager.GetRolesAsync(item).Result[0];
-                if (UserRole == Roles.MENTOR || UserRole == Roles.HR)
-                {
-                    InternWithoutInterview.Add(item);
-                }
-                else
-                {
-                    continue;
-                }
-            }
-            return InternWithoutInterview;
+            List<User> HrOrMentorWithoutInterview = new List<User>();
+            var HrList = listUserWithOutInterview
+               .Where(user => _userManager.IsInRoleAsync(user, Roles.HR).Result || _userManager.IsInRoleAsync(user, Roles.MENTOR).Result)
+               .ToList();
+            return HrOrMentorWithoutInterview;
         }
         public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm)
         {
@@ -405,7 +388,7 @@ namespace AmazingTech.InternSystem.Services
                 {
                     var lichphongvan = new LichPhongVanRequestModel
                     {
-                        HoVaTenNgPhongVan = item.HoVaTen,
+                        MailNgPhongVan = item.Email,
                         Email = item1.Email,
                         ThoiGianPhongVan = startTime2,
                         TimeDuration = 15,
@@ -531,7 +514,17 @@ namespace AmazingTech.InternSystem.Services
                 KetQua = lpv.KetQua.ToString() ?? string.Empty,
             }).ToList();
         }
-
-        
+        public  List<User> GetInternOnly()
+        {
+            //var internUsers = _userManager.GetUsersInRoleAsync("Intern").Result;
+            //if (internUsers == null)
+            //{
+            //    throw new Exception("Failed to retrieve intern users.");
+            //}
+            //return internUsers.ToList();
+            var user = _userRepository.GetInternsWithoutInterview();
+            var intern = user.Where(user => _userManager.IsInRoleAsync(user, Roles.INTERN).Result).ToList();
+            return intern;
+        }
     }
 }
