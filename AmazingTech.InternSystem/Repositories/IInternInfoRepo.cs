@@ -9,6 +9,8 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public interface IInternInfoRepo
     {
+        public int GetInternSendCVInPrecious(int year, int precious);
+        public int GetInternSendCVInAYear(int year);
         public Task<List<InternInfo>> GetAllInternsInfoAsync();
         public Task<List<InternInfo>> GetAllDeletedInternsInfoAsync();
         public Task<InternInfo> GetInternInfoAsync(string MSSV);
