@@ -1,6 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.Enums;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AutoMapper;
 
@@ -9,13 +10,13 @@ namespace AmazingTech.InternSystem.Services
     public interface ITechService
     {
 
-        Task<List<CongNghe>> getAllTech();
+        Task<List<CongNghe>> getAllTech(string id);
 
-        Task<int> CreateTech(TechModel tech, string user);
+        Task<int> CreateTech(string id, TechModel tech, string user);
 
-        Task<int> UpdateTech(string user, string id, TechModel tech);
+        Task<int> UpdateTech(string vitriId, string user, string id, TechModel tech);
 
-        Task<int> DeleteTech(string user, string id);
+        Task<int> DeleteTech(string idVitri, string user, string id);
 
 
     }
@@ -32,30 +33,29 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public async Task<List<CongNghe>> getAllTech()
+        public async Task<List<CongNghe>> getAllTech(string id)
         {
-            List<CongNghe> congNghe = await _congNgheRepo.GetAllCongNgheAsync();
-            
+            List<CongNghe> congNghe = await _congNgheRepo.GetAllCongNgheAsync(id);          
             return congNghe;
         }
 
-        public async Task<int> CreateTech(TechModel tech, string user)
+        public async Task<int> CreateTech(string id, TechModel tech, string user)
         {
            CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-           return  await _congNgheRepo.CreateCongNgheAsync(user, congNghe);          
+           return  await _congNgheRepo.CreateCongNgheAsync(id, user, congNghe);          
         }
 
         
 
-        public async Task<int> UpdateTech(string user, string id, TechModel tech)
+        public async Task<int> UpdateTech(string vitriId, string user, string id, TechModel tech)
         {
             CongNghe congNghe = _mapper.Map<CongNghe>(tech);
-            return await _congNgheRepo.UpdateCongNgheAsync(user,id, congNghe);
+            return await _congNgheRepo.UpdateCongNgheAsync(vitriId, user ,id, congNghe);
         }
 
-        public async Task<int> DeleteTech(string user, string id)
+        public async Task<int> DeleteTech(string idVitri, string user, string id)
         {            
-            return   await _congNgheRepo.DeleteCongNgheAsync(user, id);
+            return   await _congNgheRepo.DeleteCongNgheAsync(idVitri, user, id);
         }
 
 

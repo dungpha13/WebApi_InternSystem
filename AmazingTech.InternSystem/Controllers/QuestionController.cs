@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Services;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,7 +24,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         [Route("get/{idCongNghe}")]
         public async Task<IActionResult> GetAllQuestion(string idCongNghe)
         {
@@ -32,7 +33,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         [Route("create/{idCongNghe}")]
         public async Task<IActionResult> CreateQuestion(string idCongNghe,[FromBody] QuestionDTO cauhoi)
         {
@@ -42,7 +43,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         [Route("update/{idCongNghe}/{idCauHoi}")]
         public async Task<IActionResult> UpdateTech(string idCongNghe, string idCauHoi, [FromBody] QuestionDTO cauhoi)
         {
@@ -52,7 +53,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         [Route("delete/{idCongNghe}/{idCauHoi}")]
         public async Task<IActionResult> DeleteTech(string idCongNghe, string idCauHoi)
         {
@@ -61,5 +62,12 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(save == 1 ? "Success" : "failed");
 
         }
+/*
+        [HttpPost("{idCongNghe}/list")]
+        public async Task<IActionResult> AddListInternInfo(IFormFile file, string idCongNghe)
+        {
+            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return await _service.AddListQuest(file, user ,idCongNghe);
+        }*/
     }
 }

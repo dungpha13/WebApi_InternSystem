@@ -1,6 +1,8 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmazingTech.InternSystem.Repositories
@@ -11,7 +13,7 @@ namespace AmazingTech.InternSystem.Repositories
         Task<int> CreateCauHoiAsync(string user, string congngheId, Cauhoi cauhoi);
         Task<int> UpdateQuestionAsync(string user, string congNgheId, string cauhoiId, Cauhoi cauhoi);
         Task<int> DeleteQuestionAsync(string user, string congNgheId, string cauhoiId);
-
+        Task<int> AddListQuestionAsync(List<Cauhoi> cauhois, string user, string id);
     }
     public class QuestionRepository : IQuestionRepository
     {
@@ -81,6 +83,40 @@ namespace AmazingTech.InternSystem.Repositories
             return 1;
 
         }
+
+        public async Task<int> AddListQuestionAsync(List<Cauhoi> cauhois, string user, string id)
+        {
+            var existingKi = await _context.CongNghes
+                .Where(x => x.Id == id && x.DeletedBy == null)
+                .FirstOrDefaultAsync();
+
+            if (existingKi == null)
+            {
+                return 0;
+            }
+
+            foreach (var cauhoi in cauhois)
+            {
+                cauhoi.CreatedBy = user;
+                cauhoi.LastUpdatedBy = user;
+                // Add the question to the context
+                _context.cauhois.Add(cauhoi);
+
+                // Create a relationship between the question and the technology
+                CauhoiCongnghe cauhoiconghe = new CauhoiCongnghe()
+                {
+                    IdCauhoi = cauhoi.Id,
+                    IdCongNghe = existingKi.Id,
+                    CreatedBy = user,
+                    LastUpdatedBy = user,
+                };
+                _context.cauhoiCongnghes.Add(cauhoiconghe);
+              
+            }
+
+           return await _context.SaveChangesAsync();
+        }
+
 
     }
 }

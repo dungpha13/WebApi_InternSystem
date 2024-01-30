@@ -27,41 +27,42 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Roles.ADMIN)]
-        [Route("get")]
-        public async Task<IActionResult> GetAllTech()
+        [Authorize(Roles = "Admin, HR")]
+        
+        [Route("get/{idViTri}")]
+        public async Task<IActionResult> GetAllTech(string idViTri)
         {
-            var tech = await _service.getAllTech();
+            var tech = await _service.getAllTech(idViTri);
             return Ok(tech);
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.ADMIN)]
-        [Route("create")]
-        public async Task<IActionResult> CreateTech([FromBody] TechModel tech)
+        [Authorize(Roles = "Admin, HR")]
+        [Route("create/{idViTri}")]
+        public async Task<IActionResult> CreateTech(string idViTri, [FromBody] TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.CreateTech(tech, user);
+            var save = await _service.CreateTech(idViTri, tech, user);
              return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
         }
 
         [HttpPut]
-        [Authorize(Roles = Roles.ADMIN)]
-        [Route("update/{id}")]
-        public async Task<IActionResult> UpdateTech(string id, TechModel tech)
+        [Authorize(Roles = "Admin, HR")]
+        [Route("update/{idViTri}/{id}")]
+        public async Task<IActionResult> UpdateTech(string idViTri,string id, TechModel tech)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.UpdateTech(user, id, tech);
+            var save = await _service.UpdateTech(idViTri,user, id, tech);
             return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
         }
 
         [HttpDelete]
-        [Authorize(Roles = Roles.ADMIN)]
-        [Route("delete/{id}")]
-        public async Task<IActionResult> DeleteTech(string id)
+        [Authorize(Roles = "Admin, HR")]
+        [Route("delete/{idViTri}/{id}")]
+        public async Task<IActionResult> DeleteTech(string idViTri, string id)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.DeleteTech(user, id);
+            var save = await _service.DeleteTech(idViTri,user, id);
             return Ok(save == 1 ? "Success" : "failed");
 
         }

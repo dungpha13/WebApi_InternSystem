@@ -5,7 +5,10 @@ using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using OfficeOpenXml;
+using swp391_be.API.Models.Request.Authenticate;
 using System.Collections.Generic;
 
 namespace AmazingTech.InternSystem.Services
@@ -16,6 +19,7 @@ namespace AmazingTech.InternSystem.Services
         Task<int> CreateQuestion(string user, string congngheId, QuestionDTO cauHoi);
         Task<int> UpdateQuestion(string user, string id, string cauhoiId, QuestionDTO CauHoi);
         Task<int> DeleteQuestion(string user, string id, string cauhoiId);
+        Task<IActionResult> AddListQuest(IFormFile file, string CongNgheId, string UserId);
 
     }
     public class QuestionService: IQuestionService
@@ -55,5 +59,67 @@ namespace AmazingTech.InternSystem.Services
             return await _QuestionRepo.DeleteQuestionAsync(user, id, cauhoiId);
         }
 
+        private List<Cauhoi> ReadFile(IFormFile file)
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    file.CopyToAsync(stream);
+
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+
+                        var startRow = worksheet.Dimension.Start.Row;
+                        var startCol = worksheet.Dimension.Start.Column;
+                        var endRow = worksheet.Dimension.End.Row;
+                        var endCol = worksheet.Dimension.End.Column;
+
+                        var range = worksheet.Cells[startRow,startCol,endRow,endCol];
+
+
+                        List<Cauhoi> QuesionList = range.ToCollectionWithMappings<Cauhoi>(row =>
+                        {
+                            var cauhoi = new Cauhoi
+                            {
+                                NoiDung = row.GetText("NoiDung"),
+                            };
+
+                            return cauhoi;
+                        }, options => options.HeaderRow = 0);
+
+                        return QuesionList;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<Cauhoi>();
+            }
+        }
+
+        public async Task<IActionResult> AddListQuest(IFormFile file, string UserId, string CongNgheId)
+        {
+            List<Cauhoi> cauhoi = ReadFile(file);            
+
+            foreach (var Cauhoi in cauhoi)
+            {
+                var cauHoi = new Cauhoi
+                {
+                    NoiDung = Cauhoi.NoiDung,
+                };
+            }
+
+            var result = await _QuestionRepo.AddListQuestionAsync(cauhoi, UserId, CongNgheId);
+
+            if (result == 0)
+            {
+                return new BadRequestObjectResult("Something went wrong!");
+            }
+
+            return new OkResult();
+        }
     }
 }
