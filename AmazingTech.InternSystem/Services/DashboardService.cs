@@ -21,12 +21,14 @@ namespace AmazingTech.InternSystem.Services
     {
         private readonly IInternInfoRepo _internInfoRepo;
         private readonly IUserRepository _userRepository;
+        private readonly IDashboardRepository _dashboardRepository;
         private readonly UserManager<User> _userManager;
-        public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager)
+        public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager, IDashboardRepository dashboardRepository)
         {
             _internInfoRepo = internInfoRepo;
             _userRepository = userRepository;
             _userManager = userManager;
+            _dashboardRepository = dashboardRepository;
         }
         public int CountInternSendCVInAYear(int year)
         {
@@ -72,14 +74,6 @@ namespace AmazingTech.InternSystem.Services
             var listIntern = listUser.Where(listUser => _userManager.IsInRoleAsync(listUser, Roles.INTERN).Result).ToList().Count;
             return listIntern;
         }
-
-        private readonly IDashboardRepository _dashboardRepository;
-
-        public DashboardService(IDashboardRepository dashboardRepository)
-        {
-            _dashboardRepository = dashboardRepository;
-        }
-        
 
         public int GetTotalUsersWithStatusTrue()
         {

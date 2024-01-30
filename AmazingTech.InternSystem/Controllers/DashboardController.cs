@@ -9,14 +9,14 @@ namespace AmazingTech.InternSystem.Controllers
     [ApiController]
     public class DashboardController : ControllerBase
     {
-        private readonly DashboardService _dashboardService;
-        public DashboardController(DashboardService dashboardService)
+        private readonly IDashboardService _dashboardService;
+        public DashboardController(IDashboardService dashboardService)
         {
             _dashboardService = dashboardService;
         }
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/[controller/count-intern-send-cv-in-one-year]")]
+        [Route("api/[controller]/count-intern-send-cv-in-one-year")]
         public IActionResult CountInternSendCVInAYear(int year) 
         {
             try
@@ -31,7 +31,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpGet]
         [Authorize(Roles ="Admin")]
-        [Route("api/[controller/count-intern-send-cv-in-a-precious-of-a-year]")]
+        [Route("api/[controller]/count-intern-send-cv-in-a-precious-of-a-year")]
         public IActionResult CountInternSendCVInPreciousOfAYear(int year,int precious)
         {
             try
