@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 {

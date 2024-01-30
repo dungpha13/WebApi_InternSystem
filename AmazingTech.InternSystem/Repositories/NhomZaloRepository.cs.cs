@@ -3,6 +3,8 @@ using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using static AmazingTech.InternSystem.Data.Enum.Enums;
 
@@ -29,7 +31,12 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<NhomZalo?> GetGroupByIdAsync(string id)
         {
-            return await _appDbContext.NhomZalos.FindAsync(id);
+            var groupZalo = await _appDbContext.NhomZalos.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefaultAsync();
+            if (groupZalo == null)
+            {
+                throw new Exception();
+            }
+            return groupZalo;
         }
 
         public async Task AddNewZaloAsync(NhomZalo zalo)
@@ -40,12 +47,11 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task UpdateZaloAsync(string id, NhomZalo zalo)
         {
-            var nhomZalo = await _appDbContext.NhomZalos.FindAsync(id);
+            var nhomZalo = await _appDbContext.NhomZalos.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefaultAsync();
 
             if (nhomZalo == null)
             {
-                _logger.LogError($"NhomZalo with ID {id} not found.");
-                return;
+                throw new Exception();
             }
 
             nhomZalo.TenNhom = zalo.TenNhom ?? nhomZalo.TenNhom;
@@ -61,12 +67,11 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task DeleteZaloAsync(string id)
         {
-            var nhomZalo = await _appDbContext.NhomZalos.FindAsync(id);
+            var nhomZalo = await _appDbContext.NhomZalos.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefaultAsync();
 
             if (nhomZalo == null)
             {
-                _logger.LogError($"NhomZalo with ID {id} not found.");
-                return;
+                throw new Exception();
             }
 
             nhomZalo.DeletedTime = DateTime.Now;
