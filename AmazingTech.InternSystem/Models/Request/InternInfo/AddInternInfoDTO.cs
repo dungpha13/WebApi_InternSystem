@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public DateTime NgaySinh { get; set; }
         [Required]
-        [RegularExpression(@"^\+(?:[0-9] ?){6,14}[0-9]$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")] //Kiểm tra sđt chính xác 10 ký tự và phải là chữ số
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")] //Kiểm tra sđt chính xác 10 ký tự và phải là chữ số
         public string Sdt { get; set; }
         [Required]
         public string DiaChi { get; set; }
