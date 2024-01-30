@@ -11,11 +11,9 @@ namespace AmazingTech.InternSystem.Services
         public int CountInternSendCVInPreciousOfYear(int year, int precious);
         public int CountInternInterviewedInAYear(int year);
         public int CountInternInterviewedInPreciousOfYear(int year, int precious);
-        /*public void UpdateInternedCount();
-        public Dashboard GetDashboard();*/
-
         public int GetTotalUsersWithStatusTrue();
         public int GetTotalUsersWithStatusTrueAndYear(int year);
+       
     }
     public class DashboardService : IDashboardService
     {
@@ -88,5 +86,6 @@ namespace AmazingTech.InternSystem.Services
         {
             return _dashboardRepository.GetTotalUsersWithStatusTrueAndYear(year);
         }
+        
     }
 }
