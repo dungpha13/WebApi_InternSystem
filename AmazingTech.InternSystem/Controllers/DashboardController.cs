@@ -79,7 +79,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/[controller]/count-all-intern-be-interviewd")]
+        [Route("api/[controller]/count-all-interned")]
 
         public IActionResult GetTotalUsersWithStatusTrue()
         {
