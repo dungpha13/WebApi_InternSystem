@@ -27,13 +27,14 @@ namespace AmazingTech.InternSystem.Services
         private readonly IKiThucTapRepository _kiThucTapRepository;
 
         private readonly AppDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public InternInfoService(IInternInfoRepo internRepo,
             ICommentRepository commentRepo,
             IMapper mapper, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
             IKiThucTapRepository kiThucTapRepository,
-            AppDbContext dbContext)
+            AppDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             _internRepo = internRepo;
@@ -43,8 +44,8 @@ namespace AmazingTech.InternSystem.Services
             _roleManager = roleManager;
             _dbContext = dbContext;
             _kiThucTapRepository = kiThucTapRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
-     
 
         //Get all Intern
         public async Task<IActionResult> GetAllInternInfo()
@@ -456,27 +457,34 @@ namespace AmazingTech.InternSystem.Services
 
                         List<InternInfo> internList = range.ToCollectionWithMappings<InternInfo>(row =>
                         {
-                            var intern = new InternInfo
+                            if (!string.IsNullOrEmpty(row.GetText("STT")))
                             {
-                                HoTen = row.GetText("HoVaTen"),
-                                NgaySinh = DateTime.FromOADate(row.GetValue<double>("NgaySinh")),
-                                GioiTinh = row.GetText("GioiTinh").ToUpper().Equals("NAM") ? true : false,
-                                MSSV = row.GetText("MSSV"),
-                                EmailTruong = row.GetText("EmailTruong"),
-                                EmailCaNhan = row.GetText("EmailCaNhan"),
-                                Sdt = row.GetText("SDT"),
-                                DiaChi = row.GetText("DiaChi"),
-                                SdtNguoiThan = row.GetText("SdtNguoiThan"),
-                                GPA = row.GetValue<decimal>("GPA"),
-                                TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
-                                NganhHoc = row.GetText("NganhHoc"),
-                                LinkFacebook = row.GetText("LinkFacebook"),
-                                LinkCV = row.GetText("LinkCV"),
-                                Round = 0,
-                                Status = "true",
-                            };
+                                var intern = new InternInfo
+                                {
+                                    HoTen = row.GetText("HoVaTen"),
+                                    NgaySinh = DateTime.FromOADate(row.GetValue<double>("NgaySinh")),
+                                    GioiTinh = row.GetText("GioiTinh").ToUpper().Equals("NAM") ? true : false,
+                                    MSSV = row.GetText("MSSV"),
+                                    EmailTruong = row.GetText("EmailTruong"),
+                                    EmailCaNhan = row.GetText("EmailCaNhan"),
+                                    Sdt = row.GetText("SDT"),
+                                    DiaChi = row.GetText("DiaChi"),
+                                    SdtNguoiThan = row.GetText("SdtNguoiThan"),
+                                    GPA = row.GetValue<decimal>("GPA"),
+                                    TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
+                                    NganhHoc = row.GetText("NganhHoc"),
+                                    LinkFacebook = row.GetText("LinkFacebook"),
+                                    LinkCV = row.GetText("LinkCV"),
+                                    Round = 0,
+                                    Status = "true",
+                                };
 
-                            return intern;
+                                return intern;
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }, options => options.HeaderRow = 0);
 
                         return internList;
@@ -492,6 +500,8 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
         {
+            var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
             List<InternInfo> interns = ReadFile(file);
             var existingKi = _kiThucTapRepository.GetKiThucTap(kiThucTapId);
 
@@ -518,6 +528,7 @@ namespace AmazingTech.InternSystem.Services
 
                 intern.KiThucTapId = existingKi.Id;
                 intern.UserId = userId;
+                intern.CreatedBy = uId;
             }
 
             var result = await _internRepo.AddListInternInfoAsync(interns);
