@@ -377,6 +377,8 @@ namespace AmazingTech.InternSystem.Services
             var identityUser = CreateUserFromRequest(registerUserRequestDTO);
             var identityResult = await _userManager.CreateAsync(identityUser, registerUserRequestDTO.Password);
 
+            var result = await _userManager.GetUsersInRoleAsync(Roles.INTERN);
+
             if (identityResult.Succeeded)
             {
                 var roleExists = await _roleManager.RoleExistsAsync(Roles.INTERN);
@@ -500,10 +502,10 @@ namespace AmazingTech.InternSystem.Services
             {
                 var user = new RegisterUserRequestDTO
                 {
-                    Username = intern.EmailTruong,
+                    Username = intern.EmailTruong!,
                     HoVaTen = intern.HoTen,
-                    PhoneNumber = intern.Sdt,
-                    Email = intern.EmailCaNhan,
+                    PhoneNumber = intern.Sdt!,
+                    Email = intern.EmailCaNhan!,
                     Password = "1111111111ooo"
                 };
 

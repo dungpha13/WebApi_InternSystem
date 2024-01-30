@@ -33,15 +33,15 @@ namespace AmazingTech.InternSystem.Services
         }
         public int CountInternSendCVInAYear(int year)
         {
-            if(year < 0)
+            if (year < 0)
             {
                 throw new BadHttpRequestException("Year can be negative");
             }
             return _internInfoRepo.GetInternSendCVInAYear(year);
         }
-        public int CountInternSendCVInPreciousOfYear(int year,int precious)
+        public int CountInternSendCVInPreciousOfYear(int year, int precious)
         {
-            if(year < 0 || precious<0)
+            if (year < 0 || precious < 0)
             {
                 throw new BadHttpRequestException("Year or Precious can be negative");
             }
@@ -53,13 +53,13 @@ namespace AmazingTech.InternSystem.Services
         }
         public int CountInternInterviewedInAYear(int year)
         {
-            if(year < 0)
+            if (year < 0)
             {
                 throw new BadHttpRequestException("Year can be negative");
             }
             var listUser = _userRepository.GetUserHavingInterviewScheduleAndStatusDoneInAYear(year);
-            var listIntern = listUser.Where(listUser => _userManager.IsInRoleAsync(listUser,Roles.INTERN).Result).ToList().Count;
-            return listIntern; 
+            var listIntern = listUser.Where(listUser => _userManager.IsInRoleAsync(listUser, Roles.INTERN).Result).ToList().Count;
+            return listIntern;
         }
         public int CountInternInterviewedInPreciousOfYear(int year, int precious)
         {
@@ -71,7 +71,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("Làm đéo gì có quý lớn hơn 4 mà search chi vậy ");
             }
-            var listUser = _userRepository.GetUsersHavingInterviewScheduleAndStatusDoneInAQuarter(year,precious);
+            var listUser = _userRepository.GetUsersHavingInterviewScheduleAndStatusDoneInAQuarter(year, precious);
             var listIntern = listUser.Where(listUser => _userManager.IsInRoleAsync(listUser, Roles.INTERN).Result).ToList().Count;
             return listIntern;
         }

@@ -1,4 +1,5 @@
-﻿using AmazingTech.InternSystem.Data.Entity;
+﻿using System.Security.Claims;
+using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.KiThucTap;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
@@ -12,16 +13,19 @@ namespace AmazingTech.InternSystem.Services
         private IKiThucTapRepository _kiRepository;
         private readonly ITruongRepository _truongRepository;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public KiThucTapService(IKiThucTapRepository kiThucTapRepository, ITruongRepository truongRepository, IMapper mapper)
+        public KiThucTapService(IKiThucTapRepository kiThucTapRepository, ITruongRepository truongRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _kiRepository = kiThucTapRepository;
             _truongRepository = truongRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IActionResult AddKiThucTap(AddKiThucTapDTO request)
         {
+            var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var existingTruong = _truongRepository.GetTruong(request.IdTruong);
 
@@ -35,7 +39,8 @@ namespace AmazingTech.InternSystem.Services
                 Ten = request.Name,
                 NgayBatDau = request.NgayBatDau,
                 NgayKetThuc = request.NgayKetThuc,
-                IdTruong = existingTruong.Id
+                IdTruong = existingTruong.Id,
+                CreatedBy = uId
             };
 
             var result = _kiRepository.AddKiThucTap(ki);
@@ -93,6 +98,8 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
         {
+            var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
             var existingKi = _kiRepository.GetKiThucTap(id);
 
             if (existingKi is null)
@@ -100,9 +107,27 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            existingKi.Ten = ki.Name;
+            if (!string.IsNullOrEmpty(ki.Name))
+            {
+                existingKi.Ten = existingKi.Ten;
+            }
+
+            var check = _kiRepository.GetAllKiThucTaps().Count == 0;
+
+            if (!check)
+            {
+                foreach (var item in _kiRepository.GetAllKiThucTaps())
+                {
+                    if (item is not null && item.Ten.ToUpper().Equals(ki.Name.ToUpper()))
+                    {
+                        return new BadRequestObjectResult("This name already taken");
+                    }
+                }
+            }
+
             existingKi.NgayBatDau = ki.NgayBatDau;
             existingKi.NgayKetThuc = ki.NgayKetThuc;
+            existingKi.LastUpdatedBy = uId;
 
             var result = _kiRepository.UpdateKiThucTap(existingKi);
 

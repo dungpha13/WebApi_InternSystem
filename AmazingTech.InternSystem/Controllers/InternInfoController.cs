@@ -38,7 +38,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             return await _internInfoService.GetAllDeletedInternInfo();
         }
-      
+
         [HttpGet("get/{mssv}")]
         public async Task<IActionResult> GetInternInfo(string mssv)
         {

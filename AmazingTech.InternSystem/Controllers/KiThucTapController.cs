@@ -9,7 +9,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/ki-thuc-taps")]
     [ApiController]
-    [Authorize(Roles = "Admin,School,HR")]
+    // [Authorize(Roles = "Admin,School,HR")]
     public class KiThucTapController : ControllerBase
     {
         private readonly IKiThucTapService _kiThucTapService;
