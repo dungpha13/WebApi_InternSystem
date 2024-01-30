@@ -13,6 +13,8 @@ namespace AmazingTech.InternSystem.Repositories
         public List<User> GetHrOrMentorWithoutInterview(DateTime startTime, DateTime endTime);
         public List<User> GetInternsWithoutInterview();
         public User GetUserByEmail(string email);
+        public List<User> GetUserHavingInterviewScheduleAndStatusDoneInAYear(int year);
+        public List<User> GetUsersHavingInterviewScheduleAndStatusDoneInAQuarter(int year, int quarter);
 
     }
     public class UserRepository : IUserRepository
@@ -131,7 +133,35 @@ namespace AmazingTech.InternSystem.Repositories
                 return usersWithoutInterview;
             }
         }
-   
+        public List<User> GetUserHavingInterviewScheduleAndStatusDoneInAYear(int year)
+        {
+            using(var context = new AppDbContext()) 
+            {
+                var user = context.Set<User>().Where(user => context.Set<LichPhongVan>()
+                .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id 
+                && interview.LastUpdatedTime.HasValue && interview.LastUpdatedTime.Value.Year == year 
+                && interview.DeletedTime == null && interview.TrangThai == Data.Enum.Status.Done)).ToList();
+                return user;
+            }
+        }
+        public List<User> GetUsersHavingInterviewScheduleAndStatusDoneInAQuarter(int year, int quarter)
+        {
+            using (var context = new AppDbContext())
+            {
+                var startDate = new DateTime(year, 3 * quarter - 2, 1);
+                var endDate = startDate.AddMonths(3).AddDays(-1);
+
+                var users = context.Set<User>().Where(user => context.Set<LichPhongVan>()
+                    .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id
+                        && interview.LastUpdatedTime.HasValue
+                        && interview.LastUpdatedTime.Value >= startDate
+                        && interview.LastUpdatedTime.Value <= endDate
+                        && interview.DeletedTime == null
+                        && interview.TrangThai == Data.Enum.Status.Done)).ToList();
+
+                return users;
+            }
+        }
     }
 
 }
