@@ -61,6 +61,7 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
+            CreateMap<TechView, CongNghe>().ReverseMap();
 
             CreateMap<KiThucTap, KiThucTapResponseDTO>()
                 .ForMember(dest => dest.TenTruong, opt => opt.MapFrom(src => src.Truong.Ten))

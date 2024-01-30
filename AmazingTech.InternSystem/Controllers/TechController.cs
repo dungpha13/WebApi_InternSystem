@@ -3,6 +3,7 @@ using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,13 +28,19 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
-        
+        [Authorize(Roles = "Admin, HR")]        
         [Route("get/{idViTri}")]
         public async Task<IActionResult> GetAllTech(string idViTri)
         {
-            var tech = await _service.getAllTech(idViTri);
-            return Ok(tech);
+            try
+            {
+               var tech = await _service.getAllTech(idViTri);
+                return Ok(tech);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Vi Tri is not existed");
+            }           
         }
 
         [HttpPost]
@@ -41,9 +48,17 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("create/{idViTri}")]
         public async Task<IActionResult> CreateTech(string idViTri, [FromBody] TechModel tech)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.CreateTech(idViTri, tech, user);
-             return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
+           
+            try 
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var save = await _service.CreateTech(idViTri, tech, user);
+                return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
+
+            } catch (Exception ex)
+            {
+                return BadRequest("Vi Tri is not existed");
+            }           
         }
 
         [HttpPut]
@@ -51,9 +66,15 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("update/{idViTri}/{id}")]
         public async Task<IActionResult> UpdateTech(string idViTri,string id, TechModel tech)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.UpdateTech(idViTri,user, id, tech);
-            return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
+            try {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var save = await _service.UpdateTech(idViTri, user, id, tech);
+                return Ok(save == 1 ? "Success" : "failed or Tech is Existed");
+            } 
+            catch (Exception ex)
+            {
+                return BadRequest("Vi Tri is not existed");
+            }           
         }
 
         [HttpDelete]
@@ -61,12 +82,16 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("delete/{idViTri}/{id}")]
         public async Task<IActionResult> DeleteTech(string idViTri, string id)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.DeleteTech(idViTri,user, id);
-            return Ok(save == 1 ? "Success" : "failed");
-
+            try 
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var save = await _service.DeleteTech(idViTri, user, id);
+                return Ok(save == 1 ? "Success" : "failed");
+            } 
+            catch (Exception ex) 
+            {
+                return BadRequest("Vi Tri is not existed");
+            }          
         }
-
-
     }
 }

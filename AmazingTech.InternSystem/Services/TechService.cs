@@ -10,7 +10,7 @@ namespace AmazingTech.InternSystem.Services
     public interface ITechService
     {
 
-        Task<List<CongNghe>> getAllTech(string id);
+        Task<List<TechView>> getAllTech(string id);
 
         Task<int> CreateTech(string id, TechModel tech, string user);
 
@@ -33,10 +33,11 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public async Task<List<CongNghe>> getAllTech(string id)
+        public async Task<List<TechView>> getAllTech(string id)
         {
-            List<CongNghe> congNghe = await _congNgheRepo.GetAllCongNgheAsync(id);          
-            return congNghe;
+            List<CongNghe> congNghe = await _congNgheRepo.GetAllCongNgheAsync(id);       
+            List<TechView> tech = _mapper.Map<List<TechView>>(congNghe);
+            return tech;
         }
 
         public async Task<int> CreateTech(string id, TechModel tech, string user)
