@@ -120,11 +120,6 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            if (!string.IsNullOrEmpty(ki.Name))
-            {
-                existingKi.Ten = existingKi.Ten;
-            }
-
             var check = _kiRepository.GetAllKiThucTaps();
 
             if (check.Any())
@@ -138,6 +133,7 @@ namespace AmazingTech.InternSystem.Services
                 }
             }
 
+            existingKi.Ten = ki.Name;
             existingKi.NgayBatDau = ki.NgayBatDau;
             existingKi.NgayKetThuc = ki.NgayKetThuc;
             existingKi.LastUpdatedBy = uId;

@@ -29,7 +29,7 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("get-by-truong/{idTruong}")]
         public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
         {
-           return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
+            return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
         }
 
         [HttpGet("get/{id}")]
@@ -44,7 +44,7 @@ namespace AmazingTech.InternSystem.Controllers
             return _kiThucTapService.AddKiThucTap(request);
         }
 
-        [HttpPost("update/{id}")]
+        [HttpPut("update/{id}")]
         public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
         {
             return _kiThucTapService.UpdateKiThucTap(ki, id);

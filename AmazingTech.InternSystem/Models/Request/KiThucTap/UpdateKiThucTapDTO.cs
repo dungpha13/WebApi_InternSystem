@@ -5,10 +5,13 @@ namespace AmazingTech.InternSystem.Models.Request.KiThucTap
 {
     public class UpdateKiThucTapDTO : IValidatableObject
     {
+        [Required(ErrorMessage = "Ten ki thuc tap khong duoc de trong")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "NgayBatDau khong duoc de trong")]
         public DateTime? NgayBatDau { get; set; }
-        
+
         // [Compare(nameof(NgayBatDau), ErrorMessage = "NgayKetThuc phai lon hon hoac bang NgayBatDau")]
+        [Required(ErrorMessage = "NgayKetThuc khong duoc de trong")]
         public DateTime? NgayKetThuc { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
