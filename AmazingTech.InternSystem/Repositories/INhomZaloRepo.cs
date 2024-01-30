@@ -9,16 +9,16 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         // Zalo methods
         public Task<List<NhomZalo>> GetAllZaloAsync();
         public Task<NhomZalo?> GetGroupByIdAsync(string id);
-        public Task AddNewZaloAsync(NhomZalo zalo);
-        public Task UpdateZaloAsync(string id, NhomZalo zalo);
-        public Task DeleteZaloAsync(string id);
+        public Task<int> AddNewZaloAsync(string user, NhomZalo zalo);
+        public Task<int> UpdateZaloAsync(string id, string user, NhomZalo zalo);
+        public Task<int> DeleteZaloAsync(string id, string user);
 
 
         // UserNhomZalo methods
         public Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId);
-        public Task AddUserToGroupAsync(string nhomZaloId, UserNhomZalo user);
         public Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId);
-        public Task UpdateUserInGroupAsync(string nhomZaloId, UserNhomZalo updatedUser);
-        public Task RemoveUserFromGroupAsync(string nhomZaloId, string userId);
+        public Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser);
+        public Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZalo updatedUser);
+        public Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId);
     }
 }

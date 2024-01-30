@@ -37,7 +37,6 @@ namespace AmazingTech.InternSystem.Repositories
             var checkidvitri = _context.ViTris.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefault();
             if (checkidvitri == null) { throw new Exception(); }                     
             return await _context.CongNghes.Where(x => x.IdViTri == id && x.DeletedBy == null).ToListAsync();
-           
         }
 
         public async Task<CongNghe> GetCongNgheByIdAsync(string congNgheId)

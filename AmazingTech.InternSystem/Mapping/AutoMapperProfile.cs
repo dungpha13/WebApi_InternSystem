@@ -41,14 +41,14 @@ namespace AmazingTech.InternSystem.Mapping
 
             //Add Comment
             CreateMap<Comment, CommentInternInfoDTO>().ReverseMap();
-            
+
             //View Comment theo InternInfo
             CreateMap<InternInfo, InternCommentDTO>()
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(src =>
                     src.Comments.Select(comment => new CommentDTO
                     {
-                        NguoiComment =  comment.NguoiComment!.HoVaTen!,  
-                        Content =  comment.Content!   
+                        NguoiComment = comment.NguoiComment!.HoVaTen!,
+                        Content = comment.Content!
                     }).ToList()));
 
             CreateMap<DuAn, DuAnResponseDTO>()
@@ -58,6 +58,8 @@ namespace AmazingTech.InternSystem.Mapping
 
 
             CreateMap<DuAn, DuAnModel>().ReverseMap();
+            CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
+            CreateMap<UserNhomZalo, UserNhomZaloDTO>().ReverseMap();
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();

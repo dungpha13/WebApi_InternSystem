@@ -46,8 +46,6 @@ namespace AmazingTech.InternSystem.Services
            return  await _congNgheRepo.CreateCongNgheAsync(id, user, congNghe);          
         }
 
-        
-
         public async Task<int> UpdateTech(string vitriId, string user, string id, TechModel tech)
         {
             CongNghe congNghe = _mapper.Map<CongNghe>(tech);
@@ -56,7 +54,7 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<int> DeleteTech(string idVitri, string user, string id)
         {            
-            return   await _congNgheRepo.DeleteCongNgheAsync(idVitri, user, id);
+            return await _congNgheRepo.DeleteCongNgheAsync(idVitri, user, id);
         }
 
 

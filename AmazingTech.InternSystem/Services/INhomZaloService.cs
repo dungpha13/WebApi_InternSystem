@@ -9,15 +9,15 @@ namespace AmazingTech.InternSystem.Services
         // ZaloGroup methods
         public Task<List<NhomZalo>> GetAllZaloAsync();
         public Task<NhomZalo?> GetGroupByIdAsync(string id);
-        public Task AddNewZaloAsync(NhomZaloDTO zaloDTO);
-        public Task UpdateZaloAsync(string id, NhomZaloDTO zaloDTO);
-        public Task DeleteZaloAsync(string id);
+        public Task<int> AddNewZaloAsync(string user, NhomZaloDTO zaloDTO);
+        public Task<int> UpdateZaloAsync(string id, string user, NhomZaloDTO zaloDTO);
+        public Task<int> DeleteZaloAsync(string id, string user);
 
         // User in ZaloGroup methods
         public Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId);
-        public Task AddUserToGroupAsync(string nhomZaloId, UserNhomZaloDTO userDTO);
         public Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId);
-        public Task UpdateUserInGroupAsync(string nhomZaloId, UserNhomZaloDTO updatedUserDTO);
-        public Task RemoveUserFromGroupAsync(string nhomZaloId, string userId);
+        public Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZaloDTO userDTO);
+        public Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZaloDTO updatedUserDTO);
+        public Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId);
     }
 }

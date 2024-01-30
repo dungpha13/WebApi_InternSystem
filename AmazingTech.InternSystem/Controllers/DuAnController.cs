@@ -1,25 +1,12 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Data.Enum;
-using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Services;
-using AutoMapper;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -30,14 +17,11 @@ namespace AmazingTech.InternSystem.Controllers
     {
         private readonly IDuAnService _duAnService;
         private readonly AppDbContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public DuAnController(IDuAnService duAnService, AppDbContext dbContext, IMapper mapper)
+        public DuAnController(IDuAnService duAnService, AppDbContext dbContext)
         {
             _duAnService = duAnService;
             _dbContext = dbContext;
-            _mapper = mapper;
-
         }
 
         [HttpGet("get")]

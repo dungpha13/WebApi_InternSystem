@@ -6,21 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/group-zalos")]
     [ApiController]
+    //[Authorize(Roles = "Admin,Hr,Mentorn")]
     public class ZaloGroupController : ControllerBase
     {
         private readonly INhomZaloService _nhomZaloService;
-        private readonly ILogger<ZaloGroupController> _logger;
-
         public ZaloGroupController(INhomZaloService nhomZaloService, ILogger<ZaloGroupController> logger)
         {
             _nhomZaloService = nhomZaloService;
-            _logger = logger;
         }
 
         // Manage ZaloGroup
@@ -34,8 +33,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetAllZaloGroupsAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching Zalo groups.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -53,8 +51,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetZaloGroupByIdAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -63,13 +60,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                await _nhomZaloService.AddNewZaloAsync(zaloDTO);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _nhomZaloService.AddNewZaloAsync(user, zaloDTO);
                 return Ok("Zalo group created successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in CreateZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while creating Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -78,13 +75,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                await _nhomZaloService.UpdateZaloAsync(id, zaloDTO);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _nhomZaloService.UpdateZaloAsync(id, user, zaloDTO);
                 return Ok("Zalo group updated successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in UpdateZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -93,13 +90,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                await _nhomZaloService.DeleteZaloAsync(id);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _nhomZaloService.DeleteZaloAsync(id, user);
                 return Ok("Zalo group deleted successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in DeleteZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -114,23 +111,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetUsersInZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching users in Zalo group.");
-            }
-        }
-
-        [HttpPost("add-user-to-zalo/{nhomZaloId}/users")]
-        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZaloDTO userDTO)
-        {
-            try
-            {
-                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, userDTO);
-                return Ok($"User added to Zalo group {nhomZaloId} successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in AddUserToZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while adding user to Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -148,8 +129,22 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetUserInZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching user in Zalo group.");
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+
+        [HttpPost("add-user-to-zalo/{nhomZaloId}/users")]
+        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZaloDTO userDTO)
+        {
+            try
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, userDTO);
+                return Ok($"User added to Zalo group {nhomZaloId} successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -158,13 +153,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, updatedUserDTO);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
                 return Ok($"User in Zalo group {nhomZaloId} updated successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in UpdateUserInZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating user in Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
@@ -173,13 +168,13 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, userId);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
                 return Ok($"User removed from Zalo group {nhomZaloId} successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in RemoveUserFromZaloGroupAsync: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while removing user from Zalo group.");
+                return StatusCode(500, "Internal Server Error");
             }
         }
     }

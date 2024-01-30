@@ -39,13 +39,22 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             return groupZalo;
         }
 
-        public async Task AddNewZaloAsync(NhomZalo zalo)
+        public async Task<int> AddNewZaloAsync(string user, NhomZalo zalo)
         {
-            await _appDbContext.NhomZalos.AddAsync(zalo);
-            await _appDbContext.SaveChangesAsync();
+            var nhomZalo = _appDbContext.NhomZalos.Where(x => x.TenNhom == zalo.TenNhom  && x.DeletedBy == null).FirstOrDefault();
+            if (nhomZalo == null)
+            {
+                throw new Exception();
+            }
+
+            zalo.CreatedBy = user;
+            zalo.LastUpdatedBy = user;
+            zalo.LastUpdatedTime = DateTime.Now;
+            _appDbContext.NhomZalos.Add(zalo);
+            return await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateZaloAsync(string id, NhomZalo zalo)
+        public async Task<int> UpdateZaloAsync(string id, string user, NhomZalo zalo)
         {
             var nhomZalo = await _appDbContext.NhomZalos.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefaultAsync();
 
@@ -59,13 +68,13 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 ? (await _appDbContext.Users.FindAsync(zalo.IdMentor))?.Id
                 : nhomZalo.IdMentor;
             nhomZalo.LinkNhom = zalo.LinkNhom ?? nhomZalo.LinkNhom;
-            nhomZalo.LastUpdatedBy = zalo.LastUpdatedBy;
+            nhomZalo.LastUpdatedBy = user;
             nhomZalo.LastUpdatedTime = DateTime.Now;
 
-            await _appDbContext.SaveChangesAsync();
+            return await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteZaloAsync(string id)
+        public async Task<int> DeleteZaloAsync(string id, string user)
         {
             var nhomZalo = await _appDbContext.NhomZalos.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefaultAsync();
 
@@ -74,9 +83,11 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 throw new Exception();
             }
 
+            nhomZalo.DeletedBy = user;
             nhomZalo.DeletedTime = DateTime.Now;
             //_appDbContext.NhomZalos.Remove(nhomZalo);
             await _appDbContext.SaveChangesAsync();
+            return 1;
         }
 
         // UserNhomZalo methods
@@ -87,23 +98,6 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 .ToListAsync();
         }
 
-        public async Task AddUserToGroupAsync(string nhomZaloId, UserNhomZalo user)
-        {
-            var nhomZalo = await _appDbContext.NhomZalos.FindAsync(nhomZaloId);
-
-            if (nhomZalo == null)
-            {
-                _logger.LogError($"NhomZalo with ID {nhomZaloId} not found.");
-                return;
-            }
-
-            user.IdNhomZalo = nhomZaloId;
-            user.JoinedTime = DateTime.Now;
-
-            await _appDbContext.UserNhomZalos.AddAsync(user);
-            await _appDbContext.SaveChangesAsync();
-        }
-
         public async Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId)
         {
             return await _appDbContext.UserNhomZalos
@@ -111,7 +105,25 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 .FirstOrDefaultAsync();
         }
 
-        public async Task UpdateUserInGroupAsync(string nhomZaloId, UserNhomZalo updatedUser)
+        public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser)
+        {
+            var nhomZalo = await _appDbContext.NhomZalos.FindAsync(nhomZaloId);
+
+            if (nhomZalo == null)
+            {
+                throw new Exception($"NhomZalo with ID {nhomZaloId} not found.");
+            }
+
+            addUser.IdNhomZalo = nhomZaloId;
+            addUser.JoinedTime = DateTime.Now;
+            addUser.CreatedBy = user;
+            addUser.LastUpdatedBy = user;
+            addUser.LastUpdatedTime = DateTime.Now;
+
+            _appDbContext.UserNhomZalos.Add(addUser);
+            return await _appDbContext.SaveChangesAsync();
+        }
+        public async Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZalo updatedUser)
         {
             var userNhomZalo = await _appDbContext.UserNhomZalos
                 .Where(x => x.IdNhomZalo == nhomZaloId && x.UserId == updatedUser.UserId)
@@ -119,19 +131,20 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             if (userNhomZalo == null)
             {
-                _logger.LogError($"UserNhomZalo with ID {updatedUser.UserId} in NhomZalo with ID {nhomZaloId} not found.");
-                return;
+                throw new Exception($"UserNhomZalo with ID {updatedUser.UserId} in NhomZalo with ID {nhomZaloId} not found.");
             }
 
             userNhomZalo.UserId = updatedUser.UserId;
             userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
             userNhomZalo.JoinedTime = updatedUser.JoinedTime ?? userNhomZalo.JoinedTime; 
             userNhomZalo.LeftTime = updatedUser.LeftTime;
+            userNhomZalo.LastUpdatedBy = user;
+            userNhomZalo.LastUpdatedTime = DateTime.Now;
 
-            await _appDbContext.SaveChangesAsync();
+            return await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveUserFromGroupAsync(string nhomZaloId, string userId)
+        public async Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId)
         {
             var userNhomZalo = await _appDbContext.UserNhomZalos
                 .Where(x => x.IdNhomZalo == nhomZaloId && x.UserId == userId)
@@ -139,13 +152,15 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             if (userNhomZalo == null)
             {
-                _logger.LogError($"UserNhomZalo with ID {userId} in NhomZalo with ID {nhomZaloId} not found.");
-                return;
+                throw new Exception($"UserNhomZalo with ID {userId} in NhomZalo with ID {nhomZaloId} not found.");
             }
 
             userNhomZalo.LeftTime = DateTime.Now;
+            userNhomZalo.DeletedBy = user;
+            userNhomZalo.DeletedTime = DateTime.Now;
             //_appDbContext.UserNhomZalos.Remove(userNhomZalo);
             await _appDbContext.SaveChangesAsync();
+            return 1;
         }
     }
 }
