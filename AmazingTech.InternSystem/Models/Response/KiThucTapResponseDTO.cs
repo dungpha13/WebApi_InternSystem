@@ -6,6 +6,7 @@ namespace AmazingTech.InternSystem.Models.Response
 {
     public class KiThucTapResponseDTO
     {
+        public string Id { get; set; }
         public string? Ten { get; set; }
         public DateTime? NgayBatDau { get; set; }
         public DateTime? NgayKetThuc { get; set; }
