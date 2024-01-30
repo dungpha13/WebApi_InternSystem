@@ -47,7 +47,7 @@ namespace AmazingTech.InternSystem.Services
             }
             if (precious >= 5)
             {
-                throw new BadHttpRequestException("Làm đéo gì có quý lớn hơn 4 mà search chi vậy ");
+                throw new BadHttpRequestException("Please enter 1 to 4");
             }
             return _internInfoRepo.GetInternSendCVInPrecious(year, precious);
         }
@@ -69,7 +69,7 @@ namespace AmazingTech.InternSystem.Services
             }
             if (precious >= 5)
             {
-                throw new BadHttpRequestException("Làm đéo gì có quý lớn hơn 4 mà search chi vậy ");
+                throw new BadHttpRequestException("Please enter 1 to 4");
             }
             var listUser = _userRepository.GetUsersHavingInterviewScheduleAndStatusDoneInAQuarter(year,precious);
             var listIntern = listUser.Where(listUser => _userManager.IsInRoleAsync(listUser, Roles.INTERN).Result).ToList().Count;
