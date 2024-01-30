@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Services
@@ -23,9 +24,9 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public IActionResult SearchProject(string ten, string leaderId)
+        public IActionResult SearchProject(string ten, string leaderName)
         {
-            var duAns = _duAnRepo.SearchProject(ten, leaderId);
+            var duAns = _duAnRepo.SearchProject(ten, leaderName);
             return new OkObjectResult(duAns);
         }
 
@@ -39,9 +40,10 @@ namespace AmazingTech.InternSystem.Services
         {
             var duAn = _duAnRepo.GetDuAnById(id);
             return new OkObjectResult(duAn);
+            //return new OkObjectResult(_mapper.Map<DuAnModel>(duAn));
         }
 
-        public IActionResult CreateDuAn(string user, DuAnModel createDuAn)
+        public IActionResult CreateDuAn(DuAnModel createDuAn)
         {
             try
             {
@@ -53,7 +55,7 @@ namespace AmazingTech.InternSystem.Services
                     return new BadRequestObjectResult("The project name already exists");
                 }
 
-                var result = _duAnRepo.CreateDuAn(user, duAn);
+                var result = _duAnRepo.CreateDuAn(duAn);
 
                 if (result == -1)
                 {
@@ -74,10 +76,10 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
-        public IActionResult UpdateDuAn(string user, string id, DuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn(string id, DuAnModel updatedDuAn)
         {
             DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
-            var result = _duAnRepo.UpdateDuAn(user, id, duAn);
+            var result = _duAnRepo.UpdateDuAn(id, duAn);
 
             if (result == 0)
             {
@@ -87,9 +89,9 @@ namespace AmazingTech.InternSystem.Services
             return new OkResult();
         }
 
-        public IActionResult DeleteDuAn(string user, string id)
+        public IActionResult DeleteDuAn(string id)
         {
-            var result = _duAnRepo.DeleteDuAn(user, id);
+            var result = _duAnRepo.DeleteDuAn(id);
 
             if (result == 0)
             {

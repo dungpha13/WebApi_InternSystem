@@ -10,10 +10,10 @@ namespace AmazingTech.InternSystem.Repositories
         // DuAn methods
         List<DuAn> GetAllDuAns();
         DuAn GetDuAnById(string id);
-        List<DuAn> SearchProject(string ten, string leaderId);
+        List<DuAnModel> SearchProject(string ten, string leaderName);
         DuAn GetDuAnByName(string projectName);
-        int CreateDuAn(string user, DuAn createDuAn);
-        int UpdateDuAn(string user, string duAnId, DuAn updatedDuAn);
-        int DeleteDuAn(string user, string duAnId);
+        int CreateDuAn(DuAn createDuAn);
+        int UpdateDuAn(string duAnId, DuAn updatedDuAn);
+        int DeleteDuAn(string duAnId);
     }
 }

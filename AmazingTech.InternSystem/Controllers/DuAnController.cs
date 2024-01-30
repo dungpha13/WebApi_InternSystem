@@ -6,6 +6,7 @@ using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Services;
 using AutoMapper;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/du-ans")]
     [ApiController]
+    //[Authorize(Roles = "Admin,Hr,Mentorn")]
     public class DuAnController : ControllerBase
     {
         private readonly IDuAnService _duAnService;
@@ -95,19 +97,38 @@ namespace AmazingTech.InternSystem.Controllers
             }
 
             return result;
+            //return Ok(result);
         }
 
         [HttpGet("search")]
-        public IActionResult SearchProject(string ten, string leaderId)
+        public IActionResult SearchProject(string? ten, string? leaderName)
         {
             try
             {
-                var duAns = _duAnService.SearchProject(ten, leaderId);
-                return Ok(duAns);
+                var duAns = _duAnService.SearchProject(ten, leaderName);
+                if (duAns is OkObjectResult okResult)
+                {
+                    var duAn = okResult.Value as DuAn;
+
+                    if (duAn != null)
+                    {
+                        var formattedResponse = new
+                        {
+                            ten = duAn.Ten,
+                            leaderId = duAn.LeaderId,
+                            leaderName = duAn.Leader.HoVaTen,
+                            thoiGianBatDau = duAn.ThoiGianBatDau,
+                            thoiGianKetThuc = duAn.ThoiGianKetThuc
+                        };
+
+                        return Ok(formattedResponse);
+                    }
+                }
+                return duAns;
             }
             catch (Exception ex)
             {
-                return BadRequest("We can't get the product.");
+                return BadRequest("We can't get the project.");
             }
         }
 
@@ -116,8 +137,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var result = _duAnService.CreateDuAn(user, createDuAn);
+                var result = _duAnService.CreateDuAn(createDuAn);
 
                 if (result is BadRequestObjectResult badRequestResult)
                 {
@@ -143,8 +163,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _duAnService.UpdateDuAn(user, id, updatedDuAn);
+                _duAnService.UpdateDuAn(id, updatedDuAn);
                 return Ok("DuAn updated successfully");
             }
             catch (Exception ex)
@@ -158,8 +177,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _duAnService.DeleteDuAn(user, id);
+                _duAnService.DeleteDuAn(id);
                 return Ok("DuAn deleted successfully");
             }
             catch (Exception ex)

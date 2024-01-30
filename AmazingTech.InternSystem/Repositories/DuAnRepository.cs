@@ -1,6 +1,17 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< Updated upstream
+=======
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static AmazingTech.InternSystem.Data.Enum.Enums;
+>>>>>>> Stashed changes
 
 namespace AmazingTech.InternSystem.Repositories
 {
@@ -33,10 +44,10 @@ namespace AmazingTech.InternSystem.Repositories
 
         public DuAn GetDuAnByName(string projectName)
         {
-            return _dbContext.DuAns.FirstOrDefault(d => d.Ten == projectName && d.DeletedBy == null);
+            return _dbContext.DuAns.FirstOrDefault(d => d.Ten == projectName && d.DeletedBy == null)!;
         }
 
-        public List<DuAn> SearchProject(string ten, string leaderId)
+        public List<DuAnModel> SearchProject(string? ten, string? leaderName)
         {
             var query = _dbContext.DuAns.AsQueryable();
 
@@ -44,36 +55,36 @@ namespace AmazingTech.InternSystem.Repositories
             {
                 query = query.Where(d => d.Ten.Contains(ten));
             }
-
-            if (!string.IsNullOrEmpty(leaderId))
+            if (!string.IsNullOrEmpty(leaderName))
             {
-                query = query.Where(d => d.LeaderId.Contains(leaderId));
+                query = query.Where(d => d.Leader.HoVaTen != null && d.Leader.HoVaTen.Contains(leaderName));
             }
-
-            //if (criteria.ThoiGianBatDau != null)
+            //if (startDate != DateTime.MinValue)
             //{
-            //    query = query.Where(d => d.ThoiGianBatDau >= criteria.ThoiGianBatDau);
+            //    query = query.Where(d => d.ThoiGianBatDau >= startDate);
             //}
-
-            //if (criteria.ThoiGianKetThuc != null)
+            //if (endDate != DateTime.MaxValue)
             //{
-            //    query = query.Where(d => d.ThoiGianKetThuc <= criteria.ThoiGianKetThuc);
+            //    query = query.Where(d => d.ThoiGianKetThuc <= endDate);
             //}
 
             // Sorting
             query = query.OrderBy(d => d.Ten);
 
-            var result = query.Select(d => new DuAn
+            var result = query.Select(d => new DuAnModel
             {
-                Id = d.Id,
                 Ten = d.Ten,
                 LeaderId = d.LeaderId,
+                LeaderName = d.Leader.HoVaTen ?? "",
+                ThoiGianBatDau = d.ThoiGianBatDau,
+                ThoiGianKetThuc = d.ThoiGianKetThuc,
             });
+
             return result.ToList();
 
         }
 
-        public int CreateDuAn(string user, DuAn createDuAn)
+        public int CreateDuAn(DuAn createDuAn)
         {
             try
             {
@@ -83,8 +94,8 @@ namespace AmazingTech.InternSystem.Repositories
                     return -1;
                 }
 
-                createDuAn.CreatedBy = user;
-                createDuAn.LastUpdatedBy = user;
+                createDuAn.CreatedBy = "Admin";
+                createDuAn.LastUpdatedBy = "Admin";
                 createDuAn.LastUpdatedTime = DateTime.Now;
 
                 _dbContext.DuAns.Add(createDuAn);
@@ -99,7 +110,7 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public int UpdateDuAn(string user, string duAnId, DuAn updatedDuAn)
+        public int UpdateDuAn(string duAnId, DuAn updatedDuAn)
         {
             var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedBy == null);
             if (existingDuAn == null)
@@ -120,13 +131,13 @@ namespace AmazingTech.InternSystem.Repositories
             existingDuAn.LeaderId = updatedDuAn.LeaderId;
             existingDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
             existingDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
-            existingDuAn.LastUpdatedBy = user;
+            existingDuAn.LastUpdatedBy = "Admin";
             existingDuAn.LastUpdatedTime = DateTime.Now;
 
             return _dbContext.SaveChanges();
         }
 
-        public int DeleteDuAn(string user, string duAnId)
+        public int DeleteDuAn(string duAnId)
         {
             var duAnToDelete = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedBy == null);
             if (duAnToDelete == null)
@@ -134,8 +145,10 @@ namespace AmazingTech.InternSystem.Repositories
                 return 0;
             }
 
-            duAnToDelete.DeletedBy = user;
-            duAnToDelete.DeletedTime = DateTime.Now;
+            var currentTime = DateTime.Now;
+
+            duAnToDelete.DeletedBy = "Admin";
+            duAnToDelete.DeletedTime = currentTime;
 
             //_dbContext.Remove(duAnToDelete);
             return _dbContext.SaveChanges();
