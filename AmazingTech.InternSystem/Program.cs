@@ -65,6 +65,10 @@ namespace AmazingTech.InternSystem
 
             builder.Services.AddScoped<ILichPhongVanRepository, LichPhongVanRepository>();
             builder.Services.AddScoped<IGuiLichPhongVanService, LichPhongVanService>();
+
+            builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
+
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<INameService, NameService>();
