@@ -5,5 +5,6 @@
         public string TenNhom { get; set; }
         public string LinkNhom { get; set; }
         public string IdMentor { get; set; }
+        public string MentorName { get; set; }
     }
 }

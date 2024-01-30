@@ -40,7 +40,6 @@ namespace AmazingTech.InternSystem.Services
         {
             var duAn = _duAnRepo.GetDuAnById(id);
             return new OkObjectResult(duAn);
-            //return new OkObjectResult(_mapper.Map<DuAnModel>(duAn));
         }
 
         public IActionResult CreateDuAn(string user, DuAnModel createDuAn)

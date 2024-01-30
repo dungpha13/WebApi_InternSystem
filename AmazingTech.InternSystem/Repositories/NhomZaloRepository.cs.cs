@@ -26,12 +26,16 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         // Zalo methods
         public async Task<List<NhomZalo>> GetAllZaloAsync()
         {
-            return await _appDbContext.NhomZalos.ToListAsync();
+            return await _appDbContext.NhomZalos
+                .Include(nz => nz.Mentor) 
+                .ToListAsync();
         }
 
         public async Task<NhomZalo?> GetGroupByIdAsync(string id)
         {
-            var groupZalo = await _appDbContext.NhomZalos.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefaultAsync();
+            var groupZalo = await _appDbContext.NhomZalos
+                .Include(nz => nz.Mentor)
+                .FirstOrDefaultAsync(x => x.Id == id && x.DeletedBy == null);
             if (groupZalo == null)
             {
                 throw new Exception();

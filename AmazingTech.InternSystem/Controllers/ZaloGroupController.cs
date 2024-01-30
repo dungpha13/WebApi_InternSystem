@@ -1,6 +1,8 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Services;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static AmazingTech.InternSystem.Data.Enum.Enums;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -29,7 +32,22 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 var groups = await _nhomZaloService.GetAllZaloAsync();
-                return Ok(groups);
+
+                if (groups is List<NhomZalo> nhomZaloList)
+                {
+                    var formattedResponse = nhomZaloList.Select(nhomZalo => new
+                    {
+                        id = nhomZalo.Id,
+                        tenNhom = nhomZalo.TenNhom,
+                        linkNhom = nhomZalo.LinkNhom,
+                        idMentor = nhomZalo.IdMentor,
+                        mentorName = nhomZalo.Mentor?.UserName
+                    }).ToList();
+
+                    return Ok(formattedResponse);
+                }
+
+                return groups;
             }
             catch (Exception ex)
             {
@@ -38,7 +56,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get/{id}")]
-        public async Task<ActionResult<NhomZalo>> GetZaloGroupByIdAsync(string id)
+        public async Task<ActionResult<NhomZaloDTO>> GetZaloGroupByIdAsync(string id)
         {
             try
             {
@@ -47,13 +65,22 @@ namespace AmazingTech.InternSystem.Controllers
                 if (group == null)
                     return NotFound($"Zalo group with ID {id} not found.");
 
-                return Ok(group);
+                var formattedResponse = new NhomZaloDTO
+                {
+                    TenNhom = group.TenNhom,
+                    LinkNhom = group.LinkNhom,
+                    IdMentor = group.IdMentor,
+                    MentorName = group.Mentor?.UserName
+                };
+
+                return Ok(formattedResponse);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal Server Error");
             }
         }
+
 
         [HttpPost("create")]
         public async Task<ActionResult> CreateZaloGroupAsync([FromBody] NhomZaloDTO zaloDTO)
@@ -107,7 +134,21 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
-                return Ok(users);
+                if (users is List<UserNhomZalo> userNhomZaloList)
+                {
+                    var formattedResponse = userNhomZaloList.Select(userNhomZalo => new UserNhomZaloDTO
+                    {
+                        UserId = userNhomZalo.UserId,
+                        UserName = userNhomZalo.User?.HoVaTen,
+                        NhomZalo = userNhomZalo.NhomZalo?.TenNhom,
+                        JoinedTime = userNhomZalo.JoinedTime,
+                        LeftTime = userNhomZalo.LeftTime
+                    }).ToList();
+
+                    return Ok(formattedResponse);
+                }
+
+                return users;
             }
             catch (Exception ex)
             {
@@ -125,7 +166,16 @@ namespace AmazingTech.InternSystem.Controllers
                 if (user == null)
                     return NotFound($"User with ID {userId} not found in Zalo group {nhomZaloId}.");
 
-                return Ok(user);
+                var formattedResponse = new UserNhomZaloDTO
+                {
+                    UserId = user.UserId,
+                    UserName = user.User?.HoVaTen,
+                    NhomZalo = user.NhomZalo?.TenNhom,
+                    JoinedTime = user.JoinedTime,
+                    LeftTime = user.LeftTime
+                };
+
+                return Ok(formattedResponse);
             }
             catch (Exception ex)
             {
