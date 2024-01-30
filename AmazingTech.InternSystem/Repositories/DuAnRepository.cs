@@ -1,16 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.Request.DuAn;
-using AutoMapper;
-using DocumentFormat.OpenXml.InkML;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AmazingTech.InternSystem.Repositories
 {
@@ -80,7 +70,7 @@ namespace AmazingTech.InternSystem.Repositories
                 LeaderId = d.LeaderId,
             });
             return result.ToList();
-            
+
         }
 
         public int CreateDuAn(string user, DuAn createDuAn)

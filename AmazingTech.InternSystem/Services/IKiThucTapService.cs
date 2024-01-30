@@ -6,7 +6,7 @@ namespace AmazingTech.InternSystem.Services
 {
     public interface IKiThucTapService
     {
-       // IActionResult GetKiThucTapsByTruong(string idTruong);
+        IActionResult GetKiThucTapsByTruong(string idTruong);
         IActionResult GetAllKiThucTaps();
         IActionResult GetKiThucTap(string id);
         IActionResult AddKiThucTap(AddKiThucTapDTO ki);

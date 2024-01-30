@@ -25,12 +25,12 @@ namespace AmazingTech.InternSystem.Controllers
             return _kiThucTapService.GetAllKiThucTaps();
         }
 
-        //[HttpGet]
-        //[Route("get-by-truong/{idTruong}")]
-        //public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
-        //{
-        //    return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
-        //}
+        [HttpGet]
+        [Route("get-by-truong/{idTruong}")]
+        public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
+        {
+           return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
+        }
 
         [HttpGet("get/{id}")]
         public IActionResult GetKiThucTap(string id)
