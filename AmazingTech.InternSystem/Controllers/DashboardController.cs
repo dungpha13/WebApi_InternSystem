@@ -16,7 +16,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/[controller]/count-intern-send-cv-in-one-year]")]
+        [Route("api/[controller]/count-intern-send-cv-in-one-year")]
         public IActionResult CountInternSendCVInAYear(int year) 
         {
             try
@@ -31,7 +31,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
         [HttpGet]
         [Authorize(Roles ="Admin")]
-        [Route("api/[controller]/count-intern-send-cv-in-a-precious-of-a-year]")]
+        [Route("api/[controller]/count-intern-send-cv-in-a-precious-of-a-year")]
         public IActionResult CountInternSendCVInPreciousOfAYear(int year,int precious)
         {
             try

@@ -22,11 +22,13 @@ namespace AmazingTech.InternSystem.Services
         private readonly IInternInfoRepo _internInfoRepo;
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
-        public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager)
+        private readonly IDashboardRepository _dashboardRepository;
+        public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager,IDashboardRepository dashboardRepository)
         {
             _internInfoRepo = internInfoRepo;
             _userRepository = userRepository;
             _userManager = userManager;
+            _dashboardRepository = dashboardRepository;
         }
         public int CountInternSendCVInAYear(int year)
         {
@@ -73,7 +75,7 @@ namespace AmazingTech.InternSystem.Services
             return listIntern;
         }
 
-        private readonly IDashboardRepository _dashboardRepository;
+
 
       
 
