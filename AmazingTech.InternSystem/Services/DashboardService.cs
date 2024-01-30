@@ -23,7 +23,8 @@ namespace AmazingTech.InternSystem.Services
         private readonly IUserRepository _userRepository;
         private readonly IDashboardRepository _dashboardRepository;
         private readonly UserManager<User> _userManager;
-        public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager, IDashboardRepository dashboardRepository)
+        private readonly IDashboardRepository _dashboardRepository;
+        public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager,IDashboardRepository dashboardRepository)
         {
             _internInfoRepo = internInfoRepo;
             _userRepository = userRepository;
@@ -74,6 +75,10 @@ namespace AmazingTech.InternSystem.Services
             var listIntern = listUser.Where(listUser => _userManager.IsInRoleAsync(listUser, Roles.INTERN).Result).ToList().Count;
             return listIntern;
         }
+
+
+
+      
 
         public int GetTotalUsersWithStatusTrue()
         {
