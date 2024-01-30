@@ -38,7 +38,7 @@ namespace AmazingTech.InternSystem.Controllers
             return _truongService.AddTruong(truong);
         }
 
-        [HttpPost("update")]
+        [HttpPatch("update")]
         public IActionResult UpdateTruong(UpdateTruongHocDTO truong)
         {
             return _truongService.UpdateTruong(truong);
