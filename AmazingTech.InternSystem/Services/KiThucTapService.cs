@@ -34,6 +34,19 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"Truong voi id {request.IdTruong} khong ton tai");
             }
 
+            var ktt = _kiRepository.GetAllKiThucTaps();
+
+            if (ktt.Any())
+            {
+                foreach (var item in _kiRepository.GetAllKiThucTaps())
+                {
+                    if (item.Ten != null && item.Ten.ToUpper().Equals(request.Name.ToUpper()))
+                    {
+                        return new BadRequestObjectResult("Name has been taken!");
+                    }
+                }
+            }
+
             KiThucTap ki = new KiThucTap()
             {
                 Ten = request.Name,
@@ -112,9 +125,9 @@ namespace AmazingTech.InternSystem.Services
                 existingKi.Ten = existingKi.Ten;
             }
 
-            var check = _kiRepository.GetAllKiThucTaps().Count == 0;
+            var check = _kiRepository.GetAllKiThucTaps();
 
-            if (!check)
+            if (check.Any())
             {
                 foreach (var item in _kiRepository.GetAllKiThucTaps())
                 {
