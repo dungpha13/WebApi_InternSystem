@@ -17,7 +17,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         
         [HttpGet]
-        [Route("GetTotalUsersWithStatusTrue")]
+        [Route("GetAllIntern")]
         public IActionResult GetTotalUsersWithStatusTrue()
         {
             try
@@ -32,7 +32,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Route("GetTotalUsersWithStatusTrueAndYear")]
+        [Route("GetAllInternWithYear")]
         public IActionResult GetTotalUsersWithStatusTrueAndYear(int year)
         {
             try
@@ -45,5 +45,7 @@ namespace AmazingTech.InternSystem.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        
     }
 }

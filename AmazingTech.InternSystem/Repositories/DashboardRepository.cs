@@ -11,6 +11,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int GetTotalUsersWithStatusTrueAnhTuan();
         public int GetTotalUsersWithStatusTrueAndYear(int year);
+        
 
     }
     public class DashboardRepository : IDashboardRepository
@@ -30,5 +31,7 @@ namespace AmazingTech.InternSystem.Repositories
                 return context.InternInfos.Count(info => info.Status == "true" && info.CreatedTime.HasValue && info.CreatedTime.Value.Year == year);
             }
         }
+
+        
     }
 }

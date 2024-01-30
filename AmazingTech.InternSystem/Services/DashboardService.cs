@@ -11,6 +11,7 @@ namespace AmazingTech.InternSystem.Services
 
         public int GetTotalUsersWithStatusTrue();
         public int GetTotalUsersWithStatusTrueAndYear(int year);
+       
     }
     public class DashboardService : IDashboardService
     {
@@ -30,5 +31,6 @@ namespace AmazingTech.InternSystem.Services
         {
             return _dashboardRepository.GetTotalUsersWithStatusTrueAndYear(year);
         }
+        
     }
 }
