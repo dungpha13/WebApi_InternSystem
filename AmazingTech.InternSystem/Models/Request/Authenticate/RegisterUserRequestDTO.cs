@@ -9,7 +9,7 @@ namespace swp391_be.API.Models.Request.Authenticate
         public string HoVaTen { get; set; }
         
         [Required(ErrorMessage = "Phone number is required")]
-        [DataType(DataType.PhoneNumber, ErrorMessage = "Please input a right phone number")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")]
         public string PhoneNumber { get; set; }
 
         [Required]
