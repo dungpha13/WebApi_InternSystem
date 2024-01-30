@@ -22,6 +22,19 @@ namespace AmazingTech.InternSystem.Services
                 SoTuanThucTap = request.SoTuanThucTap
             };
 
+            var listTruong = _truongRepository.GetAllTruongs();
+
+            if (listTruong.Any() && listTruong != null)
+            {
+                foreach (var trg in _truongRepository.GetAllTruongs())
+                {
+                    if (trg.Ten.Equals(request.Ten))
+                    {
+                        return new BadRequestObjectResult("Truong da ton tai.");
+                    }
+                }
+            }
+
             var result = _truongRepository.AddTruong(truong);
 
             if (result == 0)
