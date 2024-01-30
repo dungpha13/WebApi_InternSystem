@@ -101,11 +101,11 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchProject(string? ten, string? leaderName)
+        public IActionResult SearchProject(string? ten, string? leaderName, DateTime? startDate, DateTime? endDate)
         {
             try
             {
-                var duAns = _duAnService.SearchProject(ten, leaderName);
+                var duAns = _duAnService.SearchProject(ten, leaderName, startDate, endDate);
                 if (duAns is OkObjectResult okResult)
                 {
                     var duAn = okResult.Value as DuAn;
@@ -137,7 +137,8 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                var result = _duAnService.CreateDuAn(createDuAn);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var result = _duAnService.CreateDuAn(user, createDuAn);
 
                 if (result is BadRequestObjectResult badRequestResult)
                 {
@@ -149,7 +150,7 @@ namespace AmazingTech.InternSystem.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, "Internal Server Error");
+                    return BadRequest("Failed to create DuAn");
                 }
             }
             catch (Exception ex)
@@ -163,7 +164,8 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                _duAnService.UpdateDuAn(id, updatedDuAn);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.UpdateDuAn(id, user, updatedDuAn);
                 return Ok("DuAn updated successfully");
             }
             catch (Exception ex)
@@ -177,7 +179,8 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                _duAnService.DeleteDuAn(id);
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.DeleteDuAn(id, user);
                 return Ok("DuAn deleted successfully");
             }
             catch (Exception ex)

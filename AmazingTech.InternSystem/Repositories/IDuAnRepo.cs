@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.DuAn;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,10 +11,10 @@ namespace AmazingTech.InternSystem.Repositories
         // DuAn methods
         List<DuAn> GetAllDuAns();
         DuAn GetDuAnById(string id);
-        List<DuAnModel> SearchProject(string ten, string leaderName);
+        List<DuAnModel> SearchProject(string ten, string leaderName, DateTime? startDate, DateTime? endDate);
         DuAn GetDuAnByName(string projectName);
-        int CreateDuAn(DuAn createDuAn);
-        int UpdateDuAn(string duAnId, DuAn updatedDuAn);
-        int DeleteDuAn(string duAnId);
+        int CreateDuAn(string user, DuAn createDuAn);
+        int UpdateDuAn(string duAnId, string user, DuAn updatedDuAn);
+        int DeleteDuAn(string duAnId, string user);
     }
 }

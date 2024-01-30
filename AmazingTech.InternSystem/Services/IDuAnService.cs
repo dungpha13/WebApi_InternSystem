@@ -8,11 +8,11 @@ namespace AmazingTech.InternSystem.Services
 {
     public interface IDuAnService
     {
-        IActionResult SearchProject(string ten, string leaderName);
+        IActionResult SearchProject(string ten, string leaderName, DateTime? startDate, DateTime? endDate);
         IActionResult GetAllDuAns();
         IActionResult GetDuAnById(string id);
-        IActionResult CreateDuAn(DuAnModel createDuAn);
-        IActionResult UpdateDuAn(string id, DuAnModel updatedDuAn);
-        IActionResult DeleteDuAn(string id);
+        IActionResult CreateDuAn(string user, DuAnModel createDuAn);
+        IActionResult UpdateDuAn(string id, string user, DuAnModel updatedDuAn);
+        IActionResult DeleteDuAn(string id, string user);
     }
 }

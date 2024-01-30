@@ -24,9 +24,9 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public IActionResult SearchProject(string ten, string leaderName)
+        public IActionResult SearchProject(string ten, string leaderName, DateTime? startDate, DateTime? endDate)
         {
-            var duAns = _duAnRepo.SearchProject(ten, leaderName);
+            var duAns = _duAnRepo.SearchProject(ten, leaderName, startDate, endDate);
             return new OkObjectResult(duAns);
         }
 
@@ -43,7 +43,7 @@ namespace AmazingTech.InternSystem.Services
             //return new OkObjectResult(_mapper.Map<DuAnModel>(duAn));
         }
 
-        public IActionResult CreateDuAn(DuAnModel createDuAn)
+        public IActionResult CreateDuAn(string user, DuAnModel createDuAn)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace AmazingTech.InternSystem.Services
                     return new BadRequestObjectResult("The project name already exists");
                 }
 
-                var result = _duAnRepo.CreateDuAn(duAn);
+                var result = _duAnRepo.CreateDuAn(user, duAn);
 
                 if (result == -1)
                 {
@@ -76,10 +76,10 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
-        public IActionResult UpdateDuAn(string id, DuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn(string id, string user, DuAnModel updatedDuAn)
         {
             DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
-            var result = _duAnRepo.UpdateDuAn(id, duAn);
+            var result = _duAnRepo.UpdateDuAn(id, user, duAn);
 
             if (result == 0)
             {
@@ -89,9 +89,9 @@ namespace AmazingTech.InternSystem.Services
             return new OkResult();
         }
 
-        public IActionResult DeleteDuAn(string id)
+        public IActionResult DeleteDuAn(string id, string user)
         {
-            var result = _duAnRepo.DeleteDuAn(id);
+            var result = _duAnRepo.DeleteDuAn(id, user);
 
             if (result == 0)
             {
