@@ -23,7 +23,7 @@ namespace AmazingTech.InternSystem.Services
         private readonly IUserRepository _userRepository;
         private readonly IDashboardRepository _dashboardRepository;
         private readonly UserManager<User> _userManager;
-        private readonly IDashboardRepository _dashboardRepository;
+      
         public DashboardService(IInternInfoRepo internInfoRepo , IUserRepository userRepository, UserManager<User> userManager,IDashboardRepository dashboardRepository)
         {
             _internInfoRepo = internInfoRepo;
