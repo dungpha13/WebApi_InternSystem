@@ -459,10 +459,22 @@ namespace AmazingTech.InternSystem.Services
                         {
                             if (!string.IsNullOrEmpty(row.GetText("STT")))
                             {
+                                object ngaySinh = row.GetValue<object>("NgaySinh");
+                                DateTime dt;
+
+                                if (ngaySinh is double)
+                                {
+                                    dt = DateTime.FromOADate((double)ngaySinh);
+                                }
+                                else
+                                {
+                                    DateTime.TryParse((string)ngaySinh, out dt);
+                                }
+
                                 var intern = new InternInfo
                                 {
                                     HoTen = row.GetText("HoVaTen"),
-                                    NgaySinh = DateTime.FromOADate(row.GetValue<double>("NgaySinh")),
+                                    NgaySinh = dt,
                                     GioiTinh = row.GetText("GioiTinh").ToUpper().Equals("NAM") ? true : false,
                                     MSSV = row.GetText("MSSV"),
                                     EmailTruong = row.GetText("EmailTruong"),
