@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
+using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Models.Response.User;
 using AmazingTech.InternSystem.Models.VItri;
@@ -60,6 +61,11 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
+
+            CreateMap<KiThucTap, KiThucTapResponseDTO>()
+                .ForMember(dest => dest.TenTruong, opt => opt.MapFrom(src => src.Truong.Ten))
+                .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
+                .ReverseMap();
         }
     }
 }

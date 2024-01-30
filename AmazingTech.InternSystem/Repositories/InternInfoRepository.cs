@@ -23,6 +23,28 @@ namespace AmazingTech.InternSystem.Repositories
             _context = context;
             this.mapper = mapper;
         }
+        public int GetInternSendCVInAYear(int year)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<InternInfo>().AsNoTracking().Where(x => x.LinkCV != null && x.CreatedTime.HasValue && x.CreatedTime.Value.Year == year).Count();
+            }
+        }
+        public int GetInternSendCVInPrecious(int year, int precious)
+        {
+            using (var context = new AppDbContext())
+            {
+                int startMonth = 3 * (precious - 1) + 1;
+                int endMonth = startMonth + 2;
+
+                return context.Set<InternInfo>()
+                    .AsNoTracking()
+                    .Count(x => x.LinkCV != null && x.CreatedTime.HasValue &&
+                           x.CreatedTime.Value.Year == year &&
+                           x.CreatedTime.Value.Month >= startMonth &&
+                           x.CreatedTime.Value.Month <= endMonth);
+            }
+        }
 
         public async Task<int> AddInternInfoAsync(string userId, InternInfo entity)
         {

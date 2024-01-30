@@ -1,6 +1,8 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.KiThucTap;
+using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Services
@@ -9,11 +11,13 @@ namespace AmazingTech.InternSystem.Services
     {
         private IKiThucTapRepository _kiRepository;
         private readonly ITruongRepository _truongRepository;
+        private readonly IMapper _mapper;
 
-        public KiThucTapService(IKiThucTapRepository kiThucTapRepository, ITruongRepository truongRepository)
+        public KiThucTapService(IKiThucTapRepository kiThucTapRepository, ITruongRepository truongRepository, IMapper mapper)
         {
             _kiRepository = kiThucTapRepository;
             _truongRepository = truongRepository;
+            _mapper = mapper;
         }
 
         public IActionResult AddKiThucTap(AddKiThucTapDTO request)
@@ -66,7 +70,7 @@ namespace AmazingTech.InternSystem.Services
         public IActionResult GetAllKiThucTaps()
         {
             List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps();
-            return new OkObjectResult(kis);
+            return new OkObjectResult(_mapper.Map<List<KiThucTapResponseDTO>>(kis));
         }
 
         public IActionResult GetKiThucTap(string id)
@@ -78,7 +82,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            return new OkObjectResult(ki);
+            return new OkObjectResult(_mapper.Map<KiThucTapResponseDTO>(ki));
         }
 
         public IActionResult GetKiThucTapsByTruong(string idTruong)

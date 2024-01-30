@@ -44,6 +44,7 @@ namespace AmazingTech.InternSystem.Services
             _dbContext = dbContext;
             _kiThucTapRepository = kiThucTapRepository;
         }
+     
 
         //Get all Intern
         public async Task<IActionResult> GetAllInternInfo()

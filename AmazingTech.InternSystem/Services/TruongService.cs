@@ -78,7 +78,15 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"Truong voi id {truong.Id} khong ton tai");
             }
 
-            existingTruong.Ten = truong.Ten;
+            foreach(var truongInList in _truongRepository.GetAllTruongs())
+            {
+                if (truongInList.Ten.Equals(truong.Ten))
+                {
+                    return new BadRequestObjectResult("Truong da ton tai.");
+                }
+            }
+
+            existingTruong.Ten = truong.Ten ?? existingTruong.Ten;
             existingTruong.SoTuanThucTap = truong.SoTuanThucTap;
 
             var result = _truongRepository.UpdateTruong(existingTruong);
