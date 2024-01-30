@@ -27,7 +27,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email).FirstOrDefault();
+                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email && x.DeletedTime == null).FirstOrDefault();
                 if (user == null)
                 {
                     return null;
@@ -42,7 +42,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email).FirstOrDefault();
+                var user = context.Set<User>().AsNoTracking().Where(x => x.Email == email && x.DeletedTime == null).FirstOrDefault();
                 if (user == null)
                 {
                     return null;
@@ -57,7 +57,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == userName).FirstOrDefault();
+                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == userName && x.DeletedTime == null).FirstOrDefault();
                 if (user == null)
                 {
                     return null;
@@ -72,7 +72,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var user = context.Set<User>().AsNoTracking().Where(x => x.Id == id).FirstOrDefault();
+                var user = context.Set<User>().AsNoTracking().Where(x => x.Id == id && x.DeletedTime == null).FirstOrDefault();
                 if (user == null)
                 {
                     return null;
@@ -87,7 +87,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == name).FirstOrDefault();
+                var user = context.Set<User>().AsNoTracking().Where(x => x.HoVaTen == name && x.DeletedTime == null).FirstOrDefault();
                 if (user == null)
                 {
                     return null;

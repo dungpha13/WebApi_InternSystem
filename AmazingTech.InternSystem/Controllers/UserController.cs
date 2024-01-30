@@ -13,6 +13,8 @@ using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Spreadsheet;
 using AmazingTech.InternSystem.Models.Request.Authenticate;
 using AmazingTech.InternSystem.Services;
+using System.Security.Claims;
+using AmazingTech.InternSystem.Repositories;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -24,22 +26,25 @@ namespace AmazingTech.InternSystem.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly INameService _nameService;
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly AppDbContext _dBUtils;
+        private readonly IInternInfoRepo _internInfoRepo;
 
-
-        public UserController(UserManager<User> _userManager, IMapper _mapper, INameService _nameService, AppDbContext _dBUtils)
+        public UserController(UserManager<User> _userManager, IMapper _mapper, INameService _nameService, AppDbContext _dBUtils, IHttpContextAccessor httpContextAccessor, IInternInfoRepo internInfoRepo)
         {
             this._userManager = _userManager;
             this._mapper = _mapper;
             this._nameService = _nameService;
             this._dBUtils = _dBUtils;
+            _contextAccessor = httpContextAccessor;
+            _internInfoRepo = internInfoRepo;
         }
 
         [HttpGet("get")]
         public async Task<IActionResult> GetUser()
         {
             Thread.Sleep(700);
-            var userDomainList = await _userManager.Users.ToListAsync();
+            var userDomainList = await _userManager.Users.Where(x => x.DeletedTime == null).ToListAsync();
             var result = new List<ProfileResponseDTO>();
             foreach (var User in userDomainList)
             {
@@ -57,7 +62,7 @@ namespace AmazingTech.InternSystem.Controllers
         //[Authorize(Roles = Roles.ADMIN)]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
-            var userDomainModel = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
+            var userDomainModel = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString() && x.DeletedTime == null);
 
             if (userDomainModel is null)
             {
@@ -194,47 +199,95 @@ namespace AmazingTech.InternSystem.Controllers
         //}
 
 
-        //[HttpDelete]
-        //[Route("delete/{email}")]
-        //public async Task<IActionResult> RemoveUser([FromRoute] string username)
-        //{
-        //    if (string.IsNullOrEmpty(username))
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            succeeded = false,
-        //            errors = new[] { "username is null or empty unable to delete" }
-        //        });
-        //    }
+        [HttpDelete]
+        [Route("delete/{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveUser([FromRoute] string userId)
+        {
+            var existingUser = await _userManager.FindByIdAsync(userId);
 
-        //    var existingUser = await _userManager.FindByNameAsync(username);
+            if (existingUser == null)
+            {
+                return BadRequest(new
+                {
+                    message = "User khong ton tai."
+                });
+            }
 
-        //    if (existingUser == null)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            succeeded = false,
-        //            errors = new[] { "user doesn't exist" }
-        //        });
-        //    }
-        //    var result = await _userManager.DeleteAsync(existingUser);
-        //    if (result.Succeeded)
-        //    {
-        //        return Ok(new
-        //        {
-        //            succeeded = true,
-        //            message = "User deleted successfully"
-        //        });
-        //    }
-        //    else
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            succeeded = false,
-        //            errors = result.Errors.Select(error => error.Description)
-        //        });
-        //    }
-        //}
+            var currentUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (currentUser.Equals(userId))
+            {
+                return BadRequest(new
+                {
+                    message = "Ban khong the xoa chinh minh."
+                });
+            }
+
+            try
+            {
+                var result = await _userManager.DeleteAsync(existingUser);
+                if (result.Succeeded)
+                {
+                    return Ok(new
+                    {
+                        message = "Da delete user."
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        message = "Co loi xay ra."
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                existingUser.DeletedTime = DateTime.Now;
+                existingUser.UserName += "_";
+                existingUser.Email += "_";
+                while (true)
+                {
+                    var result = await _userManager.UpdateAsync(existingUser);
+
+                    if (result.Succeeded)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        existingUser.UserName += "_";
+                        existingUser.Email += "_";
+                    }
+                }
+            }
+
+            // phai xoa interninfo
+            var roles = await _userManager.GetRolesAsync(existingUser);
+
+            if (roles.Contains(Roles.INTERN))
+            {
+                var internInfos = await _internInfoRepo.GetAllInternsInfoAsync();
+
+                if (internInfos.Count > 0)
+                {
+                    foreach (var internInfo in internInfos)
+                    {
+                        if (existingUser.Id.Equals(internInfo.Id))
+                        {
+                            await _internInfoRepo.DeleteInternInfoAsync(internInfo);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return Ok(new
+            {
+                message = "Da delete user."
+            });
+        }
 
 
         //[HttpPost]
