@@ -1,4 +1,6 @@
-﻿using AmazingTech.InternSystem.Services;
+﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +19,9 @@ namespace AmazingTech.InternSystem.Controllers
 
         
         [HttpGet]
-        [Route("GetAllIntern")]
+        [Authorize(Roles = "Admin")]
+        [Route("\"api/[controller]/count-all-intern-be-interviewd")]
+        
         public IActionResult GetTotalUsersWithStatusTrue()
         {
             try
@@ -32,7 +36,8 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllInternWithYear")]
+        [Authorize(Roles = "Admin")]
+        [Route("api/[controller]/count-intern-be-interviewed-in-year")]
         public IActionResult GetTotalUsersWithStatusTrueAndYear(int year)
         {
             try
