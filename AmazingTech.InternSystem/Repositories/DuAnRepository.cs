@@ -1,8 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.Request.DuAn;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< Updated upstream
-=======
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using Serilog;
@@ -11,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static AmazingTech.InternSystem.Data.Enum.Enums;
->>>>>>> Stashed changes
 
 namespace AmazingTech.InternSystem.Repositories
 {
