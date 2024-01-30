@@ -75,11 +75,7 @@ namespace AmazingTech.InternSystem.Services
 
         private readonly IDashboardRepository _dashboardRepository;
 
-        public DashboardService(IDashboardRepository dashboardRepository)
-        {
-            _dashboardRepository = dashboardRepository;
-        }
-        
+      
 
         public int GetTotalUsersWithStatusTrue()
         {
