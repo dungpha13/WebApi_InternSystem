@@ -62,12 +62,11 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(save == 1 ? "Success" : "failed");
 
         }
-/*
         [HttpPost("{idCongNghe}/list")]
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string idCongNghe)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return await _service.AddListQuest(file, user ,idCongNghe);
-        }*/
+        }
     }
 }
