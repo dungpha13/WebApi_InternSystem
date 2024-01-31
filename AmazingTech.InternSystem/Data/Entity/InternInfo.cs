@@ -39,6 +39,7 @@ namespace AmazingTech.InternSystem.Data.Entity
 
         [ForeignKey("KiThucTap")]
         public string? IdKiThucTap { get; set; }
+        [JsonIgnore]
         public KiThucTap? KiThucTap { get; set; }
     }
 }

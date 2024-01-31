@@ -550,6 +550,7 @@ namespace AmazingTech.InternSystem.Services
                 intern.KiThucTapId = existingKi.Id;
                 intern.UserId = userId;
                 intern.CreatedBy = uId;
+                intern.IdTruong = existingKi.IdTruong;
             }
 
             var result = await _internRepo.AddListInternInfoAsync(interns);

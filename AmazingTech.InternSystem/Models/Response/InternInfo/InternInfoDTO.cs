@@ -19,9 +19,7 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
         public string EmailTruong { get; set; }
         public string LinkCV { get; set; }
         public string GioiTinh { get; set; }
-       
         public string TrinhDoTiengAnh { get; set; }
-      
         public string[] DuAn { get; set; }
         public string[] NhomZalo { get; set; }
         public string TruongHoc { get; set; }
@@ -36,7 +34,8 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
 
         public string LastUpdatedBy { get; set; }
         public string LastUpdatedTime { get; set; }
-        // public string SdtNguoiThan { get; set; }     
+
+        //public string SdtNguoiThan { get; set; }     
         //public decimal GPA { get; set; }
         //public string TrinhDoTiengAnh { get; set; }
         //public string ChungChi { get; set; }
@@ -44,7 +43,6 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
         //public string NganhHoc { get; set; }
         //public int Round { get; set; }
         //public string KiThucTapId { get; set; }
-
 
     }
 }

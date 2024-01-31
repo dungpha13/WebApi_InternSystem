@@ -74,6 +74,7 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<KiThucTap, KiThucTapResponseDTO>()
                 .ForMember(dest => dest.TenTruong, opt => opt.MapFrom(src => src.Truong.Ten))
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
+                .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
                 .ReverseMap();
         }
     }
