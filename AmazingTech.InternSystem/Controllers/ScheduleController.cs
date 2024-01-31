@@ -7,6 +7,7 @@ using DocumentFormat.OpenXml.Office2016.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -140,11 +141,11 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPost]
         [Authorize]
         [Route("api/lich-phong-vans/Auto-Create-Schedule")]
-        public IActionResult AutoCreateSchedule(DateTime start, DateTime end, string diadiemphongvan, InterviewForm interviewForm)
+        public IActionResult AutoCreateSchedule([EmailAddress] string mailNguoiPhongVan,DateTime start, DateTime end, string diadiemphongvan, InterviewForm interviewForm)
         {
             try
             {
-                _guiLichPhongVanService.AutoCreateSchedule(start, end, diadiemphongvan,interviewForm);
+                _guiLichPhongVanService.AutoCreateSchedule(mailNguoiPhongVan,start, end, diadiemphongvan,interviewForm);
                 return Ok("Successful");
             }
            catch (BadHttpRequestException ex)
