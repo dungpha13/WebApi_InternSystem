@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AmazingTech.InternSystem.Data.Enum;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -21,11 +22,9 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? ResetTokenExpires { get; set; }
         public string? VerificationToken { get; set; }
         public DateTime? VerificationTokenExpires { get; set; }
-
         public bool isConfirmed { get; set; }
-
+        public TrangThaiThucTap TrangThaiThucTap { get; set; }
         public ICollection<Comment> Comments { get; set; }
-
         public ICollection<LichPhongVan> LichPhongVans_PhongVan { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_DuocPhongVan { get; set; }
         public ICollection<ThongBao> ThongBao_NguoiGui { get; set; }

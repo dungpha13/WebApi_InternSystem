@@ -173,6 +173,17 @@ namespace AmazingTech.InternSystem.Data
              .HasForeignKey(zl => zl.KiThucTapId)
              .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<PhongVan>()
+            .HasOne(zl => zl.LichPhongVan)
+            .WithMany(u => u.PhongVans)
+            .HasForeignKey(zl => zl.IdLichPhongVan)
+            .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<PhongVan>()
+            .HasOne(zl => zl.CauhoiCongnghes)
+            .WithMany(u => u.PhongVans)
+            .HasForeignKey(zl => zl.IdCauHoiCongNghe)
+            .OnDelete(DeleteBehavior.NoAction);
+
             // Auto generate when inserted/updated
 
             //     modelBuilder.Entity<Comment>()

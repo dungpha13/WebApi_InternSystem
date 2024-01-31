@@ -27,14 +27,14 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         public async Task<List<NhomZalo>> GetAllZaloAsync()
         {
             return await _appDbContext.NhomZalos
-                .Include(nz => nz.Mentor) 
+               /* .Include(nz => nz.Mentor)*/
                 .ToListAsync();
         }
 
         public async Task<NhomZalo?> GetGroupByIdAsync(string id)
         {
             var groupZalo = await _appDbContext.NhomZalos
-                .Include(nz => nz.Mentor)
+                /*.Include(nz => nz.Mentor)*/
                 .FirstOrDefaultAsync(x => x.Id == id && x.DeletedBy == null);
             if (groupZalo == null)
             {
@@ -68,12 +68,12 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             }
 
             nhomZalo.TenNhom = zalo.TenNhom ?? nhomZalo.TenNhom;
-            nhomZalo.IdMentor = zalo.IdMentor != null
+            /*nhomZalo.IdMentor = zalo.IdMentor != null
                 ? (await _appDbContext.Users.FindAsync(zalo.IdMentor))?.Id
                 : nhomZalo.IdMentor;
             nhomZalo.LinkNhom = zalo.LinkNhom ?? nhomZalo.LinkNhom;
             nhomZalo.LastUpdatedBy = user;
-            nhomZalo.LastUpdatedTime = DateTime.Now;
+            nhomZalo.LastUpdatedTime = DateTime.Now;*/
 
             return await _appDbContext.SaveChangesAsync();
         }

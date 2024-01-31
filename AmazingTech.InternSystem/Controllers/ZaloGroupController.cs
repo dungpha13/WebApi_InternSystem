@@ -40,8 +40,8 @@ namespace AmazingTech.InternSystem.Controllers
                         id = nhomZalo.Id,
                         tenNhom = nhomZalo.TenNhom,
                         linkNhom = nhomZalo.LinkNhom,
-                        idMentor = nhomZalo.IdMentor,
-                        mentorName = nhomZalo.Mentor?.UserName
+                        /*idMentor = nhomZalo.IdMentor,
+                        mentorName = nhomZalo.Mentor?.UserName*/
                     }).ToList();
 
                     return Ok(formattedResponse);
@@ -69,8 +69,8 @@ namespace AmazingTech.InternSystem.Controllers
                 {
                     TenNhom = group.TenNhom,
                     LinkNhom = group.LinkNhom,
-                    IdMentor = group.IdMentor,
-                    MentorName = group.Mentor?.UserName
+                   /* IdMentor = group.IdMentor,
+                    MentorName = group.Mentor?.UserName*/
                 };
 
                 return Ok(formattedResponse);

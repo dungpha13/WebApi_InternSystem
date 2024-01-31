@@ -37,9 +37,14 @@ namespace AmazingTech.InternSystem.Data.Entity
         [JsonIgnore]
         public TruongHoc? Truong { get; set; }
 
+<<<<<<< Updated upstream
         [ForeignKey("KiThucTap")]
         public string? IdKiThucTap { get; set; }
         [JsonIgnore]
+=======
+/*        [ForeignKey("KiThucTap")]
+        public string? IdKiThucTap { get; set; }*/
+>>>>>>> Stashed changes
         public KiThucTap? KiThucTap { get; set; }
     }
 }

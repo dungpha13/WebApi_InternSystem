@@ -58,9 +58,9 @@ namespace AmazingTech.InternSystem.Mapping
 
             CreateMap<NhomZalo, NhomZaloDTO>()
                 .ForMember(dest => dest.TenNhom, opt => opt.MapFrom(src => src.TenNhom))
-                .ForMember(dest => dest.LinkNhom, opt => opt.MapFrom(src => src.LinkNhom))
-                .ForMember(dest => dest.IdMentor, opt => opt.MapFrom(src => src.IdMentor))
-                .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.Mentor.HoVaTen));
+                .ForMember(dest => dest.LinkNhom, opt => opt.MapFrom(src => src.LinkNhom));
+                /*.ForMember(dest => dest.IdMentor, opt => opt.MapFrom(src => src.IdMentor))
+                .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.Mentor.HoVaTen));*/
 
 
             CreateMap<DuAn, DuAnModel>().ReverseMap();
