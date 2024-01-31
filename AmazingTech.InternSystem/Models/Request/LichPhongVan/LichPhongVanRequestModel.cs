@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
-namespace AmazingTech.InternSystem.Models.Request
+namespace AmazingTech.InternSystem.Models.Request.LichPhongVan
 {
     public class LichPhongVanRequestModel
     {
@@ -14,7 +14,7 @@ namespace AmazingTech.InternSystem.Models.Request
         public DateTime ThoiGianPhongVan { get; set; }
         public InterviewForm interviewForm { get; set; }
         public int TimeDuration { get; set; }
-        public string MailNgPhongVan { get;set; }
+        public string MailNgPhongVan { get; set; }
         public string DiaDiemPhongVan { get; set; }
     }
 }

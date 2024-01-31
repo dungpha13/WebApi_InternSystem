@@ -1,6 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data.Enum;
-using AmazingTech.InternSystem.Models.Request;
+using AmazingTech.InternSystem.Models.Request.LichPhongVan;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Services;
 using DocumentFormat.OpenXml.Office2016.Excel;

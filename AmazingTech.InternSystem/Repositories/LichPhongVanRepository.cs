@@ -9,6 +9,7 @@ namespace AmazingTech.InternSystem.Repositories
 {
     public interface ILichPhongVanRepository
     {
+        public List<LichPhongVan> GetScheduleOfInterviewerInPeriodTime(string interviewer, DateTime startDate, DateTime EndTime);
         public void DeleteLichPhongVan(LichPhongVan lichPhongVan);
         public void addNewLichPhongVan(LichPhongVan entity);
         public List<LichPhongVan> GetLichPhongVansByIdNgPhongVan(string id);
@@ -91,6 +92,13 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.Set<LichPhongVan>().AsNoTracking().Where(x => startDate <= x.ThoiGianPhongVan && x.ThoiGianPhongVan <= EndTime).ToList();  
+            }
+        }
+        public List<LichPhongVan> GetScheduleOfInterviewerInPeriodTime(string interviewer, DateTime startDate, DateTime EndTime)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiPhongVan ==interviewer &&startDate <= x.ThoiGianPhongVan && x.ThoiGianPhongVan <= EndTime).ToList();
             }
         }
 
