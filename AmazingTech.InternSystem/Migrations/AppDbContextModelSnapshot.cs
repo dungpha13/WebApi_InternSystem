@@ -279,9 +279,11 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ThoiGianBatDau")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ThoiGianKetThuc")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -329,9 +331,6 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.Property<string>("HoTen")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdKiThucTap")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdTruong")
@@ -516,9 +515,6 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("IdMentor")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -528,17 +524,67 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("LinkNhom")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MentorId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("TenNhom")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MentorId");
-
                     b.ToTable("NhomZalo", "dbo");
+                });
+
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.PhongVan", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CauTraLoi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdCauHoiCongNghe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdLichPhongVan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NguoiCham")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rank")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RankDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCauHoiCongNghe");
+
+                    b.HasIndex("IdLichPhongVan");
+
+                    b.ToTable("PhongVan", "dbo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.ThongBao", b =>
@@ -691,6 +737,9 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TrangThaiThucTap")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -785,6 +834,9 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("IdNhomZalo")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsMentor")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("JoinedTime")
                         .HasColumnType("datetime2");
@@ -901,10 +953,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -921,8 +969,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", "dbo");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1029,13 +1075,6 @@ namespace AmazingTech.InternSystem.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", "dbo");
-                });
-
-            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.Role", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
-
-                    b.HasDiscriminator().HasValue("Role");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CauhoiCongnghe", b =>
@@ -1169,13 +1208,23 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("NguoiPhongVan");
                 });
 
-            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.NhomZalo", b =>
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.PhongVan", b =>
                 {
-                    b.HasOne("AmazingTech.InternSystem.Data.Entity.User", "Mentor")
-                        .WithMany()
-                        .HasForeignKey("MentorId");
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.CauhoiCongnghe", "CauhoiCongnghes")
+                        .WithMany("PhongVans")
+                        .HasForeignKey("IdCauHoiCongNghe")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("Mentor");
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.LichPhongVan", "LichPhongVan")
+                        .WithMany("PhongVans")
+                        .HasForeignKey("IdLichPhongVan")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CauhoiCongnghes");
+
+                    b.Navigation("LichPhongVan");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.ThongBao", b =>
@@ -1317,6 +1366,11 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("CauhoiCongnghe");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CauhoiCongnghe", b =>
+                {
+                    b.Navigation("PhongVans");
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.CongNghe", b =>
                 {
                     b.Navigation("CauhoiCongnghe");
@@ -1341,6 +1395,11 @@ namespace AmazingTech.InternSystem.Migrations
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.KiThucTap", b =>
                 {
                     b.Navigation("Interns");
+                });
+
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.LichPhongVan", b =>
+                {
+                    b.Navigation("PhongVans");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.NhomZalo", b =>

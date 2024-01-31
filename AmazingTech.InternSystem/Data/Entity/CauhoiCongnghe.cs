@@ -12,5 +12,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         [ForeignKey("Cauhoi")]
         public string IdCauhoi { get; set; }
         public Cauhoi cauhoi { get; set; }
+
+        public ICollection<PhongVan> PhongVans { get; set; }
     }
 }

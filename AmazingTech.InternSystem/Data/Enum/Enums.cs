@@ -57,4 +57,11 @@ namespace AmazingTech.InternSystem.Data.Enum
         Senior,
         Junior
     }
+    public enum TrangThaiThucTap 
+    {
+       Waiting,
+       Practicing,        
+       Failed,
+       Finished
+    }
 }

@@ -8,11 +8,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? TenNhom { get; set; }
 
         public string? LinkNhom { get; set; }
-
-        [ForeignKey("Mentor")]
-        public string IdMentor { get; set; }
-        public User Mentor { get; set; }
-
         public ICollection<UserNhomZalo> UserNhomZalos { get; set; }
     }
 }

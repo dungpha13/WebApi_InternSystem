@@ -36,10 +36,11 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? IdTruong { get; set; }
         [JsonIgnore]
         public TruongHoc? Truong { get; set; }
-
         [ForeignKey("KiThucTap")]
         public string? IdKiThucTap { get; set; }
         [JsonIgnore]
+/*        [ForeignKey("KiThucTap")]
+        public string? IdKiThucTap { get; set; }*/
         public KiThucTap? KiThucTap { get; set; }
     }
 }

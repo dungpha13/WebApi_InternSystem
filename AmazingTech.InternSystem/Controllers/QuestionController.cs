@@ -63,6 +63,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         }
         [HttpPost("{idCongNghe}/list")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string idCongNghe)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
