@@ -160,7 +160,7 @@ namespace AmazingTech.InternSystem.Services
 
             if (userId == null)
             {
-                return new BadRequestObjectResult("User ID is Null");
+                return new BadRequestObjectResult("Tên tài khoản không hợp lệ (Check lại gmail đăng ký)");
             }
 
 
@@ -235,7 +235,7 @@ namespace AmazingTech.InternSystem.Services
         }
 
         //Update Intern
-        public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
+        public async Task<IActionResult> UpdateInternInfo(string user, UpdateInternInfoDTO model, string mssv)
         {
 
             var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
@@ -334,9 +334,18 @@ namespace AmazingTech.InternSystem.Services
             {
                 return new BadRequestObjectResult($"Trường học với id '{model.IdTruong}' không tồn tại!");
             }
+
+            //Update User
+            var isUserExist = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == intern.UserId);
+            isUserExist!.Email = model.EmailCaNhan;
+            isUserExist.HoVaTen = model.HoTen; 
+
+            _dbContext.Users.Update(isUserExist);
+            await _dbContext.SaveChangesAsync();
+
             var entity = _mapper.Map(model, intern);
 
-            var updateIntern = await _internRepo.UpdateInternInfoAsync(entity);
+            var updateIntern = await _internRepo.UpdateInternInfoAsync(user, entity);
 
 
             if (updateIntern == 0)

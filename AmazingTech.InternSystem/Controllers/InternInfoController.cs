@@ -70,7 +70,8 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPut("update/{mssv}")]
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
-            return await _internInfoService.UpdateInternInfo(model, mssv);
+            string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return await _internInfoService.UpdateInternInfo(userId, model, mssv);
         }
 
         [HttpPost("list/{kiThucTapId}")]

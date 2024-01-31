@@ -30,9 +30,7 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$", ErrorMessage = "Email không đúng định dạng!")]
         public string? EmailCaNhan { get; set; }
-        [Required]
-        [EmailAddress]
-        public string EmailTruong { get; set; }
+        
         [Required]
         public string LinkCV { get; set; }
         [Required]

@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> GetInternInfo(string mssv);
         Task<IActionResult> GetDeletedInternInfo(string mssv);
         Task<IActionResult> DeleteInternInfo(string mssv);
-        Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv);
+        Task<IActionResult> UpdateInternInfo(string userId, UpdateInternInfoDTO model, string mssv);
         Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId);
 
         Task<IActionResult> AddCommentInternInfo(CommentInternInfoDTO comment, string idCommentor, string mssv);
