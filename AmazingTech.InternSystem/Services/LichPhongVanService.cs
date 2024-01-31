@@ -1,6 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data.Enum;
-using AmazingTech.InternSystem.Models.Request;
+using AmazingTech.InternSystem.Models.Request.LichPhongVan;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
 using DocumentFormat.OpenXml.Bibliography;
@@ -11,6 +11,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Claims;
 namespace AmazingTech.InternSystem.Services
 {
@@ -143,10 +144,18 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This intern already has interview schedule");
             }
+           
             var Interviewer = _userRepository.GetUserByEmail(model.MailNgPhongVan);
             if (Interviewer == null)
             {
                 throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
+            }
+            var timeEnd = model.ThoiGianPhongVan + TimeSpan.FromMinutes(model.TimeDuration);
+            timeEnd = timeEnd.AddMinutes(15);
+            var ScheduleOfInterviewerExist = _lichPhongVanRepository.GetScheduleOfInterviewerInPeriodTime(Interviewer.Id, model.ThoiGianPhongVan, timeEnd);
+            if(ScheduleOfInterviewerExist != null)
+            {
+                throw new BadHttpRequestException("This interviewer has an interview scheduled for this time");
             }
             if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN))) // không phải là HR hay Admin thì không lịch đc tạo 
             {
@@ -526,5 +535,6 @@ namespace AmazingTech.InternSystem.Services
             var intern = user.Where(user => _userManager.IsInRoleAsync(user, Roles.INTERN).Result).ToList();
             return intern;
         }
+    
     }
 }

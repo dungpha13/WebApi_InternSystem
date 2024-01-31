@@ -144,6 +144,7 @@ namespace AmazingTech.InternSystem.Repositories
                 return user;
             }
         }
+        
         public List<User> GetUsersHavingInterviewScheduleAndStatusDoneInAQuarter(int year, int quarter)
         {
             using (var context = new AppDbContext())
