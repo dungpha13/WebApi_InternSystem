@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 namespace AmazingTech.InternSystem.Services
 {
@@ -27,7 +28,7 @@ namespace AmazingTech.InternSystem.Services
         public void SendResultInterviewEmail(string email);
         public List<User> GetInternWithoutInternView();
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
-        public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
+        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan,DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
 
         IActionResult AllLichPhongVan();
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email);
@@ -119,7 +120,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0))
+            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0)|| model.MailNgPhongVan == null)
             {
                 throw new BadHttpRequestException("You need to fill all information");
             }
@@ -155,7 +156,7 @@ namespace AmazingTech.InternSystem.Services
             var ScheduleOfInterviewerExist = _lichPhongVanRepository.GetScheduleOfInterviewerInPeriodTime(Interviewer.Id, model.ThoiGianPhongVan, timeEnd);
             if(ScheduleOfInterviewerExist != null)
             {
-                throw new BadHttpRequestException("This interviewer has an interview scheduled for this time");
+                throw new BadHttpRequestException("This interviewer has an interview scheduled from :"+model.ThoiGianPhongVan+"to"+timeEnd);
             }
             if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN))) // không phải là HR hay Admin thì không lịch đc tạo 
             {
@@ -361,7 +362,7 @@ namespace AmazingTech.InternSystem.Services
                .ToList();
             return HrOrMentorWithoutInterview;
         }
-        public void AutoCreateSchedule(DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm)
+        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm)
         {
             if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes < 30)
             {
@@ -384,33 +385,27 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("Only admin can use this function");
             }
-            var listHrOrMentorWithoutInterview = GetHrOrMentorWithoutInternView(startTime.AddMinutes(-30), endTime.AddMinutes(30));
-            foreach (var item in listHrOrMentorWithoutInterview)
+            var listInternWithoutInterview = GetInternWithoutInternView();
+            if (listInternWithoutInterview.Count == 0)
             {
-                var startTime2 = startTime;
-                var listInternWithoutInterview = GetInternWithoutInternView();
-                if (listInternWithoutInterview.Count == 0)
+                throw new BadHttpRequestException("All interns have an interview schedule");
+            }
+            foreach (var item1 in listInternWithoutInterview)
+            {
+                var lichphongvan = new LichPhongVanRequestModel
+                {
+                    MailNgPhongVan = mailNgPhongVan,
+                    Email = item1.Email,
+                    ThoiGianPhongVan = startTime,
+                    TimeDuration = 15,
+                    DiaDiemPhongVan = DiaDiemPhongVan,
+                    interviewForm = interviewForm,
+                };
+                startTime = startTime.AddMinutes(30);
+                AddLichPhongVan(lichphongvan);
+                if (startTime.AddMinutes(30) >= endTime)
                 {
                     break;
-                }
-                foreach (var item1 in listInternWithoutInterview)
-                {
-                    var lichphongvan = new LichPhongVanRequestModel
-                    {
-                        MailNgPhongVan = item.Email,
-                        Email = item1.Email,
-                        ThoiGianPhongVan = startTime2,
-                        TimeDuration = 15,
-                        DiaDiemPhongVan = DiaDiemPhongVan,
-                        interviewForm = interviewForm,
-                        
-                    };
-                    startTime2 = startTime2.AddMinutes(30);
-                    AddLichPhongVan(lichphongvan);
-                    if (startTime2.AddMinutes(30) >= endTime)
-                    {
-                        break;
-                    }
                 }
             }
         }
@@ -535,6 +530,21 @@ namespace AmazingTech.InternSystem.Services
             var intern = user.Where(user => _userManager.IsInRoleAsync(user, Roles.INTERN).Result).ToList();
             return intern;
         }
-    
+        //public void CreateManySchedule(LichPhongVanRequestModel2 model)
+        //{
+        //    foreach (var item in model.Email)
+        //    {
+        //        var lichphongvan = new LichPhongVanRequestModel
+        //        {
+        //            Email = item,
+        //            DiaDiemPhongVan = model.DiaDiemPhongVan,
+        //            interviewForm = model.interviewForm,
+        //            MailNgPhongVan = model.MailNgPhongVan,
+        //            ThoiGianPhongVan = model.ThoiGianPhongVan,
+        //            TimeDuration = model.TimeDuration
+        //        };
+
+        //    }
+        //}
     }
 }
