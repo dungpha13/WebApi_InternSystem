@@ -83,7 +83,7 @@ namespace AmazingTech.InternSystem.Services
                         {
                             var cauhoi = new Cauhoi
                             {
-                                NoiDung = row.GetText("NoiDung"),
+                                NoiDung = row.GetText("Câu hỏi"),
                             };
 
                             return cauhoi;
@@ -119,7 +119,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult("Something went wrong!");
             }
 
-            return new OkResult();
+            return new OkObjectResult("Success");
         }
     }
 }
