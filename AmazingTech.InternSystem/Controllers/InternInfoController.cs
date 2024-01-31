@@ -53,7 +53,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> AddNewInternInfo(AddInternInfoDTO model)
         {
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -62,16 +62,19 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete("delete/{mssv}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> DeleteInternInfo(string mssv)
         {
             return await _internInfoService.DeleteInternInfo(mssv);
         }
 
         [HttpPut("update/{mssv}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return await _internInfoService.UpdateInternInfo(userId, model, mssv);
+           
         }
 
         [HttpPost("list/{kiThucTapId}")]
@@ -82,7 +85,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("{mssv}/comments")]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> AddCommentsInternInfo(CommentInternInfoDTO comment, string mssv)
         {
             string userIdCommentor = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);

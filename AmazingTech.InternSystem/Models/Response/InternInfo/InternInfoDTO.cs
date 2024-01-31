@@ -34,7 +34,7 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
         public string? DeletedBy { get; set; }
         public string DeletedTime { get; set; }
 
-        public string LastUpdateBy { get; set; }
+        public string LastUpdatedBy { get; set; }
         public string LastUpdatedTime { get; set; }
         // public string SdtNguoiThan { get; set; }     
         //public decimal GPA { get; set; }

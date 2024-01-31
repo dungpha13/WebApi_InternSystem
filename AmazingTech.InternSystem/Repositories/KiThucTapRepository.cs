@@ -37,11 +37,8 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var kis = context.Set<KiThucTap>()
-                .Include(ki => ki.Interns)
-                .Include(ktt => ktt.Truong)
-                .Where(u => u.DeletedBy == null)
-                .ToList();
+                var kis = context.Set<KiThucTap>().ToList();
+                //Include(ki => ki.TruongHoc)
                 return kis;
             }
         }
@@ -51,9 +48,8 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.KiThucTaps
-                        .Include(ktt => ktt.Interns)
-                        .Include(ktt => ktt.Truong)
-                        .FirstOrDefault(ktt => ktt.Id == id && ktt.DeletedBy == null);
+                       // .Include(ktt => ktt.InternInfos)
+                        .FirstOrDefault(ktt => ktt.Id == id);
             }
         }
 

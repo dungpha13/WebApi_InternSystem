@@ -21,7 +21,6 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
 
         [Required]
         [EmailAddress]        
-        
         public string EmailTruong { get; set; }
         [Required]
         public string LinkCV { get; set; }

@@ -105,7 +105,7 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult GetKiThucTapsByTruong(string idTruong)
         {
-            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(ktt => ktt.IdTruong.Equals(idTruong)).ToList();
+            List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(_ => _.IdTruong.Equals(idTruong)).ToList();
             return new OkObjectResult(kis);
         }
 
