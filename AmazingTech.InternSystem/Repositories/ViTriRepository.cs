@@ -64,5 +64,9 @@ namespace AmazingTech.InternSystem.Repositories
             }
             return internInfos;
         }
+        public ViTri GetViTriByName(string name)
+        {
+            return (ViTri)_context.ViTris.Where(x => x.Ten == name).FirstOrDefault();
+        }
     }
 }

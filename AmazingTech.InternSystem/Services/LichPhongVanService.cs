@@ -27,6 +27,7 @@ namespace AmazingTech.InternSystem.Services
         public bool ConfirmEmail(string id);
         public void SendResultInterviewEmail(string email);
         public List<User> GetInternWithoutInternView();
+        public void UpdateResult(string idlichphongvan, Result result, string Vitri);
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
         public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan,DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
 
@@ -41,13 +42,17 @@ namespace AmazingTech.InternSystem.Services
         private readonly ILichPhongVanRepository _lichPhongVanRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailService _emailService;
-        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager)
+        private readonly IViTriRepository _viTriRepository;
+        private readonly IUserViTriRepository _userViTriRepository;
+        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager, IViTriRepository viTriRepository, IUserViTriRepository userViTriRepository)
         {
             _userManager = userManager;
             _emailService = emailService;
             _userRepository = userRepository;
             _lichPhongVanRepository = lichPhongVanRepository;
             _httpContextAccessor = httpContextAccessor;
+            _viTriRepository = viTriRepository;
+            _userViTriRepository = userViTriRepository; 
         }
         public bool ConfirmEmail(string id)
         {
@@ -120,7 +125,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0)|| model.MailNgPhongVan == null)
+            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0) || model.MailNgPhongVan == null)
             {
                 throw new BadHttpRequestException("You need to fill all information");
             }
@@ -135,7 +140,7 @@ namespace AmazingTech.InternSystem.Services
             }
             var Intern = _userRepository.GetUserById(InternId);
             var InternRole = _userManager.GetRolesAsync(Intern).Result[0];
-            
+
             if (InternRole.ToUpper() != Roles.INTERN.ToUpper())
             {
                 throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
@@ -145,7 +150,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This intern already has interview schedule");
             }
-           
+
             var Interviewer = _userRepository.GetUserByEmail(model.MailNgPhongVan);
             if (Interviewer == null)
             {
@@ -154,19 +159,19 @@ namespace AmazingTech.InternSystem.Services
             var timeEnd = model.ThoiGianPhongVan + TimeSpan.FromMinutes(model.TimeDuration);
             timeEnd = timeEnd.AddMinutes(15);
             var ScheduleOfInterviewerExist = _lichPhongVanRepository.GetScheduleOfInterviewerInPeriodTime(Interviewer.Id, model.ThoiGianPhongVan, timeEnd);
-            if(ScheduleOfInterviewerExist != null)
+            if (ScheduleOfInterviewerExist != null)
             {
-                throw new BadHttpRequestException("This interviewer has an interview scheduled from :"+model.ThoiGianPhongVan+"to"+timeEnd);
+                throw new BadHttpRequestException("This interviewer has an interview scheduled from :" + model.ThoiGianPhongVan + "to" + timeEnd);
             }
             if (!(accountRole.Equals(Roles.HR.ToUpper()) || accountRole.Equals(Roles.ADMIN))) // không phải là HR hay Admin thì không lịch đc tạo 
             {
                 throw new BadHttpRequestException("You don't have permission to create schedule");
             }
             var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result[0];
-        
+
             // Người Phỏng Vấn phải là HR hoặc Mentor
-          
-            
+
+
             if (!(InterViewListRole.ToUpper() == Roles.HR.ToUpper() || InterViewListRole.ToUpper() == Roles.MENTOR.ToUpper()))
             {
                 throw new BadHttpRequestException("This interviewer has no right to be the interviewer");
@@ -258,7 +263,7 @@ namespace AmazingTech.InternSystem.Services
             }
             var Intern = _userRepository.GetUserById(InternId);
             var InternRole = _userManager.GetRolesAsync(Intern).Result[0];
-         
+
             if (InternRole.ToUpper() != Roles.INTERN.ToUpper())
             {
                 throw new BadHttpRequestException("This interviewee isn't intern so we can't create schedule");
@@ -323,7 +328,7 @@ namespace AmazingTech.InternSystem.Services
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (ScheduleId == null)
             {
-                
+
                 throw new BadHttpRequestException("Please, Enter the Id");
             }
             var accountLogin = _userRepository.GetUserById(accountId);
@@ -349,8 +354,8 @@ namespace AmazingTech.InternSystem.Services
         {
             var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview();
             var InternWithoutInterview = listUserWithOutInterview.Where(listUserWithOutInterview => _userManager.IsInRoleAsync(listUserWithOutInterview, Roles.INTERN).Result).ToList();
- 
-         
+
+
             return InternWithoutInterview;
         }
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate)
@@ -435,13 +440,13 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(lichPhongVanResponseModels);
 
         }
-    
-             
+
+
 
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email)
         {
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
-            
+
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             if (accountId == null)
@@ -497,10 +502,10 @@ namespace AmazingTech.InternSystem.Services
             return lichphongvanList;
         }
 
-        
 
-        
-       
+
+
+
 
         public List<LichPhongVanResponseModel> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
         {
@@ -518,7 +523,7 @@ namespace AmazingTech.InternSystem.Services
                 KetQua = lpv.KetQua.ToString() ?? string.Empty,
             }).ToList();
         }
-        public  List<User> GetInternOnly()
+        public List<User> GetInternOnly()
         {
             //var internUsers = _userManager.GetUsersInRoleAsync("Intern").Result;
             //if (internUsers == null)
@@ -530,21 +535,44 @@ namespace AmazingTech.InternSystem.Services
             var intern = user.Where(user => _userManager.IsInRoleAsync(user, Roles.INTERN).Result).ToList();
             return intern;
         }
-        //public void CreateManySchedule(LichPhongVanRequestModel2 model)
-        //{
-        //    foreach (var item in model.Email)
-        //    {
-        //        var lichphongvan = new LichPhongVanRequestModel
-        //        {
-        //            Email = item,
-        //            DiaDiemPhongVan = model.DiaDiemPhongVan,
-        //            interviewForm = model.interviewForm,
-        //            MailNgPhongVan = model.MailNgPhongVan,
-        //            ThoiGianPhongVan = model.ThoiGianPhongVan,
-        //            TimeDuration = model.TimeDuration
-        //        };
-
-        //    }
-        //}
+        public void UpdateResult(string idlichphongvan, Result result, string Vitri)
+        {
+            if (idlichphongvan == null || result == null || Vitri == null)
+            {
+                throw new BadHttpRequestException("You need to fill all information");
+            }
+            var schedule = _lichPhongVanRepository.GetScheduleById(idlichphongvan);
+            if (schedule == null)
+            {
+                throw new BadHttpRequestException("Wrong Id");
+            }
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (accountRole != Roles.ADMIN || accountRole != Roles.HR.ToUpper())
+            {
+                throw new BadHttpRequestException("You don't have permission to do this function");
+            }
+            if(accountRole == Roles.HR.ToUpper() && accountId != schedule.IdNguoiPhongVan)
+            {
+                throw new BadHttpRequestException("You don't have permission to do this function");
+            }
+            schedule.KetQua = result;
+            schedule.LastUpdatedBy = _userRepository.GetUserById(accountId).HoVaTen;
+            schedule.LastUpdatedTime = DateTime.Now;
+            var intern = _userRepository.GetUserById(schedule.IdNguoiDuocPhongVan);
+            var vitriCheck = _viTriRepository.GetViTriByName(Vitri);
+            if(vitriCheck == null)
+            {
+                throw new BadHttpRequestException("This position does not exist");
+            }
+            var UserViTri = new UserViTri()
+            {
+                UsersId = schedule.IdNguoiDuocPhongVan,
+                ViTrisId = vitriCheck.Id
+            };
+            _userViTriRepository.AddUserViTriRepository(UserViTri);
+            _lichPhongVanRepository.UpdateLichPhongVan(schedule);
+            
+        }
     }
 }

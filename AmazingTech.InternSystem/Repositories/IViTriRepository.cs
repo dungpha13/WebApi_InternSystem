@@ -13,5 +13,6 @@ namespace AmazingTech.InternSystem.Repositories
 
         Task<int> DeleteViTri(string viTriId, string user);
         Task<List<InternInfo>> UserViTriView(string id);
+        public ViTri GetViTriByName(string name);
     }
 }
