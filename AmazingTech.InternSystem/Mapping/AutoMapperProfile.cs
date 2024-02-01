@@ -22,8 +22,6 @@ namespace AmazingTech.InternSystem.Mapping
 
         public AutoMapperProfile()
         {
-            CreateMap<User, ProfileResponseDTO>().ReverseMap();
-
             CreateMap<InternInfo, InternInfoDTO>()
             .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime.HasValue ? src.CreatedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
             .ForMember(dest => dest.NgaySinh, opt => opt.MapFrom(src => src.NgaySinh.HasValue ? src.NgaySinh.Value.ToString("dd/MM/yyyy") : null))
@@ -75,6 +73,14 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.TenTruong, opt => opt.MapFrom(src => src.Truong.Ten))
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
+                .ReverseMap();
+
+            CreateMap<User, GetUserDTO>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.FullNameOrSchoolName, opt => opt.MapFrom(src => src.HoVaTen))
+                .ForMember(dest => dest.TrangThaiThucTap, opt => opt.MapFrom(src => src.TrangThaiThucTap.ToString()))
+                .ForMember(dest => dest.ViTris, opt => opt.MapFrom(src => src.UserViTris))
+                .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
         }
     }

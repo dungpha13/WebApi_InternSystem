@@ -4,7 +4,10 @@ using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Enums;
 using AmazingTech.InternSystem.Models.Request.Authenticate;
+using AmazingTech.InternSystem.Models.Request.User;
+using AmazingTech.InternSystem.Models.Response.User;
 using AmazingTech.InternSystem.Repositories;
+using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +20,7 @@ using swp391_be.API.Models.Request.Authenticate;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Web;
 
 namespace AmazingTech.InternSystem.Services
 {
@@ -28,12 +32,17 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> ConfirmEmail(string userId, string token);
         Task<IActionResult> GoogleLoginRedirect(string email, string role);
         Task<IActionResult> UpdateTrangThaiThucTap(string id, string trangThaiThucTap);
+
+        Task<IActionResult> CreateUser(CreateUserDTO createUserDto);
+        Task<IActionResult> GetAllUsers();
+        Task<IActionResult> GetUserById(string id);
     }
 
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ITruongRepository _truongRepository;
@@ -44,7 +53,8 @@ namespace AmazingTech.InternSystem.Services
             IEmailService emailService,
             ITruongRepository truongRepository,
             IInternInfoRepo internInfoRepo,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -52,6 +62,7 @@ namespace AmazingTech.InternSystem.Services
             _truongRepository = truongRepository;
             _internInfoRepo = internInfoRepo;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser)
@@ -73,7 +84,7 @@ namespace AmazingTech.InternSystem.Services
                 {
                     return new BadRequestObjectResult(new
                     {
-                        message = "Email cá nhân hoặc email trường của bạn đã được dùng để tạo tài khoản, vui lòng kiểm tra lại."
+                        message = "Email cá nhân hoặc email trường của bạn đã được dùng để tạo tài khoản intern, vui lòng kiểm tra lại."
                     });
                 }
 
@@ -361,13 +372,222 @@ namespace AmazingTech.InternSystem.Services
             });
         }
 
+        public async Task<IActionResult> CreateUser(CreateUserDTO createUserDTO)
+        {
+            switch (createUserDTO.Role)
+            {
+                case "Intern":
+                    using (var context = new AppDbContext())
+                    {
+                        var intern = context.InternInfos
+                            .Where(_ => _.EmailCaNhan.Equals(createUserDTO.Email) || _.EmailTruong.Equals(createUserDTO.Email)).SingleOrDefault();
+
+                        if (intern == null)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Bạn không có trong danh sách intern. Hãy kiểm tra lại email."
+                            });
+                        }
+
+                        if (intern.UserId != null)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Email cá nhân hoặc email trường của bạn đã được dùng để tạo tài khoản intern, vui lòng kiểm tra lại."
+                            });
+                        }
+
+                        var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(createUserDTO.Username.ToUpper()) || _.NormalizedEmail.Equals(createUserDTO.Email.ToUpper())).SingleOrDefault();
+
+                        if (existedUser != null)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Username hoặc email đã tồn tại."
+                            });
+                        }
+
+                        var user = new User
+                        {
+                            HoVaTen = intern.HoTen,
+                            Email = createUserDTO.Email,
+                            UserName = createUserDTO.Username,
+                            PhoneNumber = intern.Sdt,
+                            InternInfoId = intern.Id
+                        };
+
+                        var createResult = await _userManager.CreateAsync(user, createUserDTO.Password);
+                        if (!createResult.Succeeded)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Có lỗi xảy ra khi tạo user."
+                            });
+                        }
+
+                        var createdUser = await _userManager.FindByNameAsync(createUserDTO.Username);
+         
+                        return await CheckAndAddUserToRoleAndSendMail(user, "Intern");
+                    }
+
+                case "School":
+                    using (var context = new AppDbContext())
+                    {
+                        var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(createUserDTO.Username.ToUpper()) || _.NormalizedEmail.Equals(createUserDTO.Email.ToUpper())).SingleOrDefault();
+
+                        if (existedUser != null)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Username hoặc email đã tồn tại."
+                            });
+                        }
+
+                        var user = new User
+                        {
+                            HoVaTen = createUserDTO.FullNameOrSchoolName,
+                            Email = createUserDTO.Email,
+                            UserName = createUserDTO.Username,
+                            PhoneNumber = createUserDTO.PhoneNumber
+                        };
+
+                        var createResult = await _userManager.CreateAsync(user, createUserDTO.Password);
+                        if (!createResult.Succeeded)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Có lỗi xảy ra khi tạo user."
+                            });
+                        }
+
+                        var createdUser = await _userManager.FindByNameAsync(createUserDTO.Username);
+
+                        return await CheckAndAddUserToRoleAndSendMail(user, "School");
+                    }
+
+                default:
+                    using (var context = new AppDbContext())
+                    {
+                        var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(createUserDTO.Username.ToUpper()) || _.NormalizedEmail.Equals(createUserDTO.Email.ToUpper())).SingleOrDefault();
+
+                        if (existedUser != null)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Username hoặc email đã tồn tại."
+                            });
+                        }
+
+                        var user = new User
+                        {
+                            HoVaTen = createUserDTO.FullNameOrSchoolName,
+                            Email = createUserDTO.Email,
+                            UserName = createUserDTO.Username,
+                            PhoneNumber = createUserDTO.PhoneNumber
+                        };
+
+                        var createResult = await _userManager.CreateAsync(user, createUserDTO.Password);
+                        if (!createResult.Succeeded)
+                        {
+                            return new BadRequestObjectResult(new
+                            {
+                                message = "Có lỗi xảy ra khi tạo user."
+                            });
+                        }
+
+                        var createdUser = await _userManager.FindByNameAsync(createUserDTO.Username);
+
+                        return await CheckAndAddUserToRoleAndSendMail(user, createUserDTO.Role);
+                    }
+            }
+        }
+
+        private async Task<IActionResult> CheckAndAddUserToRoleAndSendMail(User user, string role)
+        {
+            var roleExist = await _roleManager.RoleExistsAsync(role);
+            if (!roleExist)
+            {
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole { Name = role });
+
+                if (!createRoleResult.Succeeded)
+                {
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "Có lỗi xảy ra khi tạo role."
+                    });
+                }
+            }
+
+            var addRoleResult = await _userManager.AddToRoleAsync(user, role);
+            if (!addRoleResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Có lỗi xảy ra khi thêm role cho user."
+                });
+            }
+
+            if (role.Equals(Roles.INTERN))
+            {
+                using (var context = new AppDbContext())
+                {
+                    var internInfo = context.InternInfos
+                        .Where(_ => _.EmailCaNhan.Equals(user.Email) || _.EmailTruong.Equals(user.Email)).SingleOrDefault();
+
+                    if (internInfo != null)
+                    {
+                        internInfo.UserId = user.Id;
+                    }
+
+                    context.InternInfos.Update(internInfo);
+                    context.SaveChanges();
+                }
+            }
+
+            SendOTPToEmail(user);
+
+            return new OkObjectResult(new
+            {
+                message = "Tạo user thành công."
+            });
+        }
+
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var userList = await _userManager.Users.Where(x => x.DeletedTime == null).ToListAsync();
+            var mappedUserList = _mapper.Map<List<GetUserDTO>>(userList);
+
+            var result = new List<GetUserDTO>();
+            foreach (var user in mappedUserList)
+            {
+                var identityUser = await _userManager.FindByIdAsync(user.Id);
+                var roles = await _userManager.GetRolesAsync(identityUser);
+                user.Roles = roles.ToList();
+                result.Add(user);
+            }
+            return new OkObjectResult(result);
+        }
+
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var userList = await _userManager.Users.Where(x => x.Id.Equals(id) && x.DeletedTime == null).ToListAsync();
+            var result = _mapper.Map<GetUserDTO>(userList.SingleOrDefault());
+
+            return new OkObjectResult(result);
+        }
+
         private async void SendOTPToEmail(User user)
         {
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var baseToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = HttpUtility.UrlEncodeUnicode(baseToken);
             var uid = user.Id;
 
+            Console.WriteLine($"Base token: {baseToken}");
+            Console.WriteLine($"Encoded token: {token}");
+
             var url = _configuration.GetValue<string>("Url:Backend");
-            string link = url + $"api/auth/email-confirmation?userId={uid}&token={token}";
+            string link = url + $"api/auth/email-confirmation?id={uid}&token={token}";
 
             try
             {

@@ -15,6 +15,7 @@ using AmazingTech.InternSystem.Models.Request.Authenticate;
 using AmazingTech.InternSystem.Services;
 using System.Security.Claims;
 using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Models.Request.User;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -49,78 +50,25 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<IActionResult> GetUser()
+        public async Task<IActionResult> GetAllUsers()
         {
-            Thread.Sleep(700);
-            var userDomainList = await _userManager.Users.Where(x => x.DeletedTime == null).ToListAsync();
-            var result = new List<ProfileResponseDTO>();
-            foreach (var User in userDomainList)
-            {
-                var roles = await _userManager.GetRolesAsync(User);
-                var ProfileResponseDTO = _mapper.Map<ProfileResponseDTO>(User);
-                ProfileResponseDTO.Roles = roles.ToList();
-                result.Add(ProfileResponseDTO);
-            }
-            return Ok(result);
+            return await _userService.GetAllUsers();
         }
 
-
         [HttpGet]
-        [Route("get/{id:Guid}")]
+        [Route("get/{id}")]
         //[Authorize(Roles = Roles.ADMIN)]
-        public async Task<IActionResult> GetUserById([FromRoute] Guid id)
+        public async Task<IActionResult> GetUserById([FromRoute] string id)
         {
-            var userDomainModel = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString() && x.DeletedTime == null);
-
-            if (userDomainModel is null)
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = "The given user doesn't exist in our system."
-                });
-            }
-
-            return Ok(_mapper.Map<ProfileResponseDTO>(userDomainModel));
+            return await _userService.GetUserById(id);
         }
 
 
         [HttpPost("create")]
-        [Authorize(Roles = Roles.ADMIN)]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDTO createUserRequestDTO)
+        //[Authorize(Roles = Roles.ADMIN)]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDto)
         {
-            if (!(createUserRequestDTO.Roles == Roles.ADMIN
-                || createUserRequestDTO.Roles == Roles.MENTOR
-                || createUserRequestDTO.Roles == Roles.INTERN
-                || createUserRequestDTO.Roles == Roles.SCHOOL))
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = "The input role doesn't exist in our system"
-                });
-            }
-
-            var identityUser = new User
-            {
-                UserName = createUserRequestDTO.Username,
-                HoVaTen = createUserRequestDTO.HoVaTen,
-                PhoneNumber = createUserRequestDTO.PhoneNumber,
-                Email = createUserRequestDTO.Email,
-            };
-
-            var identityResult = await _userManager.CreateAsync(identityUser, createUserRequestDTO.Password);
-
-            if (identityResult.Succeeded)
-            {
-                identityResult = await _userManager.AddToRolesAsync(identityUser, new[] { createUserRequestDTO.Roles });
-
-                if (identityResult.Succeeded)
-                {
-                    return Ok(identityResult);
-                }
-            }
-            return BadRequest(identityResult);
+            return await _userService.CreateUser(createUserDto);
         }
 
         [HttpPut]

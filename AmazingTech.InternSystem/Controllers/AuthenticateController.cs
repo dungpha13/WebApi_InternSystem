@@ -74,9 +74,9 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Route("email-confirmation")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string id, [FromQuery] string token)
         {
-            return await _userService.ConfirmEmail(userId, token);
+            return await _userService.ConfirmEmail(id, token);
         }
 
         [HttpPost]

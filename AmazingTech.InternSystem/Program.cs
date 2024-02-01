@@ -143,7 +143,6 @@ namespace AmazingTech.InternSystem
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
                 .AddSignInManager()
-                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -157,6 +156,7 @@ namespace AmazingTech.InternSystem
                 options.Password.RequiredUniqueChars = 1;
                 options.User.RequireUniqueEmail = false;
                 options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
+                options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultProvider;
 
             }).Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromMinutes(15));
             builder.Services.AddAuthentication(options =>
