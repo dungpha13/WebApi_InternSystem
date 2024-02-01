@@ -59,10 +59,24 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
+        [Route("register/school")]
+        public async Task<IActionResult> RegisterSchool([FromBody] RegisterSchoolDTO registerUserRequestDTO)
+        {
+            return await _userService.RegisterSchool(registerUserRequestDTO);
+        }
+
+        [HttpPost]
         [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] SignInUserRequestDTO signInUserRequestDTO)
         {
             return await _userService.Login(signInUserRequestDTO);
+        }
+
+        [HttpPost]
+        [Route("email-confirmation")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+        {
+            return await _userService.ConfirmEmail(userId, token);
         }
 
         private async Task SaveUserToken(User user)
@@ -267,7 +281,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var feUrl = _configuration.GetValue<string>("Frontend:Default");
+            var feUrl = _configuration.GetValue<string>("Url:Frontend");
             string link = feUrl + $"reset-password?id={user.Id}&token={token}";
             string subject = "Reset Your Password";
             string content = $"Click the link to reset your password: {link}";

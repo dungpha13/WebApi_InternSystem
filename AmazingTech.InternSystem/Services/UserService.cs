@@ -6,8 +6,10 @@ using AmazingTech.InternSystem.Models.Request.Authenticate;
 using AmazingTech.InternSystem.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using swp391_be.API.Models.Request.Authenticate;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,14 +21,16 @@ namespace AmazingTech.InternSystem.Services
     public interface IUserService
     {
         Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser);
-        //Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser);
+        Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser);
         Task<IActionResult> Login(SignInUserRequestDTO loginUser);
+        Task<IActionResult> ConfirmEmail(string userId, string token);
     }
 
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ITruongRepository _truongRepository;
         private readonly IInternInfoRepo _internInfoRepo;
@@ -35,13 +39,15 @@ namespace AmazingTech.InternSystem.Services
             RoleManager<IdentityRole> roleManager,
             IEmailService emailService,
             ITruongRepository truongRepository,
-            IInternInfoRepo internInfoRepo)
+            IInternInfoRepo internInfoRepo,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _emailService = emailService;
             _truongRepository = truongRepository;
             _internInfoRepo = internInfoRepo;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser)
@@ -50,7 +56,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 var intern = context.InternInfos
                     .Where(_ => _.EmailCaNhan.Equals(registerUser.Email) || _.EmailTruong.Equals(registerUser.Email)).SingleOrDefault();
-                
+
                 if (intern == null)
                 {
                     return new BadRequestObjectResult(new
@@ -90,6 +96,45 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
+        public async Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser)
+        {
+            using (var context = new AppDbContext())
+            {
+                var existedSchools = await _userManager.GetUsersInRoleAsync(Roles.SCHOOL);
+                if (existedSchools.Any())
+                {
+                    var school = existedSchools.Where(_ => _.HoVaTen.Equals(registerUser.SchoolName)).SingleOrDefault();
+                    if (school != null)
+                    {
+                        return new BadRequestObjectResult(new
+                        {
+                            message = "Tên trường đã tồn tại."
+                        });
+                    }
+                }
+
+                var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(registerUser.Username.ToUpper()) || _.NormalizedEmail.Equals(registerUser.Email.ToUpper())).SingleOrDefault();
+
+                if (existedUser != null)
+                {
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "Username hoặc email đã tồn tại."
+                    });
+                }
+
+                var user = new User
+                {
+                    HoVaTen = registerUser.SchoolName,
+                    Email = registerUser.Email,
+                    UserName = registerUser.Username,
+                    PhoneNumber = registerUser.PhoneNumber
+                };
+
+                return await RegisterUser(user, registerUser.Password, Roles.SCHOOL);
+            }
+        }
+
         public async Task<IActionResult> Login(SignInUserRequestDTO loginUser)
         {
             var user = await _userManager.FindByNameAsync(loginUser.Username);
@@ -102,9 +147,9 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult(new { Succeeded = false, Errors = "Invalid username/email or password." });
             }
 
-            if (!user.isConfirmed)
+            if (!user.EmailConfirmed)
             {
-                return new BadRequestObjectResult("Hay cho Admin duyet.");
+                return new BadRequestObjectResult("Bạn chưa xác thực email.");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -140,10 +185,10 @@ namespace AmazingTech.InternSystem.Services
                 });
             }
 
-            var roleExist = await _roleManager.RoleExistsAsync(Roles.INTERN);
+            var roleExist = await _roleManager.RoleExistsAsync(role);
             if (!roleExist)
             {
-                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole { Name = Roles.INTERN });
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole { Name = role });
 
                 if (!createRoleResult.Succeeded)
                 {
@@ -156,7 +201,7 @@ namespace AmazingTech.InternSystem.Services
 
             var registeredUser = await _userManager.FindByEmailAsync(user.Email);
 
-            var addRoleResult = await _userManager.AddToRoleAsync(registeredUser, Roles.INTERN);
+            var addRoleResult = await _userManager.AddToRoleAsync(registeredUser, role);
             if (!addRoleResult.Succeeded)
             {
                 return new BadRequestObjectResult(new
@@ -165,14 +210,94 @@ namespace AmazingTech.InternSystem.Services
                 });
             }
 
-            // Neu role la intern thi phai cap nhat UserId vao InternInfo va InternInfoId vao User
+            if (role.Equals(Roles.INTERN))
+            {
+                using (var context = new AppDbContext())
+                {
+                    var internInfo = context.InternInfos
+                        .Where(_ => _.EmailCaNhan.Equals(user.Email) || _.EmailTruong.Equals(user.Email)).SingleOrDefault();
+
+                    if (internInfo != null)
+                    {
+                        internInfo.UserId = user.Id;
+                    }
+
+                    context.InternInfos.Update(internInfo);
+                    context.SaveChanges();
+                }
+            }
+
             // Gui mail voi ma OTP
+            SendOTPToEmail(registeredUser);
 
             return new OkObjectResult(new
             {
                 message = "Đăng kí thành công! Hãy kiểm tra email để kích hoạt tài khoản."
             });
-        } 
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new
+                {
+                    message = "Không tìm thấy user."
+                });
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "User này đã xác nhận email rồi."
+                });
+            }
+
+            var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (!confirmResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Không thể xác nhận, hãy kiểm tra lại token."
+                });
+            }
+
+            try
+            {
+                _emailService.SendMail2($"Thank you for registering on our website, log in now to use your account!", user.Email, "Welcome to AmazingTech!");
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+            }
+
+            return new OkObjectResult(new
+            {
+                message = "Xác nhận thành công. Hãy đăng nhập vào tài khoản của bạn."
+            });
+        }
+
+        private async void SendOTPToEmail(User user)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var uid = user.Id;
+
+            var url = _configuration.GetValue<string>("Url:Backend");
+            string link = url + $"api/auth/email-confirmation?userId={uid}&token={token}";
+
+            try
+            {
+                _emailService.SendMail2($"Please confirm your account by clicking this link: {link}", user.Email, "Confirm your email to complete registration!");
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+            }
+        }
 
         private async Task SaveUserToken(User user)
         {
