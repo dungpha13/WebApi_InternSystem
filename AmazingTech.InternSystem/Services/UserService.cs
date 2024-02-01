@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Enums;
+using AmazingTech.InternSystem.Models.Request.Authenticate;
 using AmazingTech.InternSystem.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,8 @@ namespace AmazingTech.InternSystem.Services
 {
     public interface IUserService
     {
-        Task<IActionResult> Register(RegisterUserRequestDTO registerUser);
+        Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser);
+        //Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser);
         Task<IActionResult> Login(SignInUserRequestDTO loginUser);
     }
 
@@ -42,104 +44,49 @@ namespace AmazingTech.InternSystem.Services
             _internInfoRepo = internInfoRepo;
         }
 
-        public async Task<IActionResult> Register(RegisterUserRequestDTO registerUser)
+        public async Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser)
         {
-            var existingUser = await _userManager.FindByNameAsync(registerUser.Username);
-            if (existingUser != null)
+            using (var context = new AppDbContext())
             {
-                return new BadRequestObjectResult(new { Succeeded = false, Errors = "Username da ton tai." });
-            }
-
-            var existingUserMail = await _userManager.FindByEmailAsync(registerUser.Email);
-            if (existingUserMail != null)
-            {
-                return new BadRequestObjectResult(new { Succeeded = false, Errors = "Email da ton tai." });
-            }
-
-            var newUser = new User
-            {
-                HoVaTen = registerUser.HoVaTen,
-                PhoneNumber = registerUser.PhoneNumber,
-                Email = registerUser.Email,
-                UserName = registerUser.Username,
-            };
-
-            var roleExists = await _roleManager.RoleExistsAsync(registerUser.Role);
-            var roleName = registerUser.Role;
-
-            if (registerUser.Role.Equals("Intern") || registerUser.Role.Equals("School"))
-            {
-                newUser.isConfirmed = true;
-                if (!roleExists)
+                var intern = context.InternInfos
+                    .Where(_ => _.EmailCaNhan.Equals(registerUser.Email) || _.EmailTruong.Equals(registerUser.Email)).SingleOrDefault();
+                
+                if (intern == null)
                 {
-                    var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
-                    roleExists = true;
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "Bạn không có trong danh sách intern. Hãy kiểm tra lại email."
+                    });
                 }
-            }
-            else
-            if (registerUser.Role.Equals("Admin")
-                || registerUser.Role.Equals("HR")
-                || registerUser.Role.Equals("Mentor"))
-            {
-                newUser.isConfirmed = false;
-                if (!roleExists)
+
+                if (intern.UserId != null)
                 {
-                    var roleResult = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
-                    roleExists = true;
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "Email cá nhân hoặc email trường của bạn đã được dùng để tạo tài khoản, vui lòng kiểm tra lại."
+                    });
                 }
-            }
 
-            if (!roleExists)
-            {
-                return new BadRequestObjectResult(new { Succeeded = false, Errors = "Role khong ton tai." });
-            }
+                var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(registerUser.Username.ToUpper()) || _.NormalizedEmail.Equals(registerUser.Email.ToUpper()));
 
-            if (registerUser.Role.Equals("Intern"))
-            {
-                var truongExist = _truongRepository.GetAllTruongs().Where(t => t.Ten.Equals(registerUser.Truong));
-
-                if (truongExist == null || !truongExist.Any())
+                if (existedUser != null)
                 {
-                    return new BadRequestObjectResult(new { Succeeded = false, Errors = "Truong khong ton tai." });
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "Username hoặc email đã tồn tại."
+                    });
                 }
-            }
 
-            var createUserResult = await _userManager.CreateAsync(newUser, registerUser.Password);
-
-            if (!createUserResult.Succeeded)
-            {
-                return new BadRequestObjectResult(new { Succeeded = false, Errors = createUserResult.Errors });
-            }
-
-            var addUserToRoleResult = await _userManager.AddToRoleAsync(newUser, registerUser.Role);
-
-            if (!addUserToRoleResult.Succeeded)
-            {
-                return new BadRequestObjectResult(new { Succeeded = false, Errors = addUserToRoleResult.Errors });
-            }
-
-            // tạo intern info nếu như user là intern
-            if (registerUser.Role.Equals("Intern"))
-            {
-                var truong = _truongRepository.GetAllTruongs().Where(t => t.Ten.Equals(registerUser.Truong)).SingleOrDefault();
-                var createdUser = await _userManager.FindByNameAsync(newUser.UserName);
-
-                int result = await _internInfoRepo.AddInternInfoAsync(createdUser.Id, new InternInfo
+                var user = new User
                 {
-                    HoTen = registerUser.HoVaTen,
-                    MSSV = registerUser.Mssv,
-                    IdTruong = truong.Id
-                });
+                    HoVaTen = intern.HoTen,
+                    Email = registerUser.Email,
+                    UserName = registerUser.Username,
+                    PhoneNumber = registerUser.PhoneNumber
+                };
+
+                return await RegisterUser(user, registerUser.Password, Roles.INTERN);
             }
-
-            await SaveUserToken(newUser);
-
-            string subject = "Welcome to AmazingTech, " + $"{newUser.HoVaTen}";
-            string content = "Thank you for registering your account, enjoys!";
-
-            _emailService.SendMail2(content, newUser.Email, subject);
-
-            return new OkObjectResult(new { Succeeded = true, Message = "Registration successful." });
         }
 
         public async Task<IActionResult> Login(SignInUserRequestDTO loginUser)
@@ -181,6 +128,50 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(new { accessToken = jwtToken });
         }
 
+        private async Task<IActionResult> RegisterUser(User user, string password, string role)
+        {
+            var registerResult = await _userManager.CreateAsync(user, password);
+            if (!registerResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Có lỗi xảy ra khi tạo user."
+                });
+            }
+
+            var roleExist = await _roleManager.RoleExistsAsync(Roles.INTERN);
+            if (!roleExist)
+            {
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole { Name = Roles.INTERN });
+
+                if (!createRoleResult.Succeeded)
+                {
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "Có lỗi xảy ra khi tạo role."
+                    });
+                }
+            }
+
+            var registeredUser = await _userManager.FindByEmailAsync(user.Email);
+
+            var addRoleResult = await _userManager.AddToRoleAsync(registeredUser, Roles.INTERN);
+            if (!addRoleResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Có lỗi xảy ra khi thêm role cho user."
+                });
+            }
+
+            // Gui mail voi ma OTP
+
+            return new OkObjectResult(new
+            {
+                message = "Đăng kí thành công! Hãy kiểm tra email để kích hoạt tài khoản."
+            });
+        } 
+
         private async Task SaveUserToken(User user)
         {
             using (var _dbContext = new AppDbContext())
@@ -206,81 +197,6 @@ namespace AmazingTech.InternSystem.Services
 
                 await _dbContext.SaveChangesAsync();
             }
-        }
-    }
-
-    public static class JwtGenerator
-    {
-        public static string GenerateToken(User user, List<string> roles)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes("de455d3d7f83bf393eea5aef43f474f4aac57e3e8d75f9118e60d526453002dc");
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim("username", user.UserName),
-                    new Claim(ClaimTypes.Role, roles[0]),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
-
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        private static List<InvalidToken> InvalidTokens = new List<InvalidToken>();
-
-        public static void InvalidateToken(string token)
-        {
-            InvalidTokens.Add(new InvalidToken { Token = token, InvalidatedAt = DateTime.UtcNow });
-        }
-        public static bool IsTokenValid(string token)
-        {
-            // Clear expired tokens before checking validity
-            ClearExpiredTokens();
-
-            return !InvalidTokens.Any(t => t.Token == token);
-        }
-
-        private static void ClearExpiredTokens()
-        {
-            var expirationThreshold = DateTime.UtcNow.AddHours(-1); // Set your expiration duration
-
-            InvalidTokens.RemoveAll(t => t.InvalidatedAt < expirationThreshold);
-        }
-
-        private class InvalidToken
-        {
-            public string Token { get; set; }
-            public DateTime InvalidatedAt { get; set; }
-        }
-
-        public static string ExtractTokenFromHeader(string authHeader)
-        {
-            return authHeader.Substring("Bearer ".Length).Trim();
-        }
-
-        public static string ExtractUserIdFromToken(string token)
-        {
-            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
-
-            // Extract the user ID claim
-            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        }
-
-        public static string ExtractUserRoleFromToken(string token)
-        {
-            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
-
-            // Extract the user ID claim
-            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         }
     }
 }

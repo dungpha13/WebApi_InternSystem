@@ -52,10 +52,10 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserRequestDTO registerUserRequestDTO)
+        [Route("register/intern")]
+        public async Task<IActionResult> RegisterIntern([FromBody] RegisterInternDTO registerUserRequestDTO)
         {
-            return await _userService.Register(registerUserRequestDTO);
+            return await _userService.RegisterIntern(registerUserRequestDTO);
         }
 
         [HttpPost]
@@ -63,17 +63,6 @@ namespace AmazingTech.InternSystem.Controllers
         public async Task<IActionResult> LoginAsync([FromBody] SignInUserRequestDTO signInUserRequestDTO)
         {
             return await _userService.Login(signInUserRequestDTO);
-        }
-
-        private User CreateUserFromRequest(RegisterUserRequestDTO registerUserRequestDTO)
-        {
-            return new User
-            {
-                UserName = registerUserRequestDTO.Username,
-                HoVaTen = registerUserRequestDTO.HoVaTen,
-                PhoneNumber = registerUserRequestDTO.PhoneNumber,
-                Email = registerUserRequestDTO.Email,
-            };
         }
 
         private async Task SaveUserToken(User user)
@@ -170,51 +159,51 @@ namespace AmazingTech.InternSystem.Controllers
                 });
             }
 
-            var identityUser = CreateUserFromRequest(new RegisterUserRequestDTO
-            {
-                HoVaTen = userName,
-                Email = userEmail,
-                Username = userEmail,
-                PhoneNumber = userPhone,
-                Role = Roles.INTERN
-            });
+            //var identityUser = CreateUserFromRequest(new RegisterUserRequestDTO
+            //{
+            //    HoVaTen = userName,
+            //    Email = userEmail,
+            //    Username = userEmail,
+            //    PhoneNumber = userPhone,
+            //    Role = Roles.INTERN
+            //});
 
-            var identityResult = await _userManager.CreateAsync(identityUser);
+            //var identityResult = await _userManager.CreateAsync(identityUser);
 
-            if (!identityResult.Succeeded)
-            {
-                return BadRequest(new { message = identityResult.Errors });
-            }
+            //if (!identityResult.Succeeded)
+            //{
+            //    return BadRequest(new { message = identityResult.Errors });
+            //}
 
-            identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
+            //identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
 
-            if (!identityResult.Succeeded)
-            {
-                return BadRequest(new { message = identityResult.Errors });
-            }
+            //if (!identityResult.Succeeded)
+            //{
+            //    return BadRequest(new { message = identityResult.Errors });
+            //}
 
-            await SaveUserToken(identityUser);
+            //await SaveUserToken(identityUser);
 
-            var user = await _userManager.FindByEmailAsync(userEmail);
+            //var user = await _userManager.FindByEmailAsync(userEmail);
 
-            if (user != null)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                if (roles == null || !roles.Any())
-                {
-                    return BadRequest(new { message = "This current user doesn't have a role." });
-                }
+            //if (user != null)
+            //{
+            //    var roles = await _userManager.GetRolesAsync(user);
+            //    if (roles == null || !roles.Any())
+            //    {
+            //        return BadRequest(new { message = "This current user doesn't have a role." });
+            //    }
 
-                string subject = "Welcome to AmazingTech, " + $"{user.HoVaTen}";
-                string content = "Thank you for registering your account, enjoys!";
+            //    string subject = "Welcome to AmazingTech, " + $"{user.HoVaTen}";
+            //    string content = "Thank you for registering your account, enjoys!";
 
-                _emailService.SendMail2(content, user.Email, subject);
+            //    _emailService.SendMail2(content, user.Email, subject);
 
-                return new OkObjectResult(new
-                {
-                    accessToken = JwtGenerator.GenerateToken(user, roles.ToList())
-                });
-            }
+            //    return new OkObjectResult(new
+            //    {
+            //        accessToken = JwtGenerator.GenerateToken(user, roles.ToList())
+            //    });
+            //}
 
             return new BadRequestObjectResult("Error");
         }

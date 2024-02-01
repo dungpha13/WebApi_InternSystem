@@ -1,0 +1,27 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AmazingTech.InternSystem.Models.Request.Authenticate
+{
+    public class RegisterInternDTO
+    {
+        [Required(ErrorMessage = "Bạn chưa điền username.")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Bạn chưa điền password.")]
+        [RegularExpression("^(?=.*[B!@#$%^&*()_+{}[\\]|:;\"'<>,.?/])(?=.*[a-zA-Z])(?=.*\\d)(?!.*\\s).{8,}$",
+            ErrorMessage = "- Độ dài: Mật khẩu nên có ít nhất 8 ký tự.\r\n" +
+            "- Sử dụng ký tự đặc biệt: Có ít nhất một ký tự đặc biệt.\r\n" +
+            "- Sử dụng chữ in hoa và chữ thường: Kết hợp giữa các chữ cái in hoa và thường.\r\n" +
+            "- Sử dụng số: Thêm ít nhất một hoặc nhiều chữ số.\r\n" +
+            "- Không khoảng trắng, có ít nhất 1 ký tự đặc biệt, 1 chữ, 1 số")]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "Bạn chưa điền email.")]
+        [EmailAddress(ErrorMessage = "Sai format email.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Bạn chưa điền số điện thoại.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")]
+        public string PhoneNumber { get; set; }
+    }
+}

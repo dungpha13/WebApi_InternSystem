@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazingTech.InternSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240131110210_Test")]
-    partial class Test
+    [Migration("20240201065441_Test1")]
+    partial class Test1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -383,6 +383,9 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ViTriMongMuon")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdTruong");
@@ -703,6 +706,9 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("HoVaTen")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("InternInfoId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("LastUpdatedTime")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
@@ -759,6 +765,8 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InternInfoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1246,6 +1254,15 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("NguoiGui");
 
                     b.Navigation("NguoiNhan");
+                });
+
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.User", b =>
+                {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.InternInfo", "InternInfo")
+                        .WithMany()
+                        .HasForeignKey("InternInfoId");
+
+                    b.Navigation("InternInfo");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.UserDuAn", b =>

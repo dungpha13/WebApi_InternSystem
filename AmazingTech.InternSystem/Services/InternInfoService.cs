@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Enums;
+using AmazingTech.InternSystem.Models.Request.Authenticate;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Repositories;

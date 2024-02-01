@@ -28,7 +28,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? NganhHoc { get; set; }
         public string? Status { get; set; }
         public int? Round { get; set; }
-        public string? KiThucTapId { get; set; }
+        public string? ViTriMongMuon { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<Comment>? Comments { get; set; }
@@ -37,10 +37,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         [JsonIgnore]
         public TruongHoc? Truong { get; set; }
         [ForeignKey("KiThucTap")]
-        public string? IdKiThucTap { get; set; }
+        public string? KiThucTapId { get; set; }
         [JsonIgnore]
-/*        [ForeignKey("KiThucTap")]
-        public string? IdKiThucTap { get; set; }*/
         public KiThucTap? KiThucTap { get; set; }
     }
 }

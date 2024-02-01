@@ -23,6 +23,9 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? VerificationToken { get; set; }
         public DateTime? VerificationTokenExpires { get; set; }
         public bool isConfirmed { get; set; }
+        [ForeignKey("InternInfo")]
+        public string? InternInfoId { get; set; }
+        public InternInfo? InternInfo { get; set; }
         public TrangThaiThucTap TrangThaiThucTap { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<LichPhongVan> LichPhongVans_PhongVan { get; set; }
