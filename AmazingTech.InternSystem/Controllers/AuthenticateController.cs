@@ -72,7 +72,7 @@ namespace AmazingTech.InternSystem.Controllers
             return await _userService.Login(signInUserRequestDTO);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("email-confirmation")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
         {
