@@ -1,9 +1,11 @@
 ﻿using AmazingTech.InternSystem.Controllers;
 using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Enums;
 using AmazingTech.InternSystem.Models.Request.Authenticate;
 using AmazingTech.InternSystem.Repositories;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -24,6 +26,8 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser);
         Task<IActionResult> Login(SignInUserRequestDTO loginUser);
         Task<IActionResult> ConfirmEmail(string userId, string token);
+        Task<IActionResult> GoogleLoginRedirect(string email, string role);
+        Task<IActionResult> UpdateTrangThaiThucTap(string id, string trangThaiThucTap);
     }
 
     public class UserService : IUserService
@@ -232,7 +236,7 @@ namespace AmazingTech.InternSystem.Services
 
             return new OkObjectResult(new
             {
-                message = "Đăng kí thành công! Hãy kiểm tra email để kích hoạt tài khoản."
+                message = "Đăng kí thành công! Hãy kiểm tra email để kích hoạt tài khoản. Nếu bạn đã đăng kí bằng Gmail, hãy đăng nhập bằng Gmail để cập nhật username và password."
             });
         }
 
@@ -278,6 +282,82 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(new
             {
                 message = "Xác nhận thành công. Hãy đăng nhập vào tài khoản của bạn."
+            });
+        }
+
+        public async Task<IActionResult> GoogleLoginRedirect(string email, string role)
+        {
+            // kiem tra user da ton tai chua?
+            var existedUser = await _userManager.FindByEmailAsync(email);
+
+            // da ton tai => login va tra token
+            if (existedUser != null)
+            {
+                var identityUser = new User
+                {
+                    UserName = existedUser.UserName,
+                    Email = existedUser.Email,
+                    Id = existedUser.Id
+                };
+
+                var roles = await _userManager.GetRolesAsync(existedUser);
+                var jwtToken = JwtGenerator.GenerateToken(identityUser, roles.ToList());
+
+                if (string.IsNullOrEmpty(jwtToken))
+                {
+                    return new BadRequestObjectResult(new { Succeeded = false, Errors = "Failed to generate JWT token." });
+                }
+
+                return new OkObjectResult(new { accessToken = jwtToken });
+            }
+            // chua => tao tai khoan dua tren mail
+            switch (role)
+            {
+                case "Intern":
+                    return await RegisterIntern(new RegisterInternDTO
+                    {
+                        Email = email,
+                        Username = "",
+                        Password = ""
+                    });
+                default:
+                    return await RegisterSchool(new RegisterSchoolDTO
+                    {
+                        Email = email,
+                        Username = "",
+                        Password = ""
+                    });
+            }
+
+        }
+
+        public async Task<IActionResult> UpdateTrangThaiThucTap(string id, string trangThaiThucTap)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new
+                {
+                    message = "Không tìm thấy user. Bạn đã nhập sai ID hoặc user đã bị delete."
+                });
+            }
+
+            Enum.TryParse(trangThaiThucTap, out TrangThaiThucTap trangThai);
+            user.TrangThaiThucTap = trangThai;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Có lỗi xảy ra khi update. Hãy kiểm tra lại tên trạng thái bạn nhập đúng chưa?"
+                });
+            }
+
+            return new OkObjectResult(new
+            {
+                message = "Cập nhật trạng thái thành công!"
             });
         }
 

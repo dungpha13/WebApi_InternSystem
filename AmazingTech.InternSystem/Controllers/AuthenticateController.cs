@@ -79,30 +79,6 @@ namespace AmazingTech.InternSystem.Controllers
             return await _userService.ConfirmEmail(userId, token);
         }
 
-        private async Task SaveUserToken(User user)
-        {
-            var userToken = await _dbContext.UserTokens
-                .FirstOrDefaultAsync(t => t.UserId == user.Id && t.LoginProvider == ConfirmAction.CONFIRM && t.Name == ConfirmAction.CONFIRM);
-
-            if (userToken == null)
-            {
-                userToken = new IdentityUserToken<string>
-                {
-                    UserId = user.Id,
-                    LoginProvider = ConfirmAction.CONFIRM,
-                    Name = ConfirmAction.CONFIRM,
-                    Value = string.Empty,
-                };
-                _dbContext.UserTokens.Add(userToken);
-            }
-            else
-            {
-                userToken.Value = string.Empty;
-            }
-
-            await _dbContext.SaveChangesAsync();
-        }
-
         [HttpPost]
         [Route("logout")]
         [Authorize]
@@ -122,13 +98,26 @@ namespace AmazingTech.InternSystem.Controllers
 
         //Login with google
         [HttpGet]
-        [Route("login-with-google")]
+        [Route("login-with-google/intern")]
         [AllowAnonymous]
-        public IActionResult LoginWithGoogle()
+        public IActionResult LoginWithGoogleIntern()
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = "api/auth/redirect-google",
+                RedirectUri = "api/auth/redirect-google?role=Intern",
+                Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet]
+        [Route("login-with-google/school")]
+        [AllowAnonymous]
+        public IActionResult LoginWithGoogleSchool()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = "api/auth/redirect-google?role=School",
                 Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
@@ -136,7 +125,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Route("redirect-google")] // Redirect
-        public async Task<IActionResult> GoogleLoginRedirect()
+        public async Task<IActionResult> GoogleLoginRedirect([FromQuery] string role)
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -147,79 +136,13 @@ namespace AmazingTech.InternSystem.Controllers
             }
 
             // Retrieve user information from claims
-            var userId = result.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var userId = result.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userEmail = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
-            var userName = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
-            var userPhone = result.Principal.FindFirst(ClaimTypes.MobilePhone)?.Value;
+            //var userName = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+            //var userPhone = result.Principal.FindFirst(ClaimTypes.MobilePhone)?.Value;
 
             // Next
-            var existingUser = await _userManager.FindByEmailAsync(userEmail);
-            if (existingUser != null)
-            {
-                var roles = await _userManager.GetRolesAsync(existingUser);
-                if (roles == null || !roles.Any())
-                {
-                    return BadRequest(new { message = "This current user doesn't have a role." });
-                }
-
-                if (!existingUser.isConfirmed)
-                {
-                    return BadRequest("Hay cho Admin duyet.");
-                }
-
-                return new OkObjectResult(new
-                {
-                    accessToken = JwtGenerator.GenerateToken(existingUser, roles.ToList())
-                });
-            }
-
-            //var identityUser = CreateUserFromRequest(new RegisterUserRequestDTO
-            //{
-            //    HoVaTen = userName,
-            //    Email = userEmail,
-            //    Username = userEmail,
-            //    PhoneNumber = userPhone,
-            //    Role = Roles.INTERN
-            //});
-
-            //var identityResult = await _userManager.CreateAsync(identityUser);
-
-            //if (!identityResult.Succeeded)
-            //{
-            //    return BadRequest(new { message = identityResult.Errors });
-            //}
-
-            //identityResult = await _userManager.AddToRoleAsync(identityUser, Roles.INTERN);
-
-            //if (!identityResult.Succeeded)
-            //{
-            //    return BadRequest(new { message = identityResult.Errors });
-            //}
-
-            //await SaveUserToken(identityUser);
-
-            //var user = await _userManager.FindByEmailAsync(userEmail);
-
-            //if (user != null)
-            //{
-            //    var roles = await _userManager.GetRolesAsync(user);
-            //    if (roles == null || !roles.Any())
-            //    {
-            //        return BadRequest(new { message = "This current user doesn't have a role." });
-            //    }
-
-            //    string subject = "Welcome to AmazingTech, " + $"{user.HoVaTen}";
-            //    string content = "Thank you for registering your account, enjoys!";
-
-            //    _emailService.SendMail2(content, user.Email, subject);
-
-            //    return new OkObjectResult(new
-            //    {
-            //        accessToken = JwtGenerator.GenerateToken(user, roles.ToList())
-            //    });
-            //}
-
-            return new BadRequestObjectResult("Error");
+            return await _userService.GoogleLoginRedirect(userEmail, role);
         }
 
         [HttpPost("change-password/{id}")]
@@ -317,45 +240,6 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(new
             {
                 message = "Password reset successfully."
-            });
-        }
-
-        [HttpPost("confirm-account/{userId}")]
-        [Authorize(Roles = Roles.ADMIN)]
-        public async Task<IActionResult> ConfirmAccount([FromRoute] string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound(new
-                {
-                    message = "User not found."
-                });
-            }
-
-            if (user.isConfirmed)
-            {
-                return BadRequest(new
-                {
-                    message = "This user has already been confirmed."
-                });
-            }
-
-            user.isConfirmed = true;
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(new
-                {
-                    message = "An error occured."
-                });
-            }
-
-            return Ok(new
-            {
-                message = "Confirm successfully."
             });
         }
     }

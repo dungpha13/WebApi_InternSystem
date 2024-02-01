@@ -25,12 +25,13 @@ namespace AmazingTech.InternSystem.Controllers
 
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly INameService _nameService;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly AppDbContext _dBUtils;
         private readonly IInternInfoRepo _internInfoRepo;
 
-        public UserController(UserManager<User> _userManager, IMapper _mapper, INameService _nameService, AppDbContext _dBUtils, IHttpContextAccessor httpContextAccessor, IInternInfoRepo internInfoRepo)
+        public UserController(UserManager<User> _userManager, IMapper _mapper, INameService _nameService, AppDbContext _dBUtils, IHttpContextAccessor httpContextAccessor, IInternInfoRepo internInfoRepo, IUserService userService)
         {
             this._userManager = _userManager;
             this._mapper = _mapper;
@@ -38,6 +39,13 @@ namespace AmazingTech.InternSystem.Controllers
             this._dBUtils = _dBUtils;
             _contextAccessor = httpContextAccessor;
             _internInfoRepo = internInfoRepo;
+            _userService = userService;
+        }
+
+        [HttpPost("update-trang-thai-thuc-tap/{id}")]
+        public async Task<IActionResult> UpdateTrangThaiThucTap([FromRoute] string id, [FromBody] string trangThaiThucTap)
+        {
+            return await _userService.UpdateTrangThaiThucTap(id, trangThaiThucTap);
         }
 
         [HttpGet("get")]
