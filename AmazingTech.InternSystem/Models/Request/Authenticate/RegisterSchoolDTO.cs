@@ -22,5 +22,9 @@ namespace AmazingTech.InternSystem.Models.Request.Authenticate
             "- Sử dụng số: Thêm ít nhất một hoặc nhiều chữ số.\r\n" +
             "- Không khoảng trắng, có ít nhất 1 ký tự đặc biệt, 1 chữ, 1 số")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "Bạn chưa điền số điện thoại.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")]
+        public string PhoneNumber { get; set; }
     }
 }

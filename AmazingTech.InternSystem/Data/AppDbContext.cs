@@ -184,6 +184,10 @@ namespace AmazingTech.InternSystem.Data
             .HasForeignKey(zl => zl.IdCauHoiCongNghe)
             .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.InternInfo)
+                .WithOne(i => i.User);
+
             // Auto generate when inserted/updated
 
             //     modelBuilder.Entity<Comment>()

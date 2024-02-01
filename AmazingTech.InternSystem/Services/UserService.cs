@@ -67,7 +67,7 @@ namespace AmazingTech.InternSystem.Services
                     });
                 }
 
-                var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(registerUser.Username.ToUpper()) || _.NormalizedEmail.Equals(registerUser.Email.ToUpper()));
+                var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(registerUser.Username.ToUpper()) || _.NormalizedEmail.Equals(registerUser.Email.ToUpper())).SingleOrDefault();
 
                 if (existedUser != null)
                 {
@@ -82,7 +82,8 @@ namespace AmazingTech.InternSystem.Services
                     HoVaTen = intern.HoTen,
                     Email = registerUser.Email,
                     UserName = registerUser.Username,
-                    PhoneNumber = registerUser.PhoneNumber
+                    PhoneNumber = intern.Sdt,
+                    InternInfoId = intern.Id
                 };
 
                 return await RegisterUser(user, registerUser.Password, Roles.INTERN);
@@ -164,6 +165,7 @@ namespace AmazingTech.InternSystem.Services
                 });
             }
 
+            // Neu role la intern thi phai cap nhat UserId vao InternInfo va InternInfoId vao User
             // Gui mail voi ma OTP
 
             return new OkObjectResult(new

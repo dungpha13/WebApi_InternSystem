@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazingTech.InternSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240201065441_Test1")]
+    [Migration("20240201071917_Test1")]
     partial class Test1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,7 +381,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ViTriMongMuon")
                         .HasColumnType("nvarchar(max)");
@@ -391,8 +391,6 @@ namespace AmazingTech.InternSystem.Migrations
                     b.HasIndex("IdTruong");
 
                     b.HasIndex("KiThucTapId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("InternInfo", "dbo");
                 });
@@ -766,7 +764,9 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InternInfoId");
+                    b.HasIndex("InternInfoId")
+                        .IsUnique()
+                        .HasFilter("[InternInfoId] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1178,15 +1178,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasForeignKey("KiThucTapId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("AmazingTech.InternSystem.Data.Entity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("KiThucTap");
 
                     b.Navigation("Truong");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.KiThucTap", b =>
@@ -1259,8 +1253,8 @@ namespace AmazingTech.InternSystem.Migrations
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.User", b =>
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.InternInfo", "InternInfo")
-                        .WithMany()
-                        .HasForeignKey("InternInfoId");
+                        .WithOne("User")
+                        .HasForeignKey("AmazingTech.InternSystem.Data.Entity.User", "InternInfoId");
 
                     b.Navigation("InternInfo");
                 });
@@ -1409,6 +1403,8 @@ namespace AmazingTech.InternSystem.Migrations
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.KiThucTap", b =>
