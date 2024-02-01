@@ -75,7 +75,7 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-
+            builder.Services.AddScoped<IUserViTriRepository, UserViTriRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
 
             builder.Services.AddControllers();;
