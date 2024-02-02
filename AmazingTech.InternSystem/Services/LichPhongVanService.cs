@@ -559,6 +559,7 @@ namespace AmazingTech.InternSystem.Services
             schedule.KetQua = result;
             schedule.LastUpdatedBy = _userRepository.GetUserById(accountId).HoVaTen;
             schedule.LastUpdatedTime = DateTime.Now;
+            schedule.TrangThai = Status.Done;
             var intern = _userRepository.GetUserById(schedule.IdNguoiDuocPhongVan);
             var vitriCheck = _viTriRepository.GetViTriByName(Vitri);
             if(vitriCheck == null)
