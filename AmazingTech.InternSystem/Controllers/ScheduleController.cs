@@ -19,7 +19,7 @@ namespace AmazingTech.InternSystem.Controllers
         private readonly IGuiLichPhongVanService _guiLichPhongVanService;
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
-        public ScheduleController(IGuiLichPhongVanService guiLichPhongVanService, IEmailService emailService,IUserRepository userRepository)
+        public ScheduleController(IGuiLichPhongVanService guiLichPhongVanService, IEmailService emailService, IUserRepository userRepository)
         {
             _guiLichPhongVanService = guiLichPhongVanService;
             _emailService = emailService;
@@ -129,9 +129,9 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("api/send-mail-test")]
         public IActionResult SendImage(string content, string email, string subject)
         {
-            content = "Kính gửi bạn " +"ĐHP" + ",<br>Đại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành xin lỗi khi phải thông báo về việc dời lại lịch phỏng vấn. <br>Đây là lịch phỏng vấn mới của bạn " +
-               "29/11/2003"+
-                "<br> Khoảng thời gian phỏng vấn dự kiến :" +"15'" +
+            content = "Kính gửi bạn " + "ĐHP" + ",<br>Đại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi xin chân thành xin lỗi khi phải thông báo về việc dời lại lịch phỏng vấn. <br>Đây là lịch phỏng vấn mới của bạn " +
+               "29/11/2003" +
+                "<br> Khoảng thời gian phỏng vấn dự kiến :" + "15'" +
                 "<br> Hình thức phỏng vấn: " + "Online" + "<br>Địa điểm phỏng vấn " +
                 "FPT" +
                 "<br> Xin cảm ơn sự hiểu biết và sự linh hoạt của bạn trong việc xem xét yêu cầu của tôi. Xin vui lòng cho chúng tôi  biết nếu có bất kỳ điều gì cần được điều chỉnh hoặc có bất kỳ thông tin nào khác chúng tôi cần cung cấp.<br>Trân trọng";
@@ -141,14 +141,14 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPost]
         [Authorize]
         [Route("api/lich-phong-vans/Auto-Create-Schedule")]
-        public IActionResult AutoCreateSchedule([EmailAddress] string mailNguoiPhongVan,DateTime start, DateTime end, string diadiemphongvan, InterviewForm interviewForm)
+        public IActionResult AutoCreateSchedule([EmailAddress] string mailNguoiPhongVan, DateTime start, DateTime end, string diadiemphongvan, InterviewForm interviewForm)
         {
             try
             {
-                _guiLichPhongVanService.AutoCreateSchedule(mailNguoiPhongVan,start, end, diadiemphongvan,interviewForm);
+                _guiLichPhongVanService.AutoCreateSchedule(mailNguoiPhongVan, start, end, diadiemphongvan, interviewForm);
                 return Ok("Successful");
             }
-           catch (BadHttpRequestException ex)
+            catch (BadHttpRequestException ex)
             {
 
                 return BadRequest(ex.Message);
@@ -190,12 +190,24 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/GetScheduleByIdNguoiDuocPhongVan/{id}")]
-        
+
         public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string id)
         {
             var lichPhongVanList = _guiLichPhongVanService.GetLichPhongVanByIdNguoiDuocPhongVan(id);
             return new OkObjectResult(lichPhongVanList);
         }
+        [HttpGet]
+
+        [Route("api/test/get-intern-only")]
+        public IActionResult GetIntern()
+        {
+            var intern = _guiLichPhongVanService.GetInternOnly();
+            var intern2 = _guiLichPhongVanService.GetInternWithoutInternView();
+            List<int> check = new List<int>();
+            check.Add(intern.Count); check.Add(intern2.Count);
+            return Ok(check);
+        }
+
         //[HttpGet]
         //[Route("api/test/get-intern-only")]
         //public IActionResult GetIntern()
@@ -206,17 +218,18 @@ namespace AmazingTech.InternSystem.Controllers
         //   check.Add(intern.Count); check.Add(intern2.Count);
         //    return Ok(check);
         //}
+
         [HttpPut]
         [Authorize]
         [Route("api/lich-phong-vans/Update-Interview-Result")]
-        public IActionResult UpdateInterviewResult(string idngphongvan , Result result , string Vitri)
+        public IActionResult UpdateInterviewResult(string idngphongvan, Result result, string Vitri)
         {
             try
             {
-                 _guiLichPhongVanService.UpdateResult(idngphongvan,result ,Vitri);
+                _guiLichPhongVanService.UpdateResult(idngphongvan, result, Vitri);
                 return Ok("Update sucessful");
-                
-            }catch (BadHttpRequestException ex)
+            }
+            catch (BadHttpRequestException ex)
             {
                 return BadRequest(ex.Message);
             }

@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using swp391_be.API.Models.Request.Authenticate;
-using swp391_be.API.Services.Token;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -82,8 +80,10 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPost]
         [Route("logout")]
         [Authorize]
-        public IActionResult Logout([FromHeader(Name = "Authorization")] string authorizationHeader)
+        public IActionResult Logout(/*[FromHeader(Name = "Authorization")] string authorizationHeader*/)
         {
+            var authorizationHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
+
             if (!string.IsNullOrEmpty(authorizationHeader))
             {
                 if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))

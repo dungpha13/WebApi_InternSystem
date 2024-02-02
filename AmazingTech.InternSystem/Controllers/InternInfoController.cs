@@ -74,11 +74,11 @@ namespace AmazingTech.InternSystem.Controllers
         {
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return await _internInfoService.UpdateInternInfo(userId, model, mssv);
-           
+
         }
 
         [HttpPost("list/{kiThucTapId}")]
-        [Authorize(Roles = "School,HR,Admin")]
+        // [Authorize(Roles = "School,HR,Admin")]
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
         {
             return await _internInfoService.AddListInternInfo(file, kiThucTapId);

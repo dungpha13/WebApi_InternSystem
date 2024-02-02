@@ -1,7 +1,9 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.Request.DuAn;
+using AmazingTech.InternSystem.Models.DTO;
+using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -23,9 +25,12 @@ namespace AmazingTech.InternSystem.Repositories
             _dbContext = dbContext;
         }
 
+        //DuAn methods
         public List<DuAn> GetAllDuAns()
         {
             var duAns = _dbContext.DuAns
+                .Where(duAn => duAn.DeletedBy == null)
+                .OrderByDescending(intern => intern.CreatedTime)
                 .Include(duAn => duAn.Leader)
                 .ToList();
 
@@ -35,6 +40,7 @@ namespace AmazingTech.InternSystem.Repositories
         public DuAn GetDuAnById(string id)
         {
             var duAn = _dbContext.DuAns
+                .Where(duAn => duAn.DeletedBy == null)
                 .Include(duAn => duAn.Leader)
                 .FirstOrDefault(c => c.Id == id);
 
@@ -150,5 +156,118 @@ namespace AmazingTech.InternSystem.Repositories
             //_dbContext.Remove(duAnToDelete);
             return _dbContext.SaveChanges();
         }
+
+        // UserDuAn methods
+        public List<UserDuAn> GetAllUsersInDuAn(string duAnId)
+        {
+            return _dbContext.UserDuAns.Where(x => x.IdDuAn == duAnId && x.DeletedBy == null)
+                                                    .Include(nz => nz.DuAn)
+                                                    .ToList();
+        }
+
+        public int AddUserToDuAn(string duAnId, string user, UserDuAn addUserDuAn)
+        {
+            var duAn = _dbContext.DuAns.Find(duAnId);
+
+            if (duAn == null)
+            {
+                throw new Exception($"Project with ID {duAnId} not found.");
+            }
+
+            addUserDuAn.IdDuAn = duAnId;
+
+            addUserDuAn.CreatedBy = user;
+            addUserDuAn.LastUpdatedBy = user;
+            addUserDuAn.LastUpdatedTime = DateTime.Now;
+
+            _dbContext.UserDuAns.Add(addUserDuAn);
+            return _dbContext.SaveChanges();
+        }
+
+        public int UpdateUserInDuAn(string duAnId, string user, UserDuAn updateUserDuAn)
+        {
+            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == updateUserDuAn.UserId && x.IdDuAn == duAnId && x.DeletedBy == null);
+
+            if (userDuAn == null)
+            {
+                throw new Exception($"UserDuAn with ID {updateUserDuAn.UserId} in Project with ID {updateUserDuAn.IdDuAn} not found.");
+            }
+
+            userDuAn.UserId = updateUserDuAn.UserId;
+            userDuAn.IdDuAn = updateUserDuAn.IdDuAn;
+
+            userDuAn.LastUpdatedBy = user;
+            userDuAn.LastUpdatedTime = DateTime.Now;
+
+            return _dbContext.SaveChanges();
+        }
+
+        public int DeleteUserFromDuAn(string user, string userId, string duAnId)
+        {
+            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == userId && x.IdDuAn == duAnId && x.DeletedBy == null);
+
+            if (userDuAn == null)
+            {
+                throw new Exception($"UserDuAn with ID {userId} in DuAn with ID {duAnId} not found.");
+            }
+
+            userDuAn.DeletedBy = user;
+            userDuAn.DeletedTime = DateTime.Now;
+
+            return _dbContext.SaveChanges();
+        }
+
+        //Intern DuAn methods
+        //public int AddInternToDuAn(string duAnId, string mssv, InternInfo internInfo)
+        //{
+        //    try
+        //    {
+        //        var duAn = _dbContext.DuAns.Find(duAnId);
+        //        if (duAn != null)
+        //        {
+        //            duAn.InternInfos.Add(internInfo);
+        //            _dbContext.SaveChanges();
+        //            return 1;
+        //        }
+        //        return 0;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return -1;
+        //    }
+        //}
+
+        //public int UpdateInternInDuAn(InternInfo internInfo)
+        //{
+        //    try
+        //    {
+        //        _dbContext.InternInfos.Update(internInfo);
+        //        _dbContext.SaveChanges();
+        //        return 1;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return 0;
+        //    }
+        //}
+
+        //public int RemoveInternFromDuAn(string internInfoId)
+        //{
+        //    try
+        //    {
+        //        var internInfo = _dbContext.InternInfos.FirstOrDefault(i => i.Id == internInfoId);
+        //        if (internInfo != null)
+        //        {
+        //            _dbContext.InternInfos.Remove(internInfo);
+        //            _dbContext.SaveChanges();
+        //            return 1;
+        //        }
+        //        return 0;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return -1;
+        //    }
+        //}
     }
 }

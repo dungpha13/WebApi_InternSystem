@@ -35,6 +35,7 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<InternInfo> InternInfos { get; set; }
         public DbSet<UserDuAn> InternDuAns { get; set; }
         public DbSet<DuAn> DuAns { get; set; }
+        public DbSet<UserDuAn> UserDuAns { get; set; }
         public DbSet<CongNgheDuAn> CongNgheDuAns { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
         public DbSet<ViTri> ViTris { get; set; }

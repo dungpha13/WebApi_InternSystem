@@ -64,20 +64,31 @@ namespace AmazingTech.InternSystem.Services
 
         public static string ExtractUserIdFromToken(string token)
         {
-            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
             // Extract the user ID claim
-            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var uid = jsonToken?.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
+            if (uid == null)
+            {
+                uid = jsonToken?.Claims.FirstOrDefault(c => c.Type.Equals("nameid"))?.Value;
+            }
+            return uid;
         }
 
         public static string ExtractUserRoleFromToken(string token)
         {
-            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
             // Extract the user ID claim
-            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var role = jsonToken?.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Role))?.Value;
+            if (role == null)
+            {
+                role = jsonToken?.Claims.FirstOrDefault(c => c.Type.Equals("role"))?.Value;
+            }
+
+            return role;
         }
     }
 }

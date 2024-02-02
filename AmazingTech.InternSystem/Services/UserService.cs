@@ -16,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using swp391_be.API.Models.Request.Authenticate;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -36,6 +35,7 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> CreateUser(CreateUserDTO createUserDto);
         Task<IActionResult> GetAllUsers();
         Task<IActionResult> GetUserById(string id);
+        Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateUserDto);
     }
 
     public class UserService : IUserService
@@ -43,6 +43,7 @@ namespace AmazingTech.InternSystem.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ITruongRepository _truongRepository;
@@ -54,7 +55,8 @@ namespace AmazingTech.InternSystem.Services
             ITruongRepository truongRepository,
             IInternInfoRepo internInfoRepo,
             IConfiguration configuration,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -63,6 +65,7 @@ namespace AmazingTech.InternSystem.Services
             _internInfoRepo = internInfoRepo;
             _configuration = configuration;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser)
@@ -575,6 +578,65 @@ namespace AmazingTech.InternSystem.Services
             var result = _mapper.Map<GetUserDTO>(userList.SingleOrDefault());
 
             return new OkObjectResult(result);
+        }
+
+        public async Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateUserDto)
+        {
+            //Check user
+            var authenHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
+
+            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
+            string uid = JwtGenerator.ExtractUserIdFromToken(token);
+            string role = JwtGenerator.ExtractUserRoleFromToken(token);
+
+            //uid dang bi null
+            if (!uid.Equals(id) && !role.Equals("Admin"))
+            {
+                return new ForbidResult();
+            }
+
+            //Check if user is exist or not
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new
+                {
+                    message = "Không tìm thấy user."
+                });
+            }
+
+            //If null then will not update the value
+            user.HoVaTen = updateUserDto.FullNameOrSchoolName ?? user.HoVaTen;
+            user.PhoneNumber = updateUserDto.PhoneNumber ?? user.PhoneNumber;
+
+            bool changedIdentifier = false;
+            if (!user.UserName.Equals(updateUserDto.Username) || !user.Email.Equals(updateUserDto.Email))
+            {
+                changedIdentifier = true;
+            }
+            user.UserName = updateUserDto.Username ?? user.UserName;
+            user.Email = updateUserDto.Email ?? user.Email;
+
+            //check neu doi email/username thi logout
+            if (changedIdentifier)
+            {
+                JwtGenerator.InvalidateToken(token);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Có lỗi xảy ra khi cập nhật."
+                });
+            }
+
+            return new OkObjectResult(new
+            {
+                message = "Cập nhật thành công. Nếu bạn đã đổi username hoặc email, hãy đăng nhập lại."
+            });
         }
 
         private async void SendOTPToEmail(User user)

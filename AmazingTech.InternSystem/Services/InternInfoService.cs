@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using swp391_be.API.Models.Request.Authenticate;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Services
@@ -339,7 +338,7 @@ namespace AmazingTech.InternSystem.Services
             //Update User
             var isUserExist = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == intern.UserId);
             isUserExist!.Email = model.EmailCaNhan;
-            isUserExist.HoVaTen = model.HoTen; 
+            isUserExist.HoVaTen = model.HoTen;
 
             _dbContext.Users.Update(isUserExist);
             await _dbContext.SaveChangesAsync();
@@ -495,6 +494,7 @@ namespace AmazingTech.InternSystem.Services
                                     GPA = row.GetValue<decimal>("GPA"),
                                     TrinhDoTiengAnh = row.GetText("TrinhDoTiengAnh"),
                                     NganhHoc = row.GetText("NganhHoc"),
+                                    ViTriMongMuon = row.GetText("ViTriMongMuon"),
                                     LinkFacebook = row.GetText("LinkFacebook"),
                                     LinkCV = row.GetText("LinkCV"),
                                     Round = 0,
@@ -522,7 +522,7 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
         {
-            var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            // var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             List<InternInfo> interns = ReadFile(file);
             var existingKi = _kiThucTapRepository.GetKiThucTap(kiThucTapId);
@@ -532,26 +532,11 @@ namespace AmazingTech.InternSystem.Services
 
             foreach (var intern in interns)
             {
-                var user = new RegisterUserRequestDTO
-                {
-                    Username = intern.EmailTruong!,
-                    HoVaTen = intern.HoTen,
-                    PhoneNumber = intern.Sdt!,
-                    Email = intern.EmailCaNhan!,
-                    Password = "1111111111ooo"
-                };
-
-                var userId = await RegisterIntern(user);
-
-                if (userId is null)
-                {
-                    return new BadRequestObjectResult("User already exist!");
-                }
-
                 intern.KiThucTapId = existingKi.Id;
-                intern.UserId = userId;
-                intern.CreatedBy = uId;
+                // intern.CreatedBy = uId;
                 intern.IdTruong = existingKi.IdTruong;
+                intern.StartDate = existingKi.NgayBatDau;
+                intern.EndDate = existingKi.NgayKetThuc;
             }
 
             var result = await _internRepo.AddListInternInfoAsync(interns);

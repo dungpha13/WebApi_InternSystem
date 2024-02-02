@@ -8,7 +8,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using OfficeOpenXml;
-using swp391_be.API.Models.Request.Authenticate;
 using System.Collections.Generic;
 
 namespace AmazingTech.InternSystem.Services

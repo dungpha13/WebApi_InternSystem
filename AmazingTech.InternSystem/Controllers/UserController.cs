@@ -72,51 +72,11 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Route("update/{id:Guid}")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDTO updateUserRequestDTO, [FromRoute] Guid id, [FromHeader(Name = "Authentication")] string authenHeader)
+        [Authorize]
+        [Route("update/{id}")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO updateUserRequestDTO, [FromRoute] string id)
         {
-            //Check user
-            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
-            string uid = JwtGenerator.ExtractUserIdFromToken(token);
-            string role = JwtGenerator.ExtractUserRoleFromToken(token);
-
-            if (!uid.Equals(id) && !role.Equals("Admin"))
-            {
-                return Forbid("You don't have permission to change this user's password.");
-            }
-
-            //Check if user is exist or not
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
-            if (user == null)
-            {
-                return NotFound(new
-                {
-                    succeeded = false,
-                    errors = "User not found."
-                });
-            }
-
-            //If null then will not update the value
-            user.HoVaTen = updateUserRequestDTO.HoVaTen ?? user.HoVaTen;
-            user.PhoneNumber = updateUserRequestDTO.PhoneNumber ?? user.PhoneNumber;
-            user.Email = updateUserRequestDTO.EmailAddress ?? user.Email;
-            user.NormalizedEmail = updateUserRequestDTO.EmailAddress?.ToUpper() ?? user.Email;
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(new
-                {
-                    succeeded = false,
-                    errors = result.Errors
-                });
-            }
-
-            return Ok(new
-            {
-                succeeded = true
-            });
+            return await _userService.UpdateUser(id, updateUserRequestDTO);
         }
 
         //[HttpPost]

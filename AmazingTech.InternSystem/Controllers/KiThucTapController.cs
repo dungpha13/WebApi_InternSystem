@@ -9,7 +9,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/ki-thuc-taps")]
     [ApiController]
-    [Authorize(Roles = "Admin, School, HR")]
+    // [Authorize(Roles = "Admin, School, HR")]
     public class KiThucTapController : ControllerBase
     {
         private readonly IKiThucTapService _kiThucTapService;
@@ -29,7 +29,8 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("get-by-truong/{idTruong}")]
         public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
         {
-            return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
+            //
+            return Ok();
         }
 
         [HttpGet("get/{id}")]

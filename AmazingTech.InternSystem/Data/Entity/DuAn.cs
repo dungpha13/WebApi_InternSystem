@@ -28,5 +28,6 @@ namespace AmazingTech.InternSystem.Data.Entity
         public ICollection<UserDuAn> UserDuAns { get; set; }
         public ICollection<ViTri> ViTris { get; set; }
         public ICollection<CongNgheDuAn> CongNgheDuAns { get; set; }
+        public ICollection<InternInfo> InternInfos { get; internal set; }
     }
 }

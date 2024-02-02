@@ -1,6 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
-using AmazingTech.InternSystem.Models.Request.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
@@ -49,16 +48,17 @@ namespace AmazingTech.InternSystem.Mapping
                         Content = comment.Content!
                     }).ToList()));
 
-            CreateMap<DuAn, DuAnResponseDTO>()
-            .ForMember(dest => dest.LeaderName, opt => opt.MapFrom(src => src.Leader.HoVaTen))
-            .ForMember(dest => dest.ThoiGianBatDau, opt => opt.MapFrom(src => src.ThoiGianBatDau.HasValue ? src.ThoiGianBatDau.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
-            .ForMember(dest => dest.ThoiGianKetThuc, opt => opt.MapFrom(src => src.ThoiGianKetThuc.HasValue ? src.ThoiGianKetThuc.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null));
-
             CreateMap<NhomZalo, NhomZaloDTO>()
                 .ForMember(dest => dest.TenNhom, opt => opt.MapFrom(src => src.TenNhom))
                 .ForMember(dest => dest.LinkNhom, opt => opt.MapFrom(src => src.LinkNhom));
-                /*.ForMember(dest => dest.IdMentor, opt => opt.MapFrom(src => src.IdMentor))
-                .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.Mentor.HoVaTen));*/
+            /*.ForMember(dest => dest.IdMentor, opt => opt.MapFrom(src => src.IdMentor))
+            .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.Mentor.HoVaTen));*/
+
+            CreateMap<User, UserNhomZaloDTO>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.HoVaTen));
+
+            CreateMap<NhomZalo, UserNhomZaloDTO>()
+                .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.TenNhom));
 
 
             CreateMap<DuAn, DuAnModel>().ReverseMap();
@@ -82,6 +82,8 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.ViTris, opt => opt.MapFrom(src => src.UserViTris))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
+
+            CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
         }
     }
 }
