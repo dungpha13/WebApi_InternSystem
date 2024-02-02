@@ -159,7 +159,7 @@ namespace AmazingTech.InternSystem.Services
             var timeEnd = model.ThoiGianPhongVan + TimeSpan.FromMinutes(model.TimeDuration);
             timeEnd = timeEnd.AddMinutes(15);
             var ScheduleOfInterviewerExist = _lichPhongVanRepository.GetScheduleOfInterviewerInPeriodTime(Interviewer.Id, model.ThoiGianPhongVan, timeEnd);
-            if (ScheduleOfInterviewerExist != null)
+            if (ScheduleOfInterviewerExist.Count != 0)
             {
                 throw new BadHttpRequestException("This interviewer has an interview scheduled from :" + model.ThoiGianPhongVan + "to" + timeEnd);
             }
