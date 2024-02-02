@@ -1,10 +1,13 @@
-﻿using AmazingTech.InternSystem.Data.Entity;
+﻿using AmazingTech.InternSystem.Data;
+using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Services;
+using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,9 +23,12 @@ namespace AmazingTech.InternSystem.Controllers
     public class ZaloGroupController : ControllerBase
     {
         private readonly INhomZaloService _nhomZaloService;
-        public ZaloGroupController(INhomZaloService nhomZaloService, ILogger<ZaloGroupController> logger)
+        private readonly AppDbContext _dbContext;
+
+        public ZaloGroupController(INhomZaloService nhomZaloService, AppDbContext dbContext)
         {
             _nhomZaloService = nhomZaloService;
+            _dbContext = dbContext;
         }
 
         // Manage ZaloGroup
@@ -40,8 +46,6 @@ namespace AmazingTech.InternSystem.Controllers
                         id = nhomZalo.Id,
                         tenNhom = nhomZalo.TenNhom,
                         linkNhom = nhomZalo.LinkNhom,
-                        /*idMentor = nhomZalo.IdMentor,
-                        mentorName = nhomZalo.Mentor?.UserName*/
                     }).ToList();
 
                     return Ok(formattedResponse);
@@ -69,8 +73,6 @@ namespace AmazingTech.InternSystem.Controllers
                 {
                     TenNhom = group.TenNhom,
                     LinkNhom = group.LinkNhom,
-                   /* IdMentor = group.IdMentor,
-                    MentorName = group.Mentor?.UserName*/
                 };
 
                 return Ok(formattedResponse);
@@ -103,6 +105,11 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var group = await _nhomZaloService.GetGroupByIdAsync(id);
+                if (group == null)
+                {
+                    return NotFound($"Zalo group with ID {id} not found.");
+                }
                 await _nhomZaloService.UpdateZaloAsync(id, user, zaloDTO);
                 return Ok("Zalo group updated successfully");
             }
@@ -127,6 +134,71 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
+        [HttpGet("excel-export")]
+        public async Task<ActionResult> ExportZaloGroupsToExcelAsync()
+        {
+            try
+            {
+                var zaloGroups = await _dbContext.NhomZalos
+                    .ToListAsync();
+
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    var sheet1 = wb.AddWorksheet("Projects");
+
+                    sheet1.Cell(1, 1).Value = "Group ID";
+                    sheet1.Cell(1, 2).Value = "Group Name";
+                    sheet1.Cell(1, 3).Value = "Link Group";
+
+                    int row = 2;
+                    foreach (var group in zaloGroups)
+                    {
+                        sheet1.Cell(row, 1).Value = group.Id;
+                        sheet1.Cell(row, 2).Value = group.TenNhom;
+                        sheet1.Cell(row, 3).Value = group.LinkNhom;
+
+                        row++;
+                    }
+
+                    // Apply styling
+                    sheet1.Columns(1, 2).Style.Font.FontColor = XLColor.Black;
+                    sheet1.Column(3).Style.Font.FontColor = XLColor.Blue;
+
+                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.AntiFlashWhite;
+                    sheet1.Row(1).Style.Font.FontColor = XLColor.Black;
+                    sheet1.Row(1).Style.Font.Bold = true;
+                    sheet1.Row(1).Style.Font.Shadow = true;
+                    sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
+                    sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+                    sheet1.Row(1).Style.Font.Italic = true;
+
+                    sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.Black;
+
+                    // Apply borders to all cells
+                    var range = sheet1.RangeUsed();
+                    range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    range.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    // Autofit 
+                    sheet1.Rows().AdjustToContents();
+                    sheet1.Columns().AdjustToContents();
+
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        wb.SaveAs(ms);
+                        var fileName = "ZaloGroups.xlsx";
+                        return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error exporting projects to Excel: {ex.Message}");
+                return StatusCode(500, "An error occurred while exporting projects to Excel.");
+            }
+        }
+
         // Manage User in ZaloGroup methods
         [HttpGet("get/{nhomZaloId}/users")]
         public async Task<ActionResult<List<UserNhomZalo>>> GetUsersInZaloGroupAsync(string nhomZaloId)
@@ -134,13 +206,16 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
+
                 if (users is List<UserNhomZalo> userNhomZaloList)
                 {
                     var formattedResponse = userNhomZaloList.Select(userNhomZalo => new UserNhomZaloDTO
                     {
                         UserId = userNhomZalo.UserId,
-                        UserName = userNhomZalo.User?.HoVaTen,
-                        NhomZalo = userNhomZalo.NhomZalo?.TenNhom,
+                        UserName = userNhomZalo.User.HoVaTen,
+                        IsMentor = userNhomZalo.IsMentor,
+                        IdNhomZalo = userNhomZalo.IdNhomZalo,
+                        NhomZalo = userNhomZalo.NhomZalo.TenNhom,
                         JoinedTime = userNhomZalo.JoinedTime,
                         LeftTime = userNhomZalo.LeftTime
                     }).ToList();
@@ -169,8 +244,10 @@ namespace AmazingTech.InternSystem.Controllers
                 var formattedResponse = new UserNhomZaloDTO
                 {
                     UserId = user.UserId,
-                    UserName = user.User?.HoVaTen,
-                    NhomZalo = user.NhomZalo?.TenNhom,
+                    UserName = user.User.HoVaTen,
+                    IsMentor = user.IsMentor,
+                    IdNhomZalo = user.IdNhomZalo,
+                    NhomZalo = user.NhomZalo.TenNhom,
                     JoinedTime = user.JoinedTime,
                     LeftTime = user.LeftTime
                 };

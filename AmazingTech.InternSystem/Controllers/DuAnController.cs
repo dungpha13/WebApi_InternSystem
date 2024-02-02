@@ -1,6 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.Request.DuAn;
+using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,8 @@ namespace AmazingTech.InternSystem.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("get")]
+        //Manage DuAn
+        [HttpGet("get-all-projects")]
         public IActionResult GetAllDuAns()
         {
             var result = _duAnService.GetAllDuAns();
@@ -55,7 +57,7 @@ namespace AmazingTech.InternSystem.Controllers
             return result;
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("get-project/{id}")]
         public IActionResult GetDuAnById(string id)
         {
             var result = _duAnService.GetDuAnById(id);
@@ -84,7 +86,7 @@ namespace AmazingTech.InternSystem.Controllers
             //return Ok(result);
         }
 
-        [HttpGet("search")]
+        [HttpGet("search-project")]
         public IActionResult SearchProject(string? ten, string? leaderName, DateTime? startDate, DateTime? endDate)
         {
             try
@@ -116,7 +118,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("create-project")]
         public IActionResult CreateDuAn([FromBody] DuAnModel createDuAn)
         {
             try
@@ -143,7 +145,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update-project/{id}")]
         public IActionResult UpdateDuAn(string id, [FromBody] DuAnModel updatedDuAn)
         {
             try
@@ -158,7 +160,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete-project/{id}")]
         public IActionResult DeleteDuAn(string id)
         {
             try
@@ -173,7 +175,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("excel-export")]
+        [HttpGet("project-excel-export")]
         public async Task<ActionResult> ExportProjectsToExcelAsync()
         {
             try
@@ -207,11 +209,12 @@ namespace AmazingTech.InternSystem.Controllers
                     }
 
                     // Apply styling
-                    sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
-                    sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+                    sheet1.Columns(1, 2).Style.Font.FontColor = XLColor.Black;
+                    sheet1.Columns(3, 4).Style.Font.FontColor = XLColor.Blue;
+                    sheet1.Column(5).Style.Font.FontColor = XLColor.Red;
 
-                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-                    sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.AntiFlashWhite;
+                    sheet1.Row(1).Style.Font.FontColor = XLColor.Black;
                     sheet1.Row(1).Style.Font.Bold = true;
                     sheet1.Row(1).Style.Font.Shadow = true;
                     sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
@@ -219,6 +222,15 @@ namespace AmazingTech.InternSystem.Controllers
                     sheet1.Row(1).Style.Font.Italic = true;
 
                     sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.Black;
+
+                    // Apply borders to all cells
+                    var range = sheet1.RangeUsed();
+                    range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    range.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    // Autofit 
+                    sheet1.Rows().AdjustToContents();
+                    sheet1.Columns().AdjustToContents();
 
                     using (MemoryStream ms = new MemoryStream())
                     {
@@ -230,10 +242,134 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
                 Console.WriteLine($"Error exporting projects to Excel: {ex.Message}");
                 return StatusCode(500, "An error occurred while exporting projects to Excel.");
             }
         }
+
+        //Manage UserDuAn
+        [HttpGet("get-all-user-in-project/{duAnId}")]
+        public IActionResult GetAllUserDuAns(string duAnId)
+        {
+            var result = _duAnService.GetAllUsersInDuAn(duAnId);
+
+            if (result is OkObjectResult okResult)
+            {
+                var userDuAnList = okResult.Value as List<UserDuAn>;
+
+                if (userDuAnList != null)
+                {
+                    var formattedResponse = new
+                    {
+                        value = userDuAnList.Select(userDuAn => new
+                        {
+                            userId = userDuAn.UserId,
+                            userName = userDuAn.User.HoVaTen,
+                            idDuAn = userDuAn.IdDuAn,
+                            nameDuAn = userDuAn.DuAn.Ten,
+                            viTri = userDuAn.ViTri,
+                        })
+                    };
+
+                    return Ok(formattedResponse);
+                }
+
+            }
+            return result;
+        }
+
+        [HttpPost("add-user-to-project/{duAnId}")]
+        public IActionResult AddUserToDuAn(string duAnId, [FromBody] UserDuAnModel addUserDuAn)
+        {
+            return _duAnService.AddUserToDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), addUserDuAn);
+        }
+
+        [HttpPut("update-user-in-project/{duAnId}")]
+        public IActionResult UpdateUserInDuAn(string duAnId, [FromBody] UserDuAnModel updateUserDuAn)
+        {
+            return _duAnService.UpdateUserInDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), updateUserDuAn);
+        }
+
+        [HttpDelete("delete-user-from-project/{duAnId}/{userId}")]
+        public IActionResult DeleteUserFromDuAn(string userId, string duAnId)
+        {
+            return _duAnService.DeleteUserFromDuAn(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), userId, duAnId);
+        }
+
+        //Manage Intern DuAn
+        //[HttpPost("add-intern")]
+        //public IActionResult AddInternToDuAn(string duAnId, [FromBody] InternInfo internInfo)
+        //{
+        //    try
+        //    {
+        //        var result = _duAnService.AddInternToDuAn(duAnId, internInfo);
+        //        if (result is BadRequestObjectResult badRequestResult)
+        //        {
+        //            return badRequestResult;
+        //        }
+        //        else if (result is OkResult)
+        //        {
+        //            return Ok("Intern added to DuAn successfully");
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Failed to add Intern to DuAn");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
+
+        //[HttpPut("update-intern")]
+        //public IActionResult UpdateInternInDuAn([FromBody] InternInfo internInfo)
+        //{
+        //    try
+        //    {
+        //        var result = _duAnService.UpdateInternInDuAn(internInfo);
+        //        if (result is BadRequestObjectResult badRequestResult)
+        //        {
+        //            return badRequestResult;
+        //        }
+        //        else if (result is OkResult)
+        //        {
+        //            return Ok("Intern in DuAn updated successfully");
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Failed to update Intern in DuAn");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
+
+        //[HttpDelete("remove-intern/{internInfoId}")]
+        //public IActionResult RemoveInternFromDuAn(string internInfoId)
+        //{
+        //    try
+        //    {
+        //        var result = _duAnService.RemoveInternFromDuAn(internInfoId);
+        //        if (result is BadRequestObjectResult badRequestResult)
+        //        {
+        //            return badRequestResult;
+        //        }
+        //        else if (result is OkResult)
+        //        {
+        //            return Ok("Intern removed from DuAn successfully");
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Failed to remove Intern from DuAn");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
     }
 }

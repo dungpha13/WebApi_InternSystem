@@ -13,19 +13,10 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 
 using System.IdentityModel.Tokens.Jwt;
-using AutoMapper;
-using AmazingTech.InternSystem.Models.Request.DuAn;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.Google;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
-using Microsoft.OpenApi.Models;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using AmazingTech.InternSystem.Data.Enum;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using AmazingTech.InternSystem.Services.Name;
 
 namespace AmazingTech.InternSystem

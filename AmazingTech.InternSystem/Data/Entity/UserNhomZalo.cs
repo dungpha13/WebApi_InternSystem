@@ -9,7 +9,7 @@ namespace AmazingTech.InternSystem.Data.Entity
     {
         [ForeignKey("User")]
         public string UserId { get; set; }
-        public bool IsMentor{ get; set; }
+        public bool IsMentor { get; set; }
 
         [JsonIgnore]
         public User User { get; set; }
