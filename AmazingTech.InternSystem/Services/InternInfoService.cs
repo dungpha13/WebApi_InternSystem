@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using swp391_be.API.Models.Request.Authenticate;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Services
