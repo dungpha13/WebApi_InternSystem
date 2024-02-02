@@ -7,6 +7,7 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
 {
     public class InternInfoDTO
     {
+        public string Id { get; set; }
         public string MSSV { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
@@ -24,6 +25,7 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
         public string[] NhomZalo { get; set; }
         public string TruongHoc { get; set; }
         public string Status { get; set; }
+        public string ViTriMongMuon { get; set; }
 
         //public ICollection<Comment> Comments { get; set; }
 
@@ -31,7 +33,6 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
         public string CreatedBy { get; set; }
         public string? DeletedBy { get; set; }
         public string DeletedTime { get; set; }
-
         public string LastUpdatedBy { get; set; }
         public string LastUpdatedTime { get; set; }
 

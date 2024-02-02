@@ -25,7 +25,7 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult AddKiThucTap(AddKiThucTapDTO request)
         {
-            var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            // var uId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var existingTruong = _truongRepository.GetTruong(request.IdTruong);
 
@@ -53,7 +53,7 @@ namespace AmazingTech.InternSystem.Services
                 NgayBatDau = request.NgayBatDau,
                 NgayKetThuc = request.NgayKetThuc,
                 IdTruong = existingTruong.Id,
-                CreatedBy = uId
+                // CreatedBy = uId
             };
 
             var result = _kiRepository.AddKiThucTap(ki);

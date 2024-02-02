@@ -1,4 +1,4 @@
-﻿using AmazingTech.InternSystem.Data.Entity;
+﻿// using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.TruongHoc;
 using AmazingTech.InternSystem.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +10,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/truongs")]
     [ApiController]
-    [Authorize(Roles = "School, HR, Admin")]
+    // [Authorize(Roles = "School, HR, Admin")]
     public class TruongController : ControllerBase
     {
         private readonly ITruongService _truongService;
