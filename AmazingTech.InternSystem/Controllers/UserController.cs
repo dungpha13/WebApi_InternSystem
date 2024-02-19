@@ -118,91 +118,9 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpDelete]
         [Route("delete/{userId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RemoveUser([FromRoute] string userId)
+        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
         {
-            var existingUser = await _userManager.FindByIdAsync(userId);
-
-            if (existingUser == null)
-            {
-                return BadRequest(new
-                {
-                    message = "User khong ton tai."
-                });
-            }
-
-            var currentUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            if (currentUser.Equals(userId))
-            {
-                return BadRequest(new
-                {
-                    message = "Ban khong the xoa chinh minh."
-                });
-            }
-
-            try
-            {
-                var result = await _userManager.DeleteAsync(existingUser);
-                if (result.Succeeded)
-                {
-                    return Ok(new
-                    {
-                        message = "Da delete user."
-                    });
-                }
-                else
-                {
-                    return BadRequest(new
-                    {
-                        message = "Co loi xay ra."
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                existingUser.DeletedTime = DateTime.Now;
-                existingUser.UserName += "_";
-                existingUser.Email += "_";
-                while (true)
-                {
-                    var result = await _userManager.UpdateAsync(existingUser);
-
-                    if (result.Succeeded)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        existingUser.UserName += "_";
-                        existingUser.Email += "_";
-                    }
-                }
-            }
-
-            // phai xoa interninfo
-            var roles = await _userManager.GetRolesAsync(existingUser);
-
-            if (roles.Contains(Roles.INTERN))
-            {
-                var internInfos = await _internInfoRepo.GetAllInternsInfoAsync();
-
-                if (internInfos.Count > 0)
-                {
-                    foreach (var internInfo in internInfos)
-                    {
-                        if (existingUser.Id.Equals(internInfo.Id))
-                        {
-                            await _internInfoRepo.DeleteInternInfoAsync(internInfo);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return Ok(new
-            {
-                message = "Da delete user."
-            });
+            return await _userService.DeleteYser*ys
         }
 
 
