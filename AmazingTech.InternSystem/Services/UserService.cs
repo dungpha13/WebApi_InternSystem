@@ -692,11 +692,11 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> DeleteUser(string id)
         {
             //Check user
-            var authenHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
+            //var authenHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
 
-            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
-            string uid = JwtGenerator.ExtractUserIdFromToken(token);
-            string role = JwtGenerator.ExtractUserRoleFromToken(token);
+            //string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
+            //string uid = JwtGenerator.ExtractUserIdFromToken(token);
+            //string role = JwtGenerator.ExtractUserRoleFromToken(token);
 
             //uid dang bi null
             if (!uid.Equals(id) && !role.Equals("Admin"))
