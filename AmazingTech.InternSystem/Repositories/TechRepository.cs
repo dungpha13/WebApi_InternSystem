@@ -1,28 +1,20 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using static AmazingTech.InternSystem.Data.Enum.Enums;
 
 
 
 namespace AmazingTech.InternSystem.Repositories
 {
+     public interface ITechRepo
+     {
+         Task<List<CongNghe>> GetAllCongNgheAsync(string id);
+         Task<int> CreateCongNgheAsync(string idvitri, string user, CongNghe CongNgheModel);
+         Task<int> UpdateCongNgheAsync(string idvitri, string user, string congNgheId, CongNghe updatedCongNghe);
+         Task<int> DeleteCongNgheAsync(string idvitri, string user, string congNgheId);
 
-
-    namespace AmazingTech.InternSystem.Repositories
-    {
-        public interface ITechRepo
-        {
-            Task<List<CongNghe>> GetAllCongNgheAsync(string id);
-            Task<int> CreateCongNgheAsync(string idvitri, string user, CongNghe CongNgheModel);
-            Task<int> UpdateCongNgheAsync(string idvitri, string user, string congNgheId, CongNghe updatedCongNghe);
-            Task<int> DeleteCongNgheAsync(string idvitri, string user, string congNgheId);
-
-        }
-    }
+     }
     public class TechRepository : ITechRepo
     {
         private readonly AppDbContext _context;
@@ -100,7 +92,6 @@ namespace AmazingTech.InternSystem.Repositories
             await _context.SaveChangesAsync();
             return 1;
         }
-
     }
 
 }

@@ -1,8 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
-using AmazingTech.InternSystem.Models.Enums;
-using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Repositories;
 using AutoMapper;
 
 namespace AmazingTech.InternSystem.Services

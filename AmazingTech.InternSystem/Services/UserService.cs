@@ -699,10 +699,10 @@ namespace AmazingTech.InternSystem.Services
             //string role = JwtGenerator.ExtractUserRoleFromToken(token);
 
             //uid dang bi null
-            if (!uid.Equals(id) && !role.Equals("Admin"))
+ /*           if (!uid.Equals(id) && !role.Equals("Admin"))
             {
                 return new ForbidResult();
-            }
+            }*/
 
             //Check if user is exist or not
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());

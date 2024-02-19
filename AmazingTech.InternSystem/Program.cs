@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Service;
 
@@ -68,6 +67,8 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IUserViTriRepository, UserViTriRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
+            builder.Services.AddScoped<IInterviewRepo, InterviewRepository>();
+            builder.Services.AddScoped<IInterviewService, InterviewService>(); 
 
             builder.Services.AddControllers();;
 

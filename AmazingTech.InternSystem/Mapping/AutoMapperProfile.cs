@@ -74,7 +74,6 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
                 .ReverseMap();
-
             CreateMap<User, GetUserDTO>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.FullNameOrSchoolName, opt => opt.MapFrom(src => src.HoVaTen))
@@ -84,6 +83,9 @@ namespace AmazingTech.InternSystem.Mapping
                 .ReverseMap();
 
             CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
+           CreateMap<PhongVan, AwserQuest>()                
+                .ReverseMap();
+
         }
     }
 }
