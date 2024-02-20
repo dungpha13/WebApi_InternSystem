@@ -616,6 +616,7 @@ namespace AmazingTech.InternSystem.Services
             }
 
             //If null then will not update the value
+            user.LastUpdatedTime = DateTime.UtcNow;
             user.HoVaTen = updateUserDto.FullNameOrSchoolName ?? user.HoVaTen;
             user.PhoneNumber = updateUserDto.PhoneNumber ?? user.PhoneNumber;
 
