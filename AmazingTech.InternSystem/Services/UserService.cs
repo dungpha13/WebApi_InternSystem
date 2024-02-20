@@ -358,8 +358,17 @@ namespace AmazingTech.InternSystem.Services
                 });
             }
 
-            Enum.TryParse(trangThaiThucTap, out TrangThaiThucTap trangThai);
-            user.TrangThaiThucTap = trangThai;
+            if (Enum.TryParse(trangThaiThucTap, out TrangThaiThucTap trangThai))
+            {
+                user.TrangThaiThucTap = trangThai;
+            }
+            else
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Hãy kiểm tra lại tên trạng thái bạn nhập đúng chưa?"
+                });
+            }
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
