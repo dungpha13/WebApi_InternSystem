@@ -1,6 +1,6 @@
 ﻿using AmazingTech.InternSystem.Models.Validation;
 using System;
-using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,6 +25,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         [CompareDateTime("StartDate", ErrorMessage = "Thời gian kết thúc phải sau thời gian bắt đầu")]
         public DateTime? ThoiGianKetThuc { get; set; }
 
+        [JsonIgnore]
         public ICollection<UserDuAn> UserDuAns { get; set; }
         public ICollection<ViTri> ViTris { get; set; }
         public ICollection<CongNgheDuAn> CongNgheDuAns { get; set; }

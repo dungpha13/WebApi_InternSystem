@@ -87,6 +87,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         {
             return await _appDbContext.UserNhomZalos.Where(x => x.IdNhomZalo == nhomZaloId && x.DeletedBy == null)
                                                     .Include(nz => nz.NhomZalo)
+                                                    .Include(nz => nz.User)
                                                     .ToListAsync();
         }
 
@@ -124,7 +125,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             }
 
             userNhomZalo.UserId = updatedUser.UserId;
-            userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
+            //userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
             userNhomZalo.JoinedTime = updatedUser.JoinedTime ?? userNhomZalo.JoinedTime;
             userNhomZalo.LeftTime = updatedUser.LeftTime;
             userNhomZalo.LastUpdatedBy = user;

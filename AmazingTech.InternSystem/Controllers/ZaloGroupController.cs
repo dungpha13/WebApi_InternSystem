@@ -125,6 +125,11 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var group = await _nhomZaloService.GetGroupByIdAsync(id);
+                if (group == null)
+                {
+                    return NotFound($"Zalo group with ID {id} not found.");
+                }
                 await _nhomZaloService.DeleteZaloAsync(id, user);
                 return Ok("Zalo group deleted successfully");
             }
