@@ -29,7 +29,8 @@ namespace AmazingTech.InternSystem.Mapping
             .ForMember(dest => dest.DeletedTime, opt => opt.MapFrom(src => src.DeletedTime.HasValue ? src.DeletedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
             .ForMember(dest => dest.ViTri, opt => opt.MapFrom(src => src.User!.UserViTris.Select(x => x.ViTri.Ten).ToArray()))
             .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.User!.UserNhomZalos.Select(x => x.NhomZalo.TenNhom).ToArray()))
-            .ForMember(dest => dest.TruongHoc, opt => opt.MapFrom(src => src.Truong.Ten))
+            .ForMember(dest => dest.TruongHoc, opt => opt.MapFrom(src => src.Truong!.Ten))
+            .ForMember(dest => dest.KiThucTap, opt => opt.MapFrom(src => src.KiThucTap!.Ten))
             .ForMember(dest => dest.DuAn, opt => opt.MapFrom(src => src.User!.UserDuAns.Select(x => x.DuAn.Ten).ToArray()))
             .ForMember(dest => dest.GioiTinh, opt => opt.MapFrom(src => src.GioiTinh ? "Nam" : "Nữ"));
 
@@ -74,7 +75,6 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
                 .ForMember(dest => dest.Interns, opt => opt.MapFrom(src => src.Interns))
                 .ReverseMap();
-
             CreateMap<User, GetUserDTO>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.FullNameOrSchoolName, opt => opt.MapFrom(src => src.HoVaTen))
@@ -82,8 +82,9 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.ViTris, opt => opt.MapFrom(src => src.UserViTris))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
-
             CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
+            CreateMap<PhongVan, AwserQuest>().ReverseMap();
+            CreateMap<PhongVan, RatingModel>().ReverseMap();
         }
     }
 }

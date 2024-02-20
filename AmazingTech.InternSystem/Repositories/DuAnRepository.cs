@@ -54,7 +54,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public List<DuAnModel> SearchProject(string? ten, string? leaderName, DateTime? startDate, DateTime? endDate)
         {
-            var query = _dbContext.DuAns.AsQueryable();
+            var query = _dbContext.DuAns.Where(d => d.DeletedBy == null).AsQueryable();
 
             if (!string.IsNullOrEmpty(ten))
             {

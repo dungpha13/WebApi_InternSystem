@@ -36,6 +36,7 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> GetAllUsers();
         Task<IActionResult> GetUserById(string id);
         Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateUserDto);
+        Task<IActionResult> DeleteUser(string id);
     }
 
     public class UserService : IUserService
@@ -357,8 +358,17 @@ namespace AmazingTech.InternSystem.Services
                 });
             }
 
-            Enum.TryParse(trangThaiThucTap, out TrangThaiThucTap trangThai);
-            user.TrangThaiThucTap = trangThai;
+            if (Enum.TryParse(trangThaiThucTap, out TrangThaiThucTap trangThai))
+            {
+                user.TrangThaiThucTap = trangThai;
+            }
+            else
+            {
+                return new BadRequestObjectResult(new
+                {
+                    message = "Hãy kiểm tra lại tên trạng thái bạn nhập đúng chưa?"
+                });
+            }
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
@@ -430,7 +440,7 @@ namespace AmazingTech.InternSystem.Services
                         }
 
                         var createdUser = await _userManager.FindByNameAsync(createUserDTO.Username);
-         
+
                         return await CheckAndAddUserToRoleAndSendMail(user, "Intern");
                     }
 
@@ -686,6 +696,64 @@ namespace AmazingTech.InternSystem.Services
 
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            //Check user
+            var authenHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
+
+            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
+            string uid = JwtGenerator.ExtractUserIdFromToken(token);
+            string role = JwtGenerator.ExtractUserRoleFromToken(token);
+
+            //uid dang bi null
+            if (!uid.Equals(id) && !role.Equals("Admin"))
+            {
+                return new ForbidResult();
+            }
+
+            //Check if user is exist or not
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new
+                {
+                    message = "Không tìm thấy user."
+                });
+            }
+
+            //Update deleteTime
+            user.DeletedTime = DateTime.UtcNow;
+
+            //Update username + email add "_"
+            user.NormalizedUserName = "_" + user.NormalizedUserName;
+            user.UserName = "_" + user.UserName;
+            user.NormalizedEmail = "_" + user.NormalizedEmail;
+            user.Email = "_" + user.Email;
+
+            bool success = false;
+
+            while (!success)
+            {
+                // Your initial logic here
+                user.NormalizedUserName = "_" + user.NormalizedUserName;
+                user.UserName = "_" + user.UserName;
+                user.NormalizedEmail = "_" + user.NormalizedEmail;
+                user.Email = "_" + user.Email;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    success = true;
+                    break;
+                }
+            }
+
+            return new OkObjectResult(new
+            {
+                message = "Xóa thành công."
+            });
         }
     }
 }

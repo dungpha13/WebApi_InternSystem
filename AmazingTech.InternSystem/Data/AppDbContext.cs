@@ -43,6 +43,7 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Cauhoi> cauhois { get; set; }
         public DbSet<CauhoiCongnghe> cauhoiCongnghes { get; set; }
+        public DbSet<PhongVan> phongVans { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
