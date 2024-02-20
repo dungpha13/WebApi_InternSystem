@@ -28,7 +28,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-      /*  [Authorize(Roles = "Admin, HR")]  */      
+        [Authorize(Roles = "Admin, HR")]
         [Route("get/{idViTri}")]
         public async Task<IActionResult> GetAllTech(string idViTri)
         {

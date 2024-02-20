@@ -412,10 +412,10 @@ namespace AmazingTech.InternSystem.Migrations
                     HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: true),
                     GioiTinh = table.Column<bool>(type: "bit", nullable: false),
-                    MSSV = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailCaNhan = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MSSV = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EmailTruong = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EmailCaNhan = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Sdt = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     SdtNguoiThan = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiaChi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GPA = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -685,9 +685,9 @@ namespace AmazingTech.InternSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CauTraLoi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rank = table.Column<int>(type: "int", nullable: false),
-                    NguoiCham = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CauTraLoi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rank = table.Column<int>(type: "int", nullable: true),
+                    NguoiCham = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RankDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdCauHoiCongNghe = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdLichPhongVan = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -824,6 +824,22 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "DuAnId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InternInfo_EmailCaNhan",
+                schema: "dbo",
+                table: "InternInfo",
+                column: "EmailCaNhan",
+                unique: true,
+                filter: "[EmailCaNhan] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternInfo_EmailTruong",
+                schema: "dbo",
+                table: "InternInfo",
+                column: "EmailTruong",
+                unique: true,
+                filter: "[EmailTruong] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InternInfo_IdTruong",
                 schema: "dbo",
                 table: "InternInfo",
@@ -834,6 +850,22 @@ namespace AmazingTech.InternSystem.Migrations
                 schema: "dbo",
                 table: "InternInfo",
                 column: "KiThucTapId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternInfo_MSSV",
+                schema: "dbo",
+                table: "InternInfo",
+                column: "MSSV",
+                unique: true,
+                filter: "[MSSV] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternInfo_Sdt",
+                schema: "dbo",
+                table: "InternInfo",
+                column: "Sdt",
+                unique: true,
+                filter: "[Sdt] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KiThucTap_IdTruong",
