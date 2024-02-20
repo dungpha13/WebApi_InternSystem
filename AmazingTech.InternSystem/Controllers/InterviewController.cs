@@ -22,6 +22,14 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
 
+        [HttpGet]
+        [Authorize]
+        [Route("List-Question/{idCongnghe}")]
+        public async Task<List<QuestionDTO>> CreateQuestion(string idCongnghe)
+        {
+            return await _service.getAllQuestion(idCongnghe);
+        }
+
         [HttpPost]
         [Authorize]
         [Route("Anwser")]

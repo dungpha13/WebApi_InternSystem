@@ -10,6 +10,7 @@ namespace AmazingTech.InternSystem.Services
 
     public interface IInterviewService
         {
+        Task<List<QuestionDTO>> getAllQuestion(string idCongNghe);
         Task<int> AwserQuestion(string user, List<AwserQuest> cauHoi);
 
         }

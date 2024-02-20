@@ -81,11 +81,9 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.ViTris, opt => opt.MapFrom(src => src.UserViTris))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
-
             CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
-           CreateMap<PhongVan, AwserQuest>()                
-                .ReverseMap();
-
+            CreateMap<PhongVan, AwserQuest>().ReverseMap();
+            CreateMap<PhongVan, RatingModel>().ReverseMap();
         }
     }
 }
