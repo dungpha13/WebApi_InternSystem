@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AmazingTech.InternSystem.Models.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Models.Request.InternInfo
@@ -10,7 +11,8 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public string HoTen { get; set; }
         [Required]
-        public DateTime NgaySinh { get; set; }
+        [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]
+        public string NgaySinh { get; set; }
         [Required]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")] //Kiểm tra sđt chính xác 10 ký tự và phải là chữ số
         public string Sdt { get; set; }
@@ -20,24 +22,24 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         public bool GioiTinh { get; set; }
 
         [Required]
-        [EmailAddress]        
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$", ErrorMessage = "Email không đúng định dạng!")]
+        public string EmailCaNhan { get; set; }
+        [Required]
+        [EmailAddress]
         public string EmailTruong { get; set; }
         [Required]
         public string LinkCV { get; set; }
         [Required]
         public string TrinhDoTiengAnh { get; set; }
-
-        [JsonPropertyName("idViTri")]
         [Required]
-        public string[] ViTrisId{ get; set; }
-        [Required]
-        public string[] IdDuAn { get; set; }
-        [Required]
-        public string[] IdNhomZalo { get; set; }
+        public string? ViTriMongMuon { get; set; }
 
         //[Required]
         //public string Role { get; set; }
         [Required]
         public string IdTruong { get; set; }
+        [Required]
+        [JsonPropertyName("idKiThucTap")]
+        public string? KiThucTapId { get; set; }
     }
 }
