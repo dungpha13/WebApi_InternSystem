@@ -692,17 +692,17 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> DeleteUser(string id)
         {
             //Check user
-            //var authenHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
+            var authenHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.ToString();
 
-            //string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
-            //string uid = JwtGenerator.ExtractUserIdFromToken(token);
-            //string role = JwtGenerator.ExtractUserRoleFromToken(token);
+            string token = JwtGenerator.ExtractTokenFromHeader(authenHeader);
+            string uid = JwtGenerator.ExtractUserIdFromToken(token);
+            string role = JwtGenerator.ExtractUserRoleFromToken(token);
 
             //uid dang bi null
- /*           if (!uid.Equals(id) && !role.Equals("Admin"))
+            if (!uid.Equals(id) && !role.Equals("Admin"))
             {
                 return new ForbidResult();
-            }*/
+            }
 
             //Check if user is exist or not
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
