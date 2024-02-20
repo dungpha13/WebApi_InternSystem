@@ -154,7 +154,7 @@ namespace AmazingTech.InternSystem.Services
             var Interviewer = _userRepository.GetUserByEmail(model.MailNgPhongVan);
             if (Interviewer == null)
             {
-                throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
+                throw new BadHttpRequestException("Can't find this interviewer, please write her/his mail correctly");
             }
             var timeEnd = model.ThoiGianPhongVan + TimeSpan.FromMinutes(model.TimeDuration);
             timeEnd = timeEnd.AddMinutes(15);
