@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -15,6 +16,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public DateTime? NgaySinh { get; set; }
         public bool GioiTinh { get; set; }
         public string? MSSV { get; set; }
+
         public string? EmailTruong { get; set; } = null;
         public string? EmailCaNhan { get; set; }
         public string? Sdt { get; set; }

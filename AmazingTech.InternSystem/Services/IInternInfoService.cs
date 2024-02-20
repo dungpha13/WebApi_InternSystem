@@ -11,7 +11,7 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> GetAllDeletedInternInfo();
         Task<IActionResult> GetInternInfo(string mssv);
         Task<IActionResult> GetDeletedInternInfo(string mssv);
-        Task<IActionResult> DeleteInternInfo(string mssv);
+        Task<IActionResult> DeleteInternInfo(string userId, string mssv);
         Task<IActionResult> UpdateInternInfo(string userId, UpdateInternInfoDTO model, string mssv);
         Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId);
 

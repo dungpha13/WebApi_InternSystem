@@ -54,15 +54,19 @@ namespace AmazingTech.InternSystem.Repositories
             //createBy
             entity.CreatedBy = userName;
 
+            entity.Round = 0;
+            entity.Status = "Chờ xét duyệt CV";
             _context.InternInfos.Add(entity);
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteInternInfoAsync(InternInfo entity)
+        public async Task<int> DeleteInternInfoAsync(string userId, InternInfo entity)
         {
+            var user = await _context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+            string userName = user.UserName;
             var currentTime = DateTime.Now;
 
-            entity.DeletedBy = "Admin";
+            entity.DeletedBy = userName;
             entity.DeletedTime = currentTime;
 
             return await _context.SaveChangesAsync();
@@ -81,6 +85,7 @@ namespace AmazingTech.InternSystem.Repositories
                 .Include(intern => intern.User!.UserDuAns)
                     .ThenInclude(userduan => userduan.DuAn)
                 .Include(intern => intern.Truong)
+                .Include(intern => intern.KiThucTap)
                 .ToListAsync();
             return interns;
         }
@@ -97,6 +102,7 @@ namespace AmazingTech.InternSystem.Repositories
                 .Include(intern => intern.User!.UserDuAns)
                     .ThenInclude(userduan => userduan.DuAn)
                 .Include(intern => intern.Truong)
+                .Include(intern => intern.KiThucTap)
                 .ToListAsync();
             return interns;
         }
@@ -113,6 +119,7 @@ namespace AmazingTech.InternSystem.Repositories
                             .Include(intern => intern.User!.UserDuAns)
                                 .ThenInclude(userduan => userduan.DuAn)
                             .Include(intern => intern.Truong)
+                            .Include(intern => intern.KiThucTap)
                              .FirstOrDefaultAsync(i => i.MSSV == MSSV);
 
             return intern;
@@ -130,6 +137,7 @@ namespace AmazingTech.InternSystem.Repositories
                             .Include(intern => intern.User!.UserDuAns)
                                 .ThenInclude(userduan => userduan.DuAn)
                             .Include(intern => intern.Truong)
+                            .Include(intern => intern.KiThucTap)
                              .FirstOrDefaultAsync(i => i.MSSV == MSSV);
 
             return intern;

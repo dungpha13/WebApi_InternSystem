@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AmazingTech.InternSystem.Migrations
 {
-    public partial class Test1 : Migration
+    public partial class Test : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -155,55 +155,54 @@ namespace AmazingTech.InternSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InternInfo",
+                name: "AspNetUserClaims",
                 schema: "dbo",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    GioiTinh = table.Column<bool>(type: "bit", nullable: false),
-                    MSSV = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailCaNhan = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SdtNguoiThan = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DiaChi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GPA = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    TrinhDoTiengAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LinkFacebook = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LinkCV = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NganhHoc = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Round = table.Column<int>(type: "int", nullable: true),
-                    ViTriMongMuon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdTruong = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KiThucTapId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InternInfo", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                schema: "dbo",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                schema: "dbo",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_InternInfo_KiThucTap_KiThucTapId",
-                        column: x => x.KiThucTapId,
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
                         principalSchema: "dbo",
-                        principalTable: "KiThucTap",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_InternInfo_TruongHoc_IdTruong",
-                        column: x => x.IdTruong,
-                        principalSchema: "dbo",
-                        principalTable: "TruongHoc",
-                        principalColumn: "Id");
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -241,84 +240,6 @@ namespace AmazingTech.InternSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_InternInfo_InternInfoId",
-                        column: x => x.InternInfoId,
-                        principalSchema: "dbo",
-                        principalTable: "InternInfo",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dbo",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                schema: "dbo",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dbo",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                schema: "dbo",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalSchema: "dbo",
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dbo",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -341,39 +262,6 @@ namespace AmazingTech.InternSystem.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comment",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdNguoiDuocComment = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdNguoiComment = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_IdNguoiComment",
-                        column: x => x.IdNguoiComment,
-                        principalSchema: "dbo",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Comment_InternInfo_IdNguoiDuocComment",
-                        column: x => x.IdNguoiDuocComment,
-                        principalSchema: "dbo",
-                        principalTable: "InternInfo",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -515,6 +403,65 @@ namespace AmazingTech.InternSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "InternInfo",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    GioiTinh = table.Column<bool>(type: "bit", nullable: false),
+                    MSSV = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailTruong = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailCaNhan = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SdtNguoiThan = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DiaChi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GPA = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TrinhDoTiengAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkFacebook = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkCV = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NganhHoc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Round = table.Column<int>(type: "int", nullable: true),
+                    ViTriMongMuon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdTruong = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    KiThucTapId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DuAnId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InternInfo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InternInfo_DuAn_DuAnId",
+                        column: x => x.DuAnId,
+                        principalSchema: "dbo",
+                        principalTable: "DuAn",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_InternInfo_KiThucTap_KiThucTapId",
+                        column: x => x.KiThucTapId,
+                        principalSchema: "dbo",
+                        principalTable: "KiThucTap",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_InternInfo_TruongHoc_IdTruong",
+                        column: x => x.IdTruong,
+                        principalSchema: "dbo",
+                        principalTable: "TruongHoc",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserDuAn",
                 schema: "dbo",
                 columns: table => new
@@ -572,6 +519,39 @@ namespace AmazingTech.InternSystem.Migrations
                         column: x => x.DuAnId,
                         principalSchema: "dbo",
                         principalTable: "DuAn",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comment",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdNguoiDuocComment = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdNguoiComment = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comment_AspNetUsers_IdNguoiComment",
+                        column: x => x.IdNguoiComment,
+                        principalSchema: "dbo",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Comment_InternInfo_IdNguoiDuocComment",
+                        column: x => x.IdNguoiDuocComment,
+                        principalSchema: "dbo",
+                        principalTable: "InternInfo",
                         principalColumn: "Id");
                 });
 
@@ -838,6 +818,12 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "LeaderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InternInfo_DuAnId",
+                schema: "dbo",
+                table: "InternInfo",
+                column: "DuAnId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InternInfo_IdTruong",
                 schema: "dbo",
                 table: "InternInfo",
@@ -932,10 +918,54 @@ namespace AmazingTech.InternSystem.Migrations
                 schema: "dbo",
                 table: "ViTri",
                 column: "DuAnId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                schema: "dbo",
+                table: "AspNetUserClaims",
+                column: "UserId",
+                principalSchema: "dbo",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                schema: "dbo",
+                table: "AspNetUserLogins",
+                column: "UserId",
+                principalSchema: "dbo",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                schema: "dbo",
+                table: "AspNetUserRoles",
+                column: "UserId",
+                principalSchema: "dbo",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_InternInfo_InternInfoId",
+                schema: "dbo",
+                table: "AspNetUsers",
+                column: "InternInfoId",
+                principalSchema: "dbo",
+                principalTable: "InternInfo",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_DuAn_AspNetUsers_LeaderId",
+                schema: "dbo",
+                table: "DuAn");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims",
                 schema: "dbo");
@@ -1017,15 +1047,15 @@ namespace AmazingTech.InternSystem.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DuAn",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "InternInfo",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "DuAn",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

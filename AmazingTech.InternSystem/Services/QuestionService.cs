@@ -2,11 +2,8 @@
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Repositories;
-using AmazingTech.InternSystem.Repositories.AmazingTech.InternSystem.Repositories;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using OfficeOpenXml;
 using System.Collections.Generic;
 

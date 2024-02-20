@@ -13,7 +13,8 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public string HoTen { get; set; }
         [Required]
-        public DateTime NgaySinh { get; set; }
+        [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]
+        public string NgaySinh { get; set; }
         [Required]
         [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]
         public string? StartDate { get; set; }
@@ -36,20 +37,29 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public string TrinhDoTiengAnh { get; set; }
 
-        [JsonPropertyName("idViTri")]
-        [Required]
-        public string[] ViTrisId { get; set; }
+        //[JsonPropertyName("idViTri")]
+        //[Required]
+        //public string[] ViTrisId { get; set; }
 
-        [Required]
-        public string[] IdDuAn { get; set; }
+        //[Required]
+        //public string[] IdDuAn { get; set; }
 
-        [Required]
-        public string[] IdNhomZalo { get; set; }
+        //[Required]
+        //public string[] IdNhomZalo { get; set; }
 
         [Required]
         public string IdTruong { get; set; }
+
         [Required]
-        public string? Status { get; set; }
+        [Range(0,2, ErrorMessage = "Hãy nhập chính xác vòng sơ tuyển Intern: \\n" +
+            "- 0: Chờ xét duyệt CV \\n" +
+            "- 1: Chờ phỏng vấn \\n" +
+            "- 2: Đậu phỏng vấn")]
+        //Round 0: Vòng duyệt CV, Round 1: Pass CV (Vòng Phỏng Vấn), Round 2: Đậu Phỏng Vấn (Intern chính thức)
+        public int Round { get; set; }
+        
+        //[Required]
+        //public string? Status { get; set; }
        
     }
 }

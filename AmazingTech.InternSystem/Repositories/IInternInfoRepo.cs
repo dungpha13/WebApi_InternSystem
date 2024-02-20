@@ -16,11 +16,11 @@ namespace AmazingTech.InternSystem.Repositories
         public Task<InternInfo> GetInternInfoAsync(string MSSV);
         public Task<InternInfo> GetDeletedInternInfoAsync(string MSSV);
 
-        public Task<int> AddInternInfoAsync(string user, InternInfo entity);
+        public Task<int> AddInternInfoAsync(string userId, InternInfo entity);
 
         public Task<int> UpdateInternInfoAsync(string userId, InternInfo model);
 
-        public Task<int> DeleteInternInfoAsync(InternInfo entity);
+        public Task<int> DeleteInternInfoAsync(string userId, InternInfo entity);
 
         public Task<int> AddListInternInfoAsync(List<InternInfo> interns);
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazingTech.InternSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240201071917_Test1")]
-    partial class Test1
+    [Migration("20240219094316_Test")]
+    partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -316,6 +316,9 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<string>("DiaChi")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DuAnId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("EmailCaNhan")
                         .HasColumnType("nvarchar(max)");
 
@@ -387,6 +390,8 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DuAnId");
 
                     b.HasIndex("IdTruong");
 
@@ -1168,6 +1173,10 @@ namespace AmazingTech.InternSystem.Migrations
 
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.DuAn", null)
+                        .WithMany("InternInfos")
+                        .HasForeignKey("DuAnId");
+
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.TruongHoc", "Truong")
                         .WithMany("Interns")
                         .HasForeignKey("IdTruong")
@@ -1394,6 +1403,8 @@ namespace AmazingTech.InternSystem.Migrations
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.DuAn", b =>
                 {
                     b.Navigation("CongNgheDuAns");
+
+                    b.Navigation("InternInfos");
 
                     b.Navigation("UserDuAns");
 

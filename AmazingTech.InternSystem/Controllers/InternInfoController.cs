@@ -65,7 +65,8 @@ namespace AmazingTech.InternSystem.Controllers
         [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> DeleteInternInfo(string mssv)
         {
-            return await _internInfoService.DeleteInternInfo(mssv);
+            string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return await _internInfoService.DeleteInternInfo(userId, mssv);
         }
 
         [HttpPut("update/{mssv}")]
