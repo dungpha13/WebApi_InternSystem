@@ -279,7 +279,7 @@ namespace AmazingTech.InternSystem.Services
             }
             if (Interviewer == null)
             {
-                throw new BadHttpRequestException("Can't find this interviewer, please write her/his name correctly");
+                throw new BadHttpRequestException("Can't find this interviewer, please write her/his mail correctly");
             }
             int count = 0;
             var InterViewListRole = _userManager.GetRolesAsync(Interviewer).Result[0];
