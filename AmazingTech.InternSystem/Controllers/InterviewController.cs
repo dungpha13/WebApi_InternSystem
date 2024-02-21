@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
+using static AmazingTech.InternSystem.Data.Enum.Enums;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -37,8 +38,16 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("Anwser")]
         public async Task<IActionResult> CreateQuestion( [FromBody] List<AwserQuest> traloi)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return await _service.AwserQuestion(user, traloi);;
+           
+            try
+            {                
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return await _service.AwserQuestion(user, traloi);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("ID QUESTION IS NOT CORRECT");
+            }
         }
 
         [HttpGet]

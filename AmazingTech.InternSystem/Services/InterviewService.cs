@@ -25,7 +25,7 @@ namespace AmazingTech.InternSystem.Services
          public InterviewService(IServiceProvider serviceProvider, IMapper mapper)
          {
               _interviewRepo = serviceProvider.GetRequiredService<IInterviewRepo>();
-             _mapper = mapper;
+              _mapper = mapper;
          }
 
          public async Task<List<ViewQuestionInterview>> getAllQuestion(string idCongNghe)
