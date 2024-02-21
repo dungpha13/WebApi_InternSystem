@@ -120,7 +120,7 @@ namespace AmazingTech.InternSystem.Repositories
             var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedBy == null);
             if (existingDuAn == null)
             {
-                return 0;
+                throw new Exception($"DuAn with ID {duAnId} not found.");
             }
 
             if (updatedDuAn.Ten != null)
@@ -147,7 +147,7 @@ namespace AmazingTech.InternSystem.Repositories
             var duAnToDelete = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedBy == null);
             if (duAnToDelete == null)
             {
-                return 0;
+                throw new Exception($"DuAn with ID {duAnId} not found.");
             }
 
             duAnToDelete.DeletedBy = user;
@@ -218,58 +218,5 @@ namespace AmazingTech.InternSystem.Repositories
 
             return _dbContext.SaveChanges();
         }
-
-        //Intern DuAn methods
-        //public int AddInternToDuAn(string duAnId, string mssv, InternInfo internInfo)
-        //{
-        //    try
-        //    {
-        //        var duAn = _dbContext.DuAns.Find(duAnId);
-        //        if (duAn != null)
-        //        {
-        //            duAn.InternInfos.Add(internInfo);
-        //            _dbContext.SaveChanges();
-        //            return 1;
-        //        }
-        //        return 0;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return -1;
-        //    }
-        //}
-
-        //public int UpdateInternInDuAn(InternInfo internInfo)
-        //{
-        //    try
-        //    {
-        //        _dbContext.InternInfos.Update(internInfo);
-        //        _dbContext.SaveChanges();
-        //        return 1;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return 0;
-        //    }
-        //}
-
-        //public int RemoveInternFromDuAn(string internInfoId)
-        //{
-        //    try
-        //    {
-        //        var internInfo = _dbContext.InternInfos.FirstOrDefault(i => i.Id == internInfoId);
-        //        if (internInfo != null)
-        //        {
-        //            _dbContext.InternInfos.Remove(internInfo);
-        //            _dbContext.SaveChanges();
-        //            return 1;
-        //        }
-        //        return 0;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return -1;
-        //    }
-        //}
     }
 }

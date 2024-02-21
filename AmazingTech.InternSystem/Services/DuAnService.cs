@@ -74,7 +74,7 @@ namespace AmazingTech.InternSystem.Services
             var existingDuAn = _duAnRepo.GetDuAnById(id);
             if (existingDuAn == null)
             {
-                return new BadRequestObjectResult("DuAn not found");
+                return new BadRequestObjectResult($"DuAn with ID {id} not found.");
             }
 
             DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
@@ -93,7 +93,7 @@ namespace AmazingTech.InternSystem.Services
             var existingDuAn = _duAnRepo.GetDuAnById(id);
             if (existingDuAn == null)
             {
-                return new BadRequestObjectResult("DuAn not found");
+                return new BadRequestObjectResult($"DuAn with ID {id} not found.");
             }
 
             var result = _duAnRepo.DeleteDuAn(id, user);
@@ -156,44 +156,5 @@ namespace AmazingTech.InternSystem.Services
             }
             return new OkResult();
         }
-
-        //Intern DuAn methods
-        //public IActionResult AddInternToDuAn(string duAnId, InternInfo internInfo)
-        //{
-        //    var result = _duAnRepo.AddInternToDuAn(duAnId, internInfo);
-        //    if (result == 0)
-        //    {
-        //        return new BadRequestObjectResult("DuAn does not exist");
-        //    }
-        //    else if (result == -1)
-        //    {
-        //        return new BadRequestObjectResult("An error occurred while adding intern to DuAn");
-        //    }
-        //    return new OkResult();
-        //}
-
-        //public IActionResult UpdateInternInDuAn(InternInfo internInfo)
-        //{
-        //    var result = _duAnRepo.UpdateInternInDuAn(internInfo);
-        //    if (result == 0)
-        //    {
-        //        return new BadRequestObjectResult("An error occurred while updating intern in DuAn");
-        //    }
-        //    return new OkResult();
-        //}
-
-        //public IActionResult RemoveInternFromDuAn(string internInfoId)
-        //{
-        //    var result = _duAnRepo.RemoveInternFromDuAn(internInfoId);
-        //    if (result == 0)
-        //    {
-        //        return new BadRequestObjectResult("InternInfo does not exist");
-        //    }
-        //    else if (result == -1)
-        //    {
-        //        return new BadRequestObjectResult("An error occurred while removing intern from DuAn");
-        //    }
-        //    return new OkResult();
-        //}
     }
 }

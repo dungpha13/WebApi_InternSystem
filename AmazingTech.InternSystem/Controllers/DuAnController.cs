@@ -1,10 +1,12 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Request.User;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -62,6 +64,9 @@ namespace AmazingTech.InternSystem.Controllers
         public IActionResult GetDuAnById(string id)
         {
             var result = _duAnService.GetDuAnById(id);
+
+            if (result == null)
+                return NotFound($"DuAn with ID {id} not found.");
 
             if (result is OkObjectResult okResult)
             {
@@ -151,9 +156,29 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                var existingProject = _duAnService.GetDuAnById(id);
+                if (existingProject == null)
+                {
+                    return BadRequest($"DuAn with ID {id} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _duAnService.UpdateDuAn(id, user, updatedDuAn);
-                return Ok("DuAn updated successfully");
+                //_duAnService.UpdateDuAn(id, user, updatedDuAn);
+                //return Ok("DuAn updated successfully");
+                var result = _duAnService.UpdateDuAn(id, user, updatedDuAn);
+
+                if (result is BadRequestObjectResult badRequestResult)
+                {
+                    return badRequestResult;
+                }
+                else if (result is OkResult)
+                {
+                    return Ok("DuAn updated successfully");
+                }
+                else
+                {
+                    return BadRequest("Failed to update DuAn");
+                }
             }
             catch (Exception ex)
             {
@@ -166,9 +191,29 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                var existingProject = _duAnService.GetDuAnById(id);
+                if (existingProject == null)
+                {
+                    return BadRequest($"DuAn with ID {id} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _duAnService.DeleteDuAn(id, user);
-                return Ok("DuAn deleted successfully");
+                //_duAnService.DeleteDuAn(id, user);
+                //return Ok("DuAn deleted successfully");
+                var result = _duAnService.DeleteDuAn(id, user);
+
+                if (result is BadRequestObjectResult badRequestResult)
+                {
+                    return badRequestResult;
+                }
+                else if (result is OkResult)
+                {
+                    return Ok("DuAn deleted successfully");
+                }
+                else
+                {
+                    return BadRequest("Failed to delete DuAn");
+                }
             }
             catch (Exception ex)
             {
@@ -293,7 +338,7 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPost("add-user-to-project/{duAnId}")]
         public IActionResult AddUserToDuAn(string duAnId, [FromBody] UserDuAnModel addUserDuAn)
         {
-            
+
             try
             {
                 if (string.IsNullOrEmpty(duAnId))
@@ -323,6 +368,12 @@ namespace AmazingTech.InternSystem.Controllers
                     return BadRequest("DuAnId is required");
                 }
 
+                var existingProject = _duAnService.GetDuAnById(duAnId);
+                if (existingProject == null)
+                {
+                    return NotFound($"DuAn with ID {duAnId} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _duAnService.UpdateUserInDuAn(duAnId, user, updateUserDuAn);
                 return Ok($"User added to DuAn {duAnId} updated successfully");
@@ -345,6 +396,12 @@ namespace AmazingTech.InternSystem.Controllers
                     return BadRequest("DuAnId is required");
                 }
 
+                var existingProject = _duAnService.GetDuAnById(duAnId);
+                if (existingProject == null)
+                {
+                    return NotFound($"DuAn with ID {duAnId} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _duAnService.DeleteUserFromDuAn(duAnId, user, userId);
                 return Ok($"User removed from DuAn {duAnId} successfully");
@@ -353,84 +410,8 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 return StatusCode(500, "Internal Server Error");
             }
-            
+
             //return _duAnService.DeleteUserFromDuAn(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), userId, duAnId);
         }
-
-        //Manage Intern DuAn
-        //[HttpPost("add-intern")]
-        //public IActionResult AddInternToDuAn(string duAnId, [FromBody] InternInfo internInfo)
-        //{
-        //    try
-        //    {
-        //        var result = _duAnService.AddInternToDuAn(duAnId, internInfo);
-        //        if (result is BadRequestObjectResult badRequestResult)
-        //        {
-        //            return badRequestResult;
-        //        }
-        //        else if (result is OkResult)
-        //        {
-        //            return Ok("Intern added to DuAn successfully");
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Failed to add Intern to DuAn");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "Internal Server Error");
-        //    }
-        //}
-
-        //[HttpPut("update-intern")]
-        //public IActionResult UpdateInternInDuAn([FromBody] InternInfo internInfo)
-        //{
-        //    try
-        //    {
-        //        var result = _duAnService.UpdateInternInDuAn(internInfo);
-        //        if (result is BadRequestObjectResult badRequestResult)
-        //        {
-        //            return badRequestResult;
-        //        }
-        //        else if (result is OkResult)
-        //        {
-        //            return Ok("Intern in DuAn updated successfully");
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Failed to update Intern in DuAn");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "Internal Server Error");
-        //    }
-        //}
-
-        //[HttpDelete("remove-intern/{internInfoId}")]
-        //public IActionResult RemoveInternFromDuAn(string internInfoId)
-        //{
-        //    try
-        //    {
-        //        var result = _duAnService.RemoveInternFromDuAn(internInfoId);
-        //        if (result is BadRequestObjectResult badRequestResult)
-        //        {
-        //            return badRequestResult;
-        //        }
-        //        else if (result is OkResult)
-        //        {
-        //            return Ok("Intern removed from DuAn successfully");
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Failed to remove Intern from DuAn");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "Internal Server Error");
-        //    }
-        //}
     }
 }
