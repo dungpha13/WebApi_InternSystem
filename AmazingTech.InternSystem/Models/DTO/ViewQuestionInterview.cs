@@ -1,8 +1,8 @@
 ﻿namespace AmazingTech.InternSystem.Models.DTO
 {
-    public class ViewQuestionForInten
+    public class ViewQuestionInterview
     {
-        public string? NoiDung { get; set; }
         public string IdCauHoiCongNghe { get; set; }
+        public string? NoiDung { get; set; }
     }
 }

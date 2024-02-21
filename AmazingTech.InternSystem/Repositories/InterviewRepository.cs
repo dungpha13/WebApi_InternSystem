@@ -6,13 +6,15 @@ using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Repositories
 {
     public interface IInterviewRepo
     {
-        Task<List<Cauhoi>> GetAllCauHoiAsync(string CongNghe);
+        Task<List<CauhoiCongnghe>> GetAllCauHoiAsync(string CongNghe);
         Task<int> AwserQuestion(string user, List<PhongVan> phongVan);
+        Task<List<ViewAnswer>> ViewAnwser(string idUser);
 
     }
     public class InterviewRepository : IInterviewRepo
@@ -26,9 +28,9 @@ namespace AmazingTech.InternSystem.Repositories
         }
 
 
-        public async Task<List<Cauhoi>> GetAllCauHoiAsync(string congnghe)
+        public async Task<List<CauhoiCongnghe>> GetAllCauHoiAsync(string congnghe)
         {
-            return await _context.cauhois.Where(x => x.CauhoiCongnghe.Where(c => c.IdCongNghe == congnghe && x.DeletedBy == null).Any()).ToListAsync();
+            return await _context.cauhoiCongnghes.Where(c => c.IdCongNghe == congnghe && c.DeletedBy == null).Include(x => x.cauhoi).ToListAsync();
         }
 
 
@@ -43,19 +45,22 @@ namespace AmazingTech.InternSystem.Repositories
                 {
                     throw new Exception();
                 }
+                var checkDuplicate = _context.phongVans.Where(x => x.CreatedBy == user && x.IdCauHoiCongNghe == phongvan.IdCauHoiCongNghe).FirstOrDefault();
+                if (checkDuplicate != null) { return 0; }
                 phongvan.CreatedBy = user;
                 phongvan.LastUpdatedBy = user;
                 phongvan.IdLichPhongVan = LichPhongvan.Id;
                 _context.phongVans.Add(phongvan);
             }
-
-            return await _context.SaveChangesAsync();
+           
+            await _context.SaveChangesAsync();
+            return 1; 
         }
 
         public async Task<List<ViewAnswer>> ViewAnwser(string idUser) 
         {
-            List<Cauhoi> cauhois = _context.cauhois.Where(x =>x.DeletedBy != null ).ToList();
-            List<CauhoiCongnghe> cauhoiCongNghes = _context.cauhoiCongnghes.Where(x => x.DeletedBy != null).ToList();
+            List<Cauhoi> cauhois = _context.cauhois.Where(x =>x.DeletedBy == null ).ToList();
+            List<CauhoiCongnghe> cauhoiCongNghes = _context.cauhoiCongnghes.Where(x => x.DeletedBy == null).ToList();
             List<PhongVan> phongVans = _context.phongVans.Where(x => x.CreatedBy == idUser ).ToList();
             List<ViewAnswer> viewAnswers = new List<ViewAnswer>();
 
@@ -69,19 +74,23 @@ namespace AmazingTech.InternSystem.Repositories
                              d.CauTraLoi,
                              d.CreatedBy,                            
                          }).ToList();
-            foreach (var viewAnswer in viewAnswers) 
+   
+            foreach (var Query in query) 
             {
-                foreach (var Query in query) 
-                {
-                    viewAnswer.Id = Query.Id;
-                    viewAnswer.NoiDung = Query.NoiDung;
-                    viewAnswer.CauTraLoi = Query.CauTraLoi;
-                    viewAnswer.CreatedBy = Query.CreatedBy;                
-                }
+              var viewAnswer = new ViewAnswer 
+              {
+                  Id = Query.Id,
+                  CauTraLoi = Query.CauTraLoi,
+                  CreatedBy = Query.CreatedBy,
+                  NoiDung = Query.NoiDung
+              };
+
                 viewAnswers.Add(viewAnswer);
             }
             return viewAnswers;
         }
+           
+        
 
 
         public async Task<int> RatingQuestion(string user, List<PhongVan> phongVan) 
@@ -94,13 +103,15 @@ namespace AmazingTech.InternSystem.Repositories
                 {
                     throw new Exception();
                 }
+                
                 phongvan.CreatedBy = user;
                 phongvan.LastUpdatedBy = user;
                 phongvan.IdLichPhongVan = LichPhongvan.Id;
                 _context.phongVans.Add(phongvan);
             }
-
-            return await _context.SaveChangesAsync();
+             
+             await _context.SaveChangesAsync();
+             return 1;
 
         }
 

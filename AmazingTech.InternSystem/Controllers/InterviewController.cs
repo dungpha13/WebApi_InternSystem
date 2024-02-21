@@ -2,8 +2,10 @@
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Services;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -25,7 +27,7 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet]
         [Authorize]
         [Route("List-Question/{idCongnghe}")]
-        public async Task<List<QuestionDTO>> CreateQuestion(string idCongnghe)
+        public async Task<List<ViewQuestionInterview>> CreateQuestion(string idCongnghe)
         {
             return await _service.getAllQuestion(idCongnghe);
         }
@@ -36,8 +38,15 @@ namespace AmazingTech.InternSystem.Controllers
         public async Task<IActionResult> CreateQuestion( [FromBody] List<AwserQuest> traloi)
         {
             string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var save = await _service.AwserQuestion(user, traloi);
-            return Ok(save == 1 ? "Success" : "failed");
+            return await _service.AwserQuestion(user, traloi);;
+        }
+
+        [HttpGet]
+
+        [Route("List-Anwser/{IdUser}")]
+        public async Task<List<ViewAnswer>> ViewAnswer(string IdUser)
+        {
+            return await _service.ViewAnswers(IdUser);
         }
     }
 }
