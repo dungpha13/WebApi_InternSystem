@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
+using AmazingTech.InternSystem.Models.Request.User;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
@@ -251,7 +252,17 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet("get-all-user-in-project/{duAnId}")]
         public IActionResult GetAllUserDuAns(string duAnId)
         {
+            if (string.IsNullOrEmpty(duAnId))
+            {
+                return BadRequest("DuAnId is required");
+            }
+
             var result = _duAnService.GetAllUsersInDuAn(duAnId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
 
             if (result is OkObjectResult okResult)
             {
@@ -266,7 +277,7 @@ namespace AmazingTech.InternSystem.Controllers
                             userId = userDuAn.UserId,
                             userName = userDuAn.User.HoVaTen,
                             idDuAn = userDuAn.IdDuAn,
-                            nameDuAn = userDuAn.DuAn.Ten,
+                            tenDuAn = userDuAn.DuAn.Ten,
                             viTri = userDuAn.ViTri,
                         })
                     };
@@ -275,25 +286,75 @@ namespace AmazingTech.InternSystem.Controllers
                 }
 
             }
+
             return result;
         }
 
         [HttpPost("add-user-to-project/{duAnId}")]
         public IActionResult AddUserToDuAn(string duAnId, [FromBody] UserDuAnModel addUserDuAn)
         {
-            return _duAnService.AddUserToDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), addUserDuAn);
+            
+            try
+            {
+                if (string.IsNullOrEmpty(duAnId))
+                {
+                    return BadRequest("DuAnId is required");
+                }
+
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.AddUserToDuAn(duAnId, user, addUserDuAn);
+                return Ok($"User added to DuAn {duAnId} successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+
+            //return _duAnService.AddUserToDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), addUserDuAn);
         }
 
         [HttpPut("update-user-in-project/{duAnId}")]
         public IActionResult UpdateUserInDuAn(string duAnId, [FromBody] UserDuAnModel updateUserDuAn)
         {
-            return _duAnService.UpdateUserInDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), updateUserDuAn);
+            try
+            {
+                if (string.IsNullOrEmpty(duAnId))
+                {
+                    return BadRequest("DuAnId is required");
+                }
+
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.UpdateUserInDuAn(duAnId, user, updateUserDuAn);
+                return Ok($"User added to DuAn {duAnId} updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+
+            //return _duAnService.UpdateUserInDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), updateUserDuAn);
         }
 
         [HttpDelete("delete-user-from-project/{duAnId}/{userId}")]
         public IActionResult DeleteUserFromDuAn(string userId, string duAnId)
         {
-            return _duAnService.DeleteUserFromDuAn(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), userId, duAnId);
+            try
+            {
+                if (string.IsNullOrEmpty(duAnId))
+                {
+                    return BadRequest("DuAnId is required");
+                }
+
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _duAnService.DeleteUserFromDuAn(duAnId, user, userId);
+                return Ok($"User removed from DuAn {duAnId} successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+            
+            //return _duAnService.DeleteUserFromDuAn(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), userId, duAnId);
         }
 
         //Manage Intern DuAn

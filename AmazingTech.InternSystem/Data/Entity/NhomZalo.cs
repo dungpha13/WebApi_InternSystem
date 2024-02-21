@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AmazingTech.InternSystem.Data.Entity
 {
@@ -8,6 +9,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? TenNhom { get; set; }
 
         public string? LinkNhom { get; set; }
+
+        [JsonIgnore]
         public ICollection<UserNhomZalo> UserNhomZalos { get; set; }
     }
 }

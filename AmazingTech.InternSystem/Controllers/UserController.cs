@@ -116,7 +116,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpDelete]
-        [Route("delete/{userId}")]
+        [Route("delete/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser([FromRoute] string id)
         {

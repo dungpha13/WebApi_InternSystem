@@ -161,7 +161,8 @@ namespace AmazingTech.InternSystem.Repositories
         public List<UserDuAn> GetAllUsersInDuAn(string duAnId)
         {
             return _dbContext.UserDuAns.Where(x => x.IdDuAn == duAnId && x.DeletedBy == null)
-                                                    .Include(nz => nz.DuAn)
+                                                    .Include(da => da.DuAn)
+                                                    .Include(da => da.User)
                                                     .ToList();
         }
 
@@ -171,7 +172,7 @@ namespace AmazingTech.InternSystem.Repositories
 
             if (duAn == null)
             {
-                throw new Exception($"Project with ID {duAnId} not found.");
+                throw new Exception($"DuAn with ID {duAnId} not found.");
             }
 
             addUserDuAn.IdDuAn = duAnId;
@@ -195,6 +196,7 @@ namespace AmazingTech.InternSystem.Repositories
 
             userDuAn.UserId = updateUserDuAn.UserId;
             userDuAn.IdDuAn = updateUserDuAn.IdDuAn;
+            userDuAn.ViTri = updateUserDuAn.ViTri;
 
             userDuAn.LastUpdatedBy = user;
             userDuAn.LastUpdatedTime = DateTime.Now;

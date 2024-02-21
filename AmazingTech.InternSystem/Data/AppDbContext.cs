@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using System.Xml;
 
 namespace AmazingTech.InternSystem.Data
 {
@@ -57,6 +58,18 @@ namespace AmazingTech.InternSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<InternInfo>()
+              .HasIndex(e => e.EmailCaNhan)
+              .IsUnique();
+            modelBuilder.Entity<InternInfo>()
+              .HasIndex(e => e.EmailTruong)
+              .IsUnique();
+            modelBuilder.Entity<InternInfo>()
+              .HasIndex(e => e.MSSV)
+              .IsUnique();
+            modelBuilder.Entity<InternInfo>()
+              .HasIndex(e => e.Sdt)
+              .IsUnique();
             modelBuilder.Entity<CongNgheDuAn>()
                 .HasOne(lp => lp.DuAn)
                 .WithMany(u => u.CongNgheDuAns)

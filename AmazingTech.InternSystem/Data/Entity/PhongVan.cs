@@ -5,9 +5,9 @@ namespace AmazingTech.InternSystem.Data.Entity
     [Table("PhongVan")]
     public class PhongVan : AbstractEntity
     {
-        public string CauTraLoi { get; set; }       
-        public int Rank { get; set; }
-        public string NguoiCham { get; set; }
+        public string? CauTraLoi { get; set; }       
+        public int? Rank { get; set; }
+        public string? NguoiCham { get; set; }
         public DateTime? RankDate { get; set; }
 
         [ForeignKey("CauHoiCongNghe")]

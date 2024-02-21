@@ -318,10 +318,10 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EmailCaNhan")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EmailTruong")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
@@ -355,7 +355,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MSSV")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NganhHoc")
                         .HasColumnType("nvarchar(max)");
@@ -367,7 +367,7 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Sdt")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SdtNguoiThan")
                         .HasColumnType("nvarchar(max)");
@@ -391,9 +391,25 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasIndex("DuAnId");
 
+                    b.HasIndex("EmailCaNhan")
+                        .IsUnique()
+                        .HasFilter("[EmailCaNhan] IS NOT NULL");
+
+                    b.HasIndex("EmailTruong")
+                        .IsUnique()
+                        .HasFilter("[EmailTruong] IS NOT NULL");
+
                     b.HasIndex("IdTruong");
 
                     b.HasIndex("KiThucTapId");
+
+                    b.HasIndex("MSSV")
+                        .IsUnique()
+                        .HasFilter("[MSSV] IS NOT NULL");
+
+                    b.HasIndex("Sdt")
+                        .IsUnique()
+                        .HasFilter("[Sdt] IS NOT NULL");
 
                     b.ToTable("InternInfo", "dbo");
                 });
@@ -544,7 +560,6 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CauTraLoi")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
@@ -575,10 +590,9 @@ namespace AmazingTech.InternSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NguoiCham")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Rank")
+                    b.Property<int?>("Rank")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("RankDate")
