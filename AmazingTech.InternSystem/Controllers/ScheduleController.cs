@@ -222,11 +222,11 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPut]
         [Authorize]
         [Route("api/lich-phong-vans/Update-Interview-Result")]
-        public IActionResult UpdateInterviewResult(string idngphongvan, Result result, string Vitri)
+        public IActionResult UpdateInterviewResult(string idlichphongvan, Result result, string Vitri)
         {
             try
             {
-                _guiLichPhongVanService.UpdateResult(idngphongvan, result, Vitri);
+                _guiLichPhongVanService.UpdateResult(idlichphongvan, result, Vitri);
                 return Ok("Update sucessful");
             }
             catch (BadHttpRequestException ex)
