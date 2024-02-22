@@ -22,10 +22,5 @@ namespace AmazingTech.InternSystem.Services
         IActionResult AddUserToDuAn(string duAnId, string user, UserDuAnModel addUserDuAn);
         IActionResult UpdateUserInDuAn(string duAnId, string user, UserDuAnModel updateUserDuAn);
         IActionResult DeleteUserFromDuAn(string duAnId, string user, string userId);
-
-        //Intern DuAn methods
-        //IActionResult AddInternToDuAn(string user, string duAnId, InternInfo internInfo);
-        //IActionResult UpdateInternInDuAn(string user, InternInfo internInfo);
-        //IActionResult RemoveInternFromDuAn(string user, string internInfoId);
     }
 }

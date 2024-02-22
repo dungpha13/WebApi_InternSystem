@@ -115,11 +115,6 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult AddUserToDuAn(string duAnId, string user, UserDuAnModel addUserDuAn)
         {
-            if (string.IsNullOrEmpty(duAnId))
-            {
-                return new BadRequestObjectResult("DuAnId is required");
-            }
-
             var existingUserDuAn = _duAnRepo.GetAllUsersInDuAn(duAnId).FirstOrDefault(u => u.UserId == addUserDuAn.UserId);
             if (existingUserDuAn != null)
             {
@@ -139,11 +134,6 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult UpdateUserInDuAn(string duAnId, string user, UserDuAnModel updateUserDuAn)
         {
-            if (string.IsNullOrEmpty(duAnId))
-            {
-                return new BadRequestObjectResult("DuAnId is required");
-            }
-
             var existingUserDuAn = _duAnRepo.GetAllUsersInDuAn(duAnId).FirstOrDefault(u => u.UserId == updateUserDuAn.UserId);
             if (existingUserDuAn == null)
             {
@@ -161,20 +151,15 @@ namespace AmazingTech.InternSystem.Services
             return new OkResult();
         }
 
-        public IActionResult DeleteUserFromDuAn(string user, string userId, string duAnId)
+        public IActionResult DeleteUserFromDuAn(string duAnId, string user, string userId)
         {
-            if (string.IsNullOrEmpty(duAnId))
-            {
-                return new BadRequestObjectResult("DuAnId is required");
-            }
-
             var existingUserDuAn = _duAnRepo.GetAllUsersInDuAn(duAnId).FirstOrDefault(u => u.UserId == userId);
             if (existingUserDuAn == null)
             {
                 return new BadRequestObjectResult("User does not exist in the project.");
             }
 
-            var result = _duAnRepo.DeleteUserFromDuAn(user, userId, duAnId);
+            var result = _duAnRepo.DeleteUserFromDuAn(duAnId, user, userId);
 
             if (result == 0)
             {
