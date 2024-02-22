@@ -52,7 +52,7 @@ namespace AmazingTech.InternSystem.Services
             _lichPhongVanRepository = lichPhongVanRepository;
             _httpContextAccessor = httpContextAccessor;
             _viTriRepository = viTriRepository;
-            _userViTriRepository = userViTriRepository; 
+            _userViTriRepository = userViTriRepository;
         }
         public bool ConfirmEmail(string id)
         {
@@ -548,11 +548,11 @@ namespace AmazingTech.InternSystem.Services
             }
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (accountRole != Roles.ADMIN || accountRole != Roles.HR.ToUpper())
+            if (!(accountRole == Roles.ADMIN || accountRole == Roles.HR.ToUpper()))
             {
                 throw new BadHttpRequestException("You don't have permission to do this function");
             }
-            if(accountRole == Roles.HR.ToUpper() && accountId != schedule.IdNguoiPhongVan)
+            if (accountRole == Roles.HR.ToUpper() && accountId != schedule.IdNguoiPhongVan)
             {
                 throw new BadHttpRequestException("You don't have permission to do this function");
             }
