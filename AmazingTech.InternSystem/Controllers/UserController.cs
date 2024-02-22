@@ -21,6 +21,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize(Roles = Roles.ADMIN)]
     public class UserController : ControllerBase
     {
 
