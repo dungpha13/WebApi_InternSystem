@@ -225,6 +225,10 @@ namespace AmazingTech.InternSystem.Services
             {
                 return new BadRequestObjectResult("Sđt này đã có người sử dụng!");
             }
+            if (interns.Any(intern => intern.EmailCaNhan == model.EmailCaNhan && intern.MSSV != mssv ))
+            {
+                return new BadRequestObjectResult("EmailCaNhan này đã có người sử dụng!");
+            }
 
 
             ////Update UserViTri
