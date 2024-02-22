@@ -68,6 +68,8 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<IActionResult> DeleteKiThucTap(string id)
         {
+            var uId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var existingKi = _kiRepository.GetKiThucTap(id);
 
             if (existingKi is null)
@@ -75,7 +77,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id {id} khong ton tai");
             }
 
-            var result = await _kiRepository.DeleteKiThucTap(existingKi);
+            var result = await _kiRepository.DeleteKiThucTap(existingKi, uId);
 
             if (result == 0)
             {

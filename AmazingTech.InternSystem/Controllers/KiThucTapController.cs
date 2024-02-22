@@ -29,8 +29,7 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("get-by-truong/{idTruong}")]
         public IActionResult GetKiThucTapsByTruong([FromRoute] string idTruong)
         {
-            //
-            return Ok();
+            return _kiThucTapService.GetKiThucTapsByTruong(idTruong);
         }
 
         [HttpGet("get/{id}")]

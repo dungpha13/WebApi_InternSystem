@@ -22,11 +22,11 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public async Task<int> DeleteKiThucTap(KiThucTap kiThucTap)
+        public async Task<int> DeleteKiThucTap(KiThucTap kiThucTap, string uId)
         {
             var currentTime = DateTime.Now;
 
-            kiThucTap.DeletedBy = "Admin";
+            kiThucTap.DeletedBy = uId;
             kiThucTap.DeletedTime = currentTime;
 
             _context.KiThucTaps.Update(kiThucTap);
@@ -52,8 +52,8 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.KiThucTaps
-                       // .Include(ktt => ktt.InternInfos)
-                        .FirstOrDefault(ktt => ktt.Id == id);
+                        // .Include(ktt => ktt.InternInfos)
+                        .FirstOrDefault(ktt => ktt.Id == id && ktt.DeletedBy == null);
             }
         }
 

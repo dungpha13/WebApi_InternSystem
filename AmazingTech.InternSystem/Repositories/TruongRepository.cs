@@ -22,11 +22,11 @@ namespace AmazingTech.InternSystem.Repositories
             }
         }
 
-        public async Task<int> DeleteTruong(TruongHoc truong)
+        public async Task<int> DeleteTruong(TruongHoc truong, string uId)
         {
             var currentTime = DateTime.Now;
 
-            truong.DeletedBy = "Admin";
+            truong.DeletedBy = uId;
             truong.DeletedTime = currentTime;
 
             return await _context.SaveChangesAsync();

@@ -1,4 +1,5 @@
-﻿﻿using AmazingTech.InternSystem.Data.Entity;
+﻿﻿using System.Security.Claims;
+using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.TruongHoc;
 using AmazingTech.InternSystem.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +9,21 @@ namespace AmazingTech.InternSystem.Services
     public class TruongService : ITruongService
     {
         private ITruongRepository _truongRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TruongService(ITruongRepository truongRepository)
+        public TruongService(ITruongRepository truongRepository, IHttpContextAccessor httpContextAccessor)
         {
             _truongRepository = truongRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IActionResult AddTruong(AddTruongHocDTO request)
         {
+            var uId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             TruongHoc truong = new TruongHoc()
             {
+                CreatedBy = uId,
                 Ten = request.Ten,
                 SoTuanThucTap = request.SoTuanThucTap
             };
@@ -47,6 +53,8 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<IActionResult> DeleteTruong(string id)
         {
+            var uId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var existingTruong = _truongRepository.GetTruong(id);
 
             if (existingTruong is null)
@@ -54,7 +62,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"Truong voi id {id} khong ton tai");
             }
 
-            var result = await _truongRepository.DeleteTruong(existingTruong);
+            var result = await _truongRepository.DeleteTruong(existingTruong, uId);
 
             if (result == 0)
             {
@@ -84,6 +92,8 @@ namespace AmazingTech.InternSystem.Services
 
         public IActionResult UpdateTruong(UpdateTruongHocDTO truong)
         {
+            var uId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var existingTruong = _truongRepository.GetTruong(truong.Id);
 
             if (existingTruong is null)
@@ -91,7 +101,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"Truong voi id {truong.Id} khong ton tai");
             }
 
-            foreach(var truongInList in _truongRepository.GetAllTruongs())
+            foreach (var truongInList in _truongRepository.GetAllTruongs())
             {
                 if (truongInList.Ten.Equals(truong.Ten))
                 {
@@ -101,6 +111,7 @@ namespace AmazingTech.InternSystem.Services
 
             existingTruong.Ten = truong.Ten ?? existingTruong.Ten;
             existingTruong.SoTuanThucTap = truong.SoTuanThucTap;
+            existingTruong.LastUpdatedBy = uId;
 
             var result = _truongRepository.UpdateTruong(existingTruong);
 
