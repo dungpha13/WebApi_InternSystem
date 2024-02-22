@@ -24,19 +24,20 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         // Zalo methods
         public async Task<List<NhomZalo>> GetAllZaloAsync()
         {
-            return await _appDbContext.NhomZalos.Where(zl => zl.DeletedBy == null)
+            return await _appDbContext.NhomZalos.Where(zl => zl.DeletedTime == null)
                                                 .OrderByDescending(zl => zl.CreatedTime)
                                                 .ToListAsync();
         }
 
         public async Task<NhomZalo?> GetGroupByIdAsync(string id)
         {
-            return await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedBy == null);
+            return await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedTime == null);
         }
 
         public async Task<int> AddNewZaloAsync(string user, NhomZalo zalo)
         {
-            var existingZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.TenNhom == zalo.TenNhom && x.DeletedBy == null);
+            var existingZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.TenNhom == zalo.TenNhom && x.DeletedTime == null);
+
             if (existingZalo != null)
             {
                 throw new Exception("A group with the same name already exists.");
@@ -51,7 +52,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<int> UpdateZaloAsync(string id, string user, NhomZalo zalo)
         {
-            var nhomZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedBy == null);
+            var nhomZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedTime == null);
 
             if (nhomZalo == null)
             {
@@ -68,7 +69,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<int> DeleteZaloAsync(string id, string user)
         {
-            var nhomZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedBy == null);
+            var nhomZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedTime == null);
 
             if (nhomZalo == null)
             {
@@ -85,7 +86,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         // UserNhomZalo methods
         public async Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId)
         {
-            return await _appDbContext.UserNhomZalos.Where(x => x.IdNhomZalo == nhomZaloId && x.DeletedBy == null)
+            return await _appDbContext.UserNhomZalos.Where(x => x.IdNhomZalo == nhomZaloId && x.DeletedTime == null)
                                                     .Include(nz => nz.NhomZalo)
                                                     .Include(nz => nz.User)
                                                     .ToListAsync();
@@ -94,7 +95,9 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         public async Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId)
         {
             return await _appDbContext.UserNhomZalos.Include(nz => nz.NhomZalo)
-                                                    .FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId && x.UserId == userId && x.DeletedBy == null);
+                                                    .FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId 
+                                                                           && x.UserId == userId    
+                                                                           && x.DeletedTime == null);
         }
 
         public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser)
@@ -117,15 +120,17 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         }
         public async Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZalo updatedUser)
         {
-            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId && x.UserId == updatedUser.UserId && x.DeletedBy == null);
+            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId 
+                                                                                       && x.UserId == updatedUser.UserId 
+                                                                                       && x.DeletedTime == null);
 
             if (userNhomZalo == null)
             {
                 throw new Exception($"UserNhomZalo with ID {updatedUser.UserId} in NhomZalo with ID {nhomZaloId} not found.");
             }
 
-            userNhomZalo.UserId = updatedUser.UserId;
-            userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
+            //userNhomZalo.UserId = updatedUser.UserId;
+            //userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
             userNhomZalo.JoinedTime = updatedUser.JoinedTime ?? userNhomZalo.JoinedTime;
             userNhomZalo.LeftTime = updatedUser.LeftTime;
             userNhomZalo.LastUpdatedBy = user;
@@ -136,7 +141,9 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId)
         {
-            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId && x.UserId == userId && x.DeletedBy == null);
+            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId 
+                                                                                       && x.UserId == userId 
+                                                                                       && x.DeletedTime == null);
 
             if (userNhomZalo == null)
             {

@@ -60,29 +60,29 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("get/{id}")]
-        public async Task<ActionResult<NhomZaloDTO>> GetZaloGroupByIdAsync(string id)
-        {
-            try
-            {
-                var group = await _nhomZaloService.GetGroupByIdAsync(id);
+        //[HttpGet("get/{id}")]
+        //public async Task<ActionResult<NhomZaloDTO>> GetZaloGroupByIdAsync(string id)
+        //{
+        //    try
+        //    {
+        //        var group = await _nhomZaloService.GetGroupByIdAsync(id);
 
-                if (group == null)
-                    return NotFound($"Zalo group with ID {id} not found.");
+        //        if (group == null)
+        //            return NotFound($"Zalo group with ID {id} not found.");
 
-                var formattedResponse = new NhomZaloDTO
-                {
-                    TenNhom = group.TenNhom,
-                    LinkNhom = group.LinkNhom,
-                };
+        //        var formattedResponse = new NhomZaloDTO
+        //        {
+        //            TenNhom = group.TenNhom,
+        //            LinkNhom = group.LinkNhom,
+        //        };
 
-                return Ok(formattedResponse);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
-        }
+        //        return Ok(formattedResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
 
 
         [HttpPost("create")]
@@ -140,12 +140,14 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("excel-export")]
+        [HttpGet("zalo-groups-excel-export")]
         public async Task<ActionResult> ExportZaloGroupsToExcelAsync()
         {
             try
             {
                 var zaloGroups = await _dbContext.NhomZalos
+                    .Where(zl => zl.DeletedTime == null)
+                    .OrderByDescending(zl => zl.CreatedTime)
                     .ToListAsync();
 
                 using (XLWorkbook wb = new XLWorkbook())
@@ -178,8 +180,6 @@ namespace AmazingTech.InternSystem.Controllers
                     sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
                     sheet1.Row(1).Style.Font.Italic = true;
 
-                    sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.Black;
-
                     // Apply borders to all cells
                     var range = sheet1.RangeUsed();
                     range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -206,7 +206,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         // Manage User in ZaloGroup methods
-        [HttpGet("get/{nhomZaloId}/users")]
+        [HttpGet("get-all-users-in-zalo-group/{nhomZaloId}")]
         public async Task<ActionResult<List<UserNhomZalo>>> GetUsersInZaloGroupAsync(string nhomZaloId)
         {
             try
@@ -237,36 +237,36 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("get-user-in-zalo-group/{nhomZaloId}/users/{userId}")]
-        public async Task<ActionResult<UserNhomZalo>> GetUserInZaloGroupAsync(string nhomZaloId, string userId)
-        {
-            try
-            {
-                var user = await _nhomZaloService.GetUserInGroupAsync(nhomZaloId, userId);
+        //[HttpGet("get-user-in-zalo-group/{nhomZaloId}/users/{userId}")]
+        //public async Task<ActionResult<UserNhomZalo>> GetUserInZaloGroupAsync(string nhomZaloId, string userId)
+        //{
+        //    try
+        //    {
+        //        var user = await _nhomZaloService.GetUserInGroupAsync(nhomZaloId, userId);
 
-                if (user == null)
-                    return NotFound($"User with ID {userId} not found in Zalo group {nhomZaloId}.");
+        //        if (user == null)
+        //            return NotFound($"User with ID {userId} not found in Zalo group {nhomZaloId}.");
 
-                var formattedResponse = new UpdateUserNhomZaloDTO
-                {
-                    UserId = user.UserId,
-                    UserName = user.User.HoVaTen,
-                    IsMentor = user.IsMentor,
-                    //IdNhomZalo = user.IdNhomZalo,
-                    //NhomZalo = user.NhomZalo.TenNhom,
-                    JoinedTime = user.JoinedTime,
-                    LeftTime = user.LeftTime
-                };
+        //        var formattedResponse = new UpdateUserNhomZaloDTO
+        //        {
+        //            UserId = user.UserId,
+        //            UserName = user.User.HoVaTen,
+        //            IsMentor = user.IsMentor,
+        //            //IdNhomZalo = user.IdNhomZalo,
+        //            //NhomZalo = user.NhomZalo.TenNhom,
+        //            JoinedTime = user.JoinedTime,
+        //            LeftTime = user.LeftTime
+        //        };
 
-                return Ok(formattedResponse);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
-        }
+        //        return Ok(formattedResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal Server Error");
+        //    }
+        //}
 
-        [HttpPost("add-user-to-zalo/{nhomZaloId}/users")]
+        [HttpPost("add-user-to-zalo-group/{nhomZaloId}")]
         public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] AddUserNhomZaloDTO addUserDTO)
         {
             try
@@ -288,7 +288,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpPut("update-user-in-zalo-group/{nhomZaloId}/users")]
+        [HttpPut("update-user-in-zalo-group/{nhomZaloId}")]
         public async Task<ActionResult> UpdateUserInZaloGroupAsync(string nhomZaloId, [FromBody] UpdateUserNhomZaloDTO updatedUserDTO)
         {
             try
@@ -310,7 +310,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("delete-user-in-zalo-group/{nhomZaloId}/users/{userId}")]
+        [HttpDelete("delete-user-in-zalo-group/{nhomZaloId}/{userId}")]
         public async Task<ActionResult> RemoveUserFromZaloGroupAsync(string nhomZaloId, string userId)
         {
             try
