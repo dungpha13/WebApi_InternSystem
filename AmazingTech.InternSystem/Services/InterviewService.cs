@@ -40,6 +40,7 @@ namespace AmazingTech.InternSystem.Services
         {
             List<PhongVan> traloi = _mapper.Map<List<PhongVan>>(cauHoi);
             var check = await _interviewRepo.AwserQuestion(user, traloi);
+            if (check == 2) { return new BadRequestObjectResult("Your interview schedule is not yet available"); }
             if (check == 0) { return new BadRequestObjectResult("You have completed this interview"); }
             return new OkObjectResult("Thank you for participating in the interview at our company ");
        }

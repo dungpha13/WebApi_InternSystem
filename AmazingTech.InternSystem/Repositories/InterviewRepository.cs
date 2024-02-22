@@ -38,6 +38,7 @@ namespace AmazingTech.InternSystem.Repositories
         public async Task<int> AwserQuestion(string user, List<PhongVan> phongVan)
         {
             var LichPhongvan = _context.LichPhongVans.Where(p => p.IdNguoiDuocPhongVan == user).FirstOrDefault();
+            if(LichPhongvan == null) { return 2; }
             foreach (var phongvan in phongVan)
             {
                 var check = _context.cauhoiCongnghes.Where(x => x.Id == phongvan.IdCauHoiCongNghe && x.DeletedBy == null).FirstOrDefault();
@@ -50,6 +51,7 @@ namespace AmazingTech.InternSystem.Repositories
                 phongvan.CreatedBy = user;
                 phongvan.LastUpdatedBy = user;
                 phongvan.IdLichPhongVan = LichPhongvan.Id;
+                
                 _context.phongVans.Add(phongvan);
             }
            
