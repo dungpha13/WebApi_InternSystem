@@ -14,6 +14,7 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
         public string HoTen { get; set; }
         public string NgaySinh { get; set; }
         public string Sdt { get; set; }
+        public string ViTriMongMuon { get; set; }
         public string[] ViTri { get; set; }
         public string DiaChi { get; set; }
         public string? EmailCaNhan { get; set; }
@@ -28,16 +29,16 @@ namespace AmazingTech.InternSystem.Models.Response.InternInfo
 
         public string Round { get; set; }
         public string Status { get; set; }
-        public string ViTriMongMuon { get; set; }
+        
 
         //public ICollection<Comment> Comments { get; set; }
 
-        public string CreatedTime { get; set; }
-        public string CreatedBy { get; set; }
-        public string? DeletedBy { get; set; }
-        public string DeletedTime { get; set; }
-        public string LastUpdatedBy { get; set; }
-        public string LastUpdatedTime { get; set; }
+       // public string CreatedTime { get; set; }
+       //public string CreatedBy { get; set; }
+       // public string? DeletedBy { get; set; }
+       // public string DeletedTime { get; set; }
+       // public string LastUpdatedBy { get; set; }
+       // public string LastUpdatedTime { get; set; }
 
         //public string SdtNguoiThan { get; set; }     
         //public decimal GPA { get; set; }
