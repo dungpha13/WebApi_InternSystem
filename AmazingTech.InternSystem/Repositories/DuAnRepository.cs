@@ -44,7 +44,7 @@ namespace AmazingTech.InternSystem.Repositories
                 .Include(duAn => duAn.Leader)
                 .FirstOrDefault(c => c.Id == id);
 
-            return duAn;
+             return duAn;
         }
 
         public DuAn GetDuAnByName(string projectName)

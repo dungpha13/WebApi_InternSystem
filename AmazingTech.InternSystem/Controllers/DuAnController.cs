@@ -65,8 +65,10 @@ namespace AmazingTech.InternSystem.Controllers
         {
             var result = _duAnService.GetDuAnById(id);
 
-            if (result == null)
-                return NotFound($"DuAn with ID {id} not found.");
+            //if (result == null)
+            //{
+            //    return NotFound($"DuAn with ID {id} not found.");
+            //}
 
             if (result is OkObjectResult okResult)
             {
@@ -88,7 +90,8 @@ namespace AmazingTech.InternSystem.Controllers
                 }
             }
 
-            return result;
+            //return result;
+            return NotFound($"DuAn with ID {id} not found.");
             //return Ok(result);
         }
 
@@ -97,26 +100,46 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                //var duAns = _duAnService.SearchProject(ten, leaderName, startDate, endDate);
+                //if (duAns is OkObjectResult okResult)
+                //{
+                //    var duAn = okResult.Value as DuAn;
+
+                //    if (duAn != null)
+                //    {
+                //        var formattedResponse = new
+                //        {
+                //            ten = duAn.Ten,
+                //            leaderId = duAn.LeaderId,
+                //            leaderName = duAn.Leader.HoVaTen,
+                //            thoiGianBatDau = duAn.ThoiGianBatDau,
+                //            thoiGianKetThuc = duAn.ThoiGianKetThuc
+                //        };
+
+                //        return Ok(formattedResponse);
+                //    }
+                //}
+
+                //return duAns;
                 var duAns = _duAnService.SearchProject(ten, leaderName, startDate, endDate);
+
                 if (duAns is OkObjectResult okResult)
                 {
-                    var duAn = okResult.Value as DuAn;
+                    var duAnList = okResult.Value as List<DuAnModel>;
 
-                    if (duAn != null)
+                    if (duAnList != null && duAnList.Count > 0)
                     {
-                        var formattedResponse = new
-                        {
-                            ten = duAn.Ten,
-                            leaderId = duAn.LeaderId,
-                            leaderName = duAn.Leader.HoVaTen,
-                            thoiGianBatDau = duAn.ThoiGianBatDau,
-                            thoiGianKetThuc = duAn.ThoiGianKetThuc
-                        };
-
-                        return Ok(formattedResponse);
+                        return Ok(duAnList);
+                    }
+                    else
+                    {
+                        return NotFound("No projects found matching the search criteria.");
                     }
                 }
-                return duAns;
+                else
+                {
+                    return duAns;
+                }
             }
             catch (Exception ex)
             {
