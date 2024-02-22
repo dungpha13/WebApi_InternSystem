@@ -97,6 +97,11 @@ namespace AmazingTech.InternSystem.Services
             }
 
             List<InternInfo> interns = await _internRepo.GetAllInternsInfoAsync();
+            if (interns.Any(intern => intern.Sdt == model.Sdt))
+            {
+                return new BadRequestObjectResult("Sđt này đã được sử dụng!");
+            }
+
             if (interns.Any(intern => intern.EmailCaNhan == model.EmailCaNhan))
             {
                 return new BadRequestObjectResult("EmailCaNhan này đã được sử dụng!");
@@ -106,6 +111,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 return new BadRequestObjectResult("EmailTruong này đã được sử dụng!");
             }
+
 
 
             //Check input IdTruong
@@ -212,6 +218,12 @@ namespace AmazingTech.InternSystem.Services
             if (intern == null)
             {
                 return new BadRequestObjectResult($"Intern với MSSV: '{mssv}' không tồn tại!");
+            }
+
+            List<InternInfo> interns = await _internRepo.GetAllInternsInfoAsync();
+            if (interns.Any(intern => intern.Sdt == model.Sdt && intern.MSSV != mssv))
+            {
+                return new BadRequestObjectResult("Sđt này đã có người sử dụng!");
             }
 
 

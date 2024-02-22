@@ -95,6 +95,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("{mssv}/getCommentsByMSSV")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetCommentsByMssv(string mssv)
         {
             return await _internInfoService.GetCommentsByMssv(mssv);
