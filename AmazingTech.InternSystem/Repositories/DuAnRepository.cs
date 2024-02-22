@@ -18,7 +18,7 @@ namespace AmazingTech.InternSystem.Repositories
         public List<DuAn> GetAllDuAns()
         {
             var duAns = _dbContext.DuAns
-                .Where(duAn => duAn.DeletedBy == null)
+                .Where(duAn => duAn.DeletedTime == null)
                 .OrderByDescending(duAn => duAn.CreatedTime)
                 .Include(duAn => duAn.Leader)
                 .ToList();
@@ -29,7 +29,7 @@ namespace AmazingTech.InternSystem.Repositories
         public DuAn GetDuAnById(string id)
         {
             var duAn = _dbContext.DuAns
-                .Where(duAn => duAn.DeletedBy == null)
+                .Where(duAn => duAn.DeletedTime == null)
                 .Include(duAn => duAn.Leader)
                 .FirstOrDefault(c => c.Id == id);
 
@@ -38,12 +38,12 @@ namespace AmazingTech.InternSystem.Repositories
 
         public DuAn GetDuAnByName(string projectName)
         {
-            return _dbContext.DuAns.FirstOrDefault(d => d.Ten == projectName && d.DeletedBy == null)!;
+            return _dbContext.DuAns.FirstOrDefault(d => d.Ten == projectName && d.DeletedTime == null)!;
         }
 
         public List<DuAnModel> SearchProject(string? ten, string? leaderName, DateTime? startDate, DateTime? endDate)
         {
-            var query = _dbContext.DuAns.Where(d => d.DeletedBy == null).AsQueryable();
+            var query = _dbContext.DuAns.Where(d => d.DeletedTime == null).AsQueryable();
 
             if (!string.IsNullOrEmpty(ten))
             {
@@ -99,7 +99,7 @@ namespace AmazingTech.InternSystem.Repositories
         public int UpdateDuAn(string duAnId, string user, DuAn updatedDuAn)
         {
             var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId 
-                                                                  && d.DeletedBy == null);
+                                                                  && d.DeletedTime == null);
             if (existingDuAn == null)
             {
                 throw new Exception($"DuAn with ID {duAnId} not found.");
@@ -173,7 +173,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == updateUserDuAn.UserId 
                                                                  && x.IdDuAn == duAnId 
-                                                                 && x.DeletedBy == null);
+                                                                 && x.DeletedTime == null);
 
             if (userDuAn == null)
             {

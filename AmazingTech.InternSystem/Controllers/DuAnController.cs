@@ -235,7 +235,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpGet("project-excel-export")]
+        [HttpGet("projects-excel-export")]
         public async Task<ActionResult> ExportProjectsToExcelAsync()
         {
             try
@@ -276,15 +276,17 @@ namespace AmazingTech.InternSystem.Controllers
                     sheet1.Columns(3, 4).Style.Font.FontColor = XLColor.Blue;
                     sheet1.Column(5).Style.Font.FontColor = XLColor.Red;
 
-                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.AntiFlashWhite;
+                    sheet1.Column(2).Style.Font.Bold = true;
+
+                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.OrangePeel;
                     sheet1.Row(1).Style.Font.FontColor = XLColor.Black;
                     sheet1.Row(1).Style.Font.Bold = true;
                     sheet1.Row(1).Style.Font.Shadow = true;
                     sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
-                    sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+                    //sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
                     sheet1.Row(1).Style.Font.Italic = true;
 
-                    sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.Black;
+                    
 
                     // Apply borders to all cells
                     var range = sheet1.RangeUsed();
