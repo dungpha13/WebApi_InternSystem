@@ -1,7 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data.Enum;
-using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.DuAn;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Request.User;
 using AmazingTech.InternSystem.Services;

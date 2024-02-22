@@ -1,4 +1,4 @@
-﻿namespace AmazingTech.InternSystem.Models.DTO
+﻿namespace AmazingTech.InternSystem.Models.DTO.DuAn
 {
     public class DuAnModel
     {

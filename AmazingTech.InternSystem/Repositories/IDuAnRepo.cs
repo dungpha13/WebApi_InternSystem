@@ -1,5 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.DuAn;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
 using System.Threading.Tasks;

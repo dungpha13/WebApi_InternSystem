@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -214,13 +215,13 @@ namespace AmazingTech.InternSystem.Controllers
 
                 if (users is List<UserNhomZalo> userNhomZaloList)
                 {
-                    var formattedResponse = userNhomZaloList.Select(userNhomZalo => new UserNhomZaloDTO
+                    var formattedResponse = userNhomZaloList.Select(userNhomZalo => new UpdateUserNhomZaloDTO
                     {
                         UserId = userNhomZalo.UserId,
                         UserName = userNhomZalo.User.HoVaTen,
                         IsMentor = userNhomZalo.IsMentor,
-                        IdNhomZalo = userNhomZalo.IdNhomZalo,
-                        NhomZalo = userNhomZalo.NhomZalo.TenNhom,
+                        //IdNhomZalo = userNhomZalo.IdNhomZalo,
+                        //NhomZalo = userNhomZalo.NhomZalo.TenNhom,
                         JoinedTime = userNhomZalo.JoinedTime,
                         LeftTime = userNhomZalo.LeftTime
                     }).ToList();
@@ -246,13 +247,13 @@ namespace AmazingTech.InternSystem.Controllers
                 if (user == null)
                     return NotFound($"User with ID {userId} not found in Zalo group {nhomZaloId}.");
 
-                var formattedResponse = new UserNhomZaloDTO
+                var formattedResponse = new UpdateUserNhomZaloDTO
                 {
                     UserId = user.UserId,
                     UserName = user.User.HoVaTen,
                     IsMentor = user.IsMentor,
-                    IdNhomZalo = user.IdNhomZalo,
-                    NhomZalo = user.NhomZalo.TenNhom,
+                    //IdNhomZalo = user.IdNhomZalo,
+                    //NhomZalo = user.NhomZalo.TenNhom,
                     JoinedTime = user.JoinedTime,
                     LeftTime = user.LeftTime
                 };
@@ -266,13 +267,20 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("add-user-to-zalo/{nhomZaloId}/users")]
-        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZaloDTO userDTO)
+        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] AddUserNhomZaloDTO addUserDTO)
         {
             try
             {
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+
+                if (nhomZalo == null)
+                {
+                    return NotFound($"Zalo group with ID {nhomZaloId} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, userDTO);
-                return Ok($"User added to Zalo group {nhomZaloId} successfully");
+                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
+                return Ok($"User added to Zalo group {nhomZalo.TenNhom} successfully");
             }
             catch (Exception ex)
             {
@@ -281,13 +289,20 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update-user-in-zalo-group/{nhomZaloId}/users")]
-        public async Task<ActionResult> UpdateUserInZaloGroupAsync(string nhomZaloId, [FromBody] UserNhomZaloDTO updatedUserDTO)
+        public async Task<ActionResult> UpdateUserInZaloGroupAsync(string nhomZaloId, [FromBody] UpdateUserNhomZaloDTO updatedUserDTO)
         {
             try
             {
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+
+                if (nhomZalo == null)
+                {
+                    return NotFound($"Zalo group with ID {nhomZaloId} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
-                return Ok($"User in Zalo group {nhomZaloId} updated successfully");
+                return Ok($"User in Zalo group {nhomZalo.TenNhom} updated successfully");
             }
             catch (Exception ex)
             {
@@ -300,9 +315,16 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+
+                if (nhomZalo == null)
+                {
+                    return NotFound($"Zalo group with ID {nhomZaloId} not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
-                return Ok($"User removed from Zalo group {nhomZaloId} successfully");
+                return Ok($"User removed from Zalo group {nhomZalo.TenNhom} successfully");
             }
             catch (Exception ex)
             {

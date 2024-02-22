@@ -1,5 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.DuAn;
+using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 using AmazingTech.InternSystem.Models.Request.InternInfo;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Models.Response.InternInfo;
@@ -22,7 +24,7 @@ namespace AmazingTech.InternSystem.Mapping
         public AutoMapperProfile()
         {
             CreateMap<InternInfo, InternInfoDTO>()
-           // .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime.HasValue ? src.CreatedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
+            // .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime.HasValue ? src.CreatedTime.Value.ToString("dd/MM/yyyy - HH:mm:ss") : null))
             .ForMember(dest => dest.NgaySinh, opt => opt.MapFrom(src => src.NgaySinh.HasValue ? src.NgaySinh.Value.ToString("dd/MM/yyyy") : null))
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.HasValue ? src.StartDate.Value.ToString("dd/MM/yyyy") : null))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.HasValue ? src.EndDate.Value.ToString("dd/MM/yyyy") : null))
@@ -55,16 +57,19 @@ namespace AmazingTech.InternSystem.Mapping
             /*.ForMember(dest => dest.IdMentor, opt => opt.MapFrom(src => src.IdMentor))
             .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.Mentor.HoVaTen));*/
 
-            CreateMap<User, UserNhomZaloDTO>()
+            CreateMap<User, UpdateUserNhomZaloDTO>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.HoVaTen));
 
-            CreateMap<NhomZalo, UserNhomZaloDTO>()
-                .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.TenNhom));
+            CreateMap<NhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
+            //.ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.TenNhom));
 
+            CreateMap<User, AddUserNhomZaloDTO>().ReverseMap();
+            CreateMap<NhomZalo, AddUserNhomZaloDTO>().ReverseMap();
 
             CreateMap<DuAn, DuAnModel>().ReverseMap();
             CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
-            CreateMap<UserNhomZalo, UserNhomZaloDTO>().ReverseMap();
+            CreateMap<UserNhomZalo, AddUserNhomZaloDTO>().ReverseMap();
+            CreateMap<UserNhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();

@@ -125,7 +125,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             }
 
             userNhomZalo.UserId = updatedUser.UserId;
-            //userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
+            userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
             userNhomZalo.JoinedTime = updatedUser.JoinedTime ?? userNhomZalo.JoinedTime;
             userNhomZalo.LeftTime = updatedUser.LeftTime;
             userNhomZalo.LastUpdatedBy = user;

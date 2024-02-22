@@ -1,6 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.DuAn;
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;

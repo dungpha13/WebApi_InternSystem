@@ -1,6 +1,7 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 
 namespace AmazingTech.InternSystem.Services
 {
@@ -16,8 +17,8 @@ namespace AmazingTech.InternSystem.Services
         // User in ZaloGroup methods
         public Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId);
         public Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId);
-        public Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZaloDTO userDTO);
-        public Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZaloDTO updatedUserDTO);
+        public Task<int> AddUserToGroupAsync(string nhomZaloId, string user, AddUserNhomZaloDTO addUserDTO);
+        public Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UpdateUserNhomZaloDTO updatedUserDTO);
         public Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId);
     }
 }

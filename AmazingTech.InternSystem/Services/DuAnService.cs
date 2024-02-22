@@ -1,5 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.DTO;
+using AmazingTech.InternSystem.Models.DTO.DuAn;
 using AmazingTech.InternSystem.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
