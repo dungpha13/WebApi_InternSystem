@@ -5,6 +5,7 @@
         public string Id { get; set; }
         public string? NoiDung { get; set; }
         public string CauTraLoi { get; set; }
+        public int? Rank { get; set; }
         public string? CreatedBy { get; set; }
     }
 }

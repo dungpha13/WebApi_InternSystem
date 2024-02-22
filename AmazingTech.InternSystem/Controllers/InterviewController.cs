@@ -36,11 +36,11 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPost]
         [Authorize]
         [Route("Anwser")]
-        public async Task<IActionResult> CreateQuestion( [FromBody] List<AwserQuest> traloi)
+        public async Task<IActionResult> CreateQuestion([FromBody] List<AwserQuest> traloi)
         {
-           
+
             try
-            {                
+            {
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 return await _service.AwserQuestion(user, traloi);
             }
@@ -51,11 +51,62 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-
         [Route("List-Anwser/{IdUser}")]
         public async Task<List<ViewAnswer>> ViewAnswer(string IdUser)
         {
             return await _service.ViewAnswers(IdUser);
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        [Route("Rating")]
+        public async Task<IActionResult> RatingAnwser([FromBody] List<RatingModel> traloi)
+        {
+
+            try
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return await _service.RatingAnwser(user, traloi);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("ID ANWSER IS NOT CORRECT");
+            }
+
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("Update-Rating")]
+        public async Task<IActionResult> UpdateRating([FromBody] List<RatingModel> traloi)
+        {
+
+            try
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return await _service.RatingAnwser(user, traloi);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("ID ANWSER IS NOT CORRECT");
+            }
+        }
+        [HttpDelete]
+        [Authorize]
+        [Route("Delete-Interview/{UserID}")]
+        public async Task<IActionResult>DeleteRating(string UserID)
+        {
+
+            try
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return await _service.DeleteInterView(user, UserID);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("ID USER IS NOT CORRECT OR HAVE NOT BEEN INTERVIEWED YET");
+            }
         }
     }
 }

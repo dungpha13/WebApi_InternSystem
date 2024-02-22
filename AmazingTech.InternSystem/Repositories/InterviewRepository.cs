@@ -15,7 +15,9 @@ namespace AmazingTech.InternSystem.Repositories
         Task<List<CauhoiCongnghe>> GetAllCauHoiAsync(string CongNghe);
         Task<int> AwserQuestion(string user, List<PhongVan> phongVan);
         Task<List<ViewAnswer>> ViewAnwser(string idUser);
-
+        Task<IActionResult> RatingQuestion(string user, List<PhongVan> phongVan);
+        Task<IActionResult> UpdateRating(string user, List<PhongVan> phongVan);
+        Task<IActionResult> DeleteRating(string user, string UserID);
     }
     public class InterviewRepository : IInterviewRepo
     {
@@ -63,7 +65,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             List<Cauhoi> cauhois = _context.cauhois.Where(x =>x.DeletedBy == null ).ToList();
             List<CauhoiCongnghe> cauhoiCongNghes = _context.cauhoiCongnghes.Where(x => x.DeletedBy == null).ToList();
-            List<PhongVan> phongVans = _context.phongVans.Where(x => x.CreatedBy == idUser ).ToList();
+            List<PhongVan> phongVans = _context.phongVans.Where(x => x.CreatedBy == idUser &&  x.DeletedBy == null).ToList();
             List<ViewAnswer> viewAnswers = new List<ViewAnswer>();
 
             var query =  (from s in cauhois
@@ -74,6 +76,7 @@ namespace AmazingTech.InternSystem.Repositories
                              d.Id,
                              s.NoiDung,
                              d.CauTraLoi,
+                             d.Rank,
                              d.CreatedBy,                            
                          }).ToList();
    
@@ -84,6 +87,7 @@ namespace AmazingTech.InternSystem.Repositories
                   Id = Query.Id,
                   CauTraLoi = Query.CauTraLoi,
                   CreatedBy = Query.CreatedBy,
+                  Rank = Query.Rank,
                   NoiDung = Query.NoiDung
               };
 
@@ -95,60 +99,64 @@ namespace AmazingTech.InternSystem.Repositories
         
 
 
-        public async Task<int> RatingQuestion(string user, List<PhongVan> phongVan) 
+        public async Task<IActionResult> RatingQuestion(string user, List<PhongVan> phongVan) 
         {
-            var LichPhongvan = _context.LichPhongVans.Where(p => p.IdNguoiDuocPhongVan == user).FirstOrDefault();
             foreach (var phongvan in phongVan)
             {
-                var check = _context.cauhoiCongnghes.Where(x => x.Id == phongvan.IdCauHoiCongNghe && x.DeletedBy == null).FirstOrDefault();
+                var check = _context.phongVans.Where(x => x.Id == phongvan.Id && x.DeletedBy == null).FirstOrDefault();
                 if (check == null)
                 {
                     throw new Exception();
                 }
+                var checkRating = _context.phongVans.Where(x => x.Id == phongvan.Id && x.NguoiCham != null && x.DeletedBy == null).FirstOrDefault();
+                if (checkRating != null) { return new BadRequestObjectResult($"Interns were graded by {checkRating.NguoiCham}" ); }
+               check.NguoiCham = user;
+               check.Rank = phongvan.Rank;
+                check.RankDate = DateTime.Now;            
                 
-                phongvan.CreatedBy = user;
-                phongvan.LastUpdatedBy = user;
-                phongvan.IdLichPhongVan = LichPhongvan.Id;
-                _context.phongVans.Add(phongvan);
             }
-             
-             await _context.SaveChangesAsync();
-             return 1;
+           await _context.SaveChangesAsync();
 
+            return new OkObjectResult("Success!");
+        }
+
+        public async Task<IActionResult> UpdateRating(string user, List<PhongVan> phongVan)
+        {
+            foreach (var phongvan in phongVan)
+            {
+                var check = _context.phongVans.Where(x => x.Id == phongvan.Id && x.DeletedBy == null).FirstOrDefault();
+                if (check == null)
+                {
+                    throw new Exception();
+                }               
+                check.NguoiCham = user;
+                check.Rank = phongvan.Rank;
+                check.RankDate = DateTime.Now;
+
+            }
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult("Success!");
+        }
+        public async Task<IActionResult> DeleteRating(string user, string UserID)
+        {
+            var phongVan = _context.phongVans.Where(x => x.CreatedBy == UserID).ToList();
+            foreach (var phongvan in phongVan)
+            {
+                var check = _context.phongVans.Where(x => x.Id == phongvan.Id && x.DeletedBy == null).FirstOrDefault();
+                if (check == null)
+                {
+                    throw new Exception();
+                }
+                check.DeletedBy = user;
+                check.DeletedTime = DateTime.Now;
+
+            }
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult("Success!");
         }
 
 
-        /*       public async Task<int> AddListQuestionAsync(List<Cauhoi> cauhois, string user, string id)
-               {
-                   var existingKi = await _context.CongNghes
-                       .Where(x => x.Id == id && x.DeletedBy == null)
-                       .FirstOrDefaultAsync();
-
-                   if (existingKi == null)
-                   {
-                       return 0;
-                   }
-
-                   foreach (var cauhoi in cauhois)
-                   {
-                       cauhoi.CreatedBy = user;
-                       cauhoi.LastUpdatedBy = user;
-                       // Add the question to the context
-                       _context.cauhois.Add(cauhoi);
-
-                       // Create a relationship between the question and the technology
-                       CauhoiCongnghe cauhoiconghe = new CauhoiCongnghe()
-                       {
-                           IdCauhoi = cauhoi.Id,
-                           IdCongNghe = existingKi.Id,
-                           CreatedBy = user,
-                           LastUpdatedBy = user,
-                       };
-                       _context.cauhoiCongnghes.Add(cauhoiconghe);
-
-                   }
-
-                   return await _context.SaveChangesAsync();
-               }*/
     }
 }

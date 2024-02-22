@@ -14,7 +14,9 @@ namespace AmazingTech.InternSystem.Services
         Task<List<ViewQuestionInterview>> getAllQuestion(string idCongNghe);
         Task<IActionResult> AwserQuestion(string user, List<AwserQuest> cauHoi);
         Task<List<ViewAnswer>> ViewAnswers(string user);
-
+        Task<IActionResult> RatingAnwser(string user, List<RatingModel> Rating);
+        Task<IActionResult> UpdateRating(string user, List<RatingModel> Rating);
+        Task<IActionResult> DeleteInterView(string user, string UserId);
     }
     public class InterviewService : IInterviewService
        {
@@ -51,10 +53,21 @@ namespace AmazingTech.InternSystem.Services
             return await _interviewRepo.ViewAnwser(user);
         }
 
-/*        public async Task<int> DeleteQuestion(string user, string id, string cauhoiId)
+        public async Task<IActionResult> RatingAnwser(string user, List<RatingModel> Rating)
         {
-            return await _QuestionRepo.DeleteQuestionAsync(user, id, cauhoiId);
-        }*/
+            List<PhongVan> traloi = _mapper.Map<List<PhongVan>>(Rating);
+            return await _interviewRepo.RatingQuestion(user, traloi);
+        }
+        public async Task<IActionResult> UpdateRating(string user, List<RatingModel> Rating)
+        {
+            List<PhongVan> traloi = _mapper.Map<List<PhongVan>>(Rating);
+            return await _interviewRepo.UpdateRating(user, traloi);
+        }
+
+        public async Task<IActionResult> DeleteInterView(string user, string UserId)
+        {
+            return await _interviewRepo.DeleteRating(user, UserId);
+        }
 
     }
 }
