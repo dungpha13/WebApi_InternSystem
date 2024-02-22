@@ -44,7 +44,7 @@ namespace AmazingTech.InternSystem.Repositories
                 .Include(duAn => duAn.Leader)
                 .FirstOrDefault(c => c.Id == id);
 
-             return duAn;
+            return duAn;
         }
 
         public DuAn GetDuAnByName(string projectName)
@@ -91,28 +91,20 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int CreateDuAn(string user, DuAn createDuAn)
         {
-            try
+            var existingDuAn = GetDuAnByName(createDuAn.Ten);
+            if (existingDuAn != null)
             {
-                var existingDuAn = GetDuAnByName(createDuAn.Ten);
-                if (existingDuAn != null)
-                {
-                    return -1;
-                }
-
-                createDuAn.CreatedBy = user;
-                createDuAn.LastUpdatedBy = user;
-                createDuAn.LastUpdatedTime = DateTime.Now;
-
-                _dbContext.DuAns.Add(createDuAn);
-                _dbContext.SaveChanges();
-
-                return 1;
+                return -1;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating project: {ex.Message}");
-                return 0;
-            }
+
+            createDuAn.CreatedBy = user;
+            createDuAn.LastUpdatedBy = user;
+            createDuAn.LastUpdatedTime = DateTime.Now;
+
+            _dbContext.DuAns.Add(createDuAn);
+            _dbContext.SaveChanges();
+
+            return 1;
         }
 
         public int UpdateDuAn(string duAnId, string user, DuAn updatedDuAn)

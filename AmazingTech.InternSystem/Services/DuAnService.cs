@@ -113,47 +113,74 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(userDuAns);
         }
 
-        public IActionResult AddUserToDuAn(string duAnId,string user, UserDuAnModel addUserDuAn)
+        public IActionResult AddUserToDuAn(string duAnId, string user, UserDuAnModel addUserDuAn)
         {
+            if (string.IsNullOrEmpty(duAnId))
+            {
+                return new BadRequestObjectResult("DuAnId is required");
+            }
+
+            var existingUserDuAn = _duAnRepo.GetAllUsersInDuAn(duAnId).FirstOrDefault(u => u.UserId == addUserDuAn.UserId);
+            if (existingUserDuAn != null)
+            {
+                return new BadRequestObjectResult("User already exists in the project.");
+            }
+
             UserDuAn userDuAn = _mapper.Map<UserDuAn>(addUserDuAn);
             var result = _duAnRepo.AddUserToDuAn(duAnId, user, userDuAn);
-            if (result == -1)
+
+            if (result == 0)
             {
-                return new BadRequestObjectResult("UserDuAn already exists");
+                return new BadRequestObjectResult("Failed to add user to the project.");
             }
-            else if (result == 0)
-            {
-                return new BadRequestObjectResult("An error occurred while adding UserDuAn");
-            }
+
             return new OkResult();
         }
 
         public IActionResult UpdateUserInDuAn(string duAnId, string user, UserDuAnModel updateUserDuAn)
         {
+            if (string.IsNullOrEmpty(duAnId))
+            {
+                return new BadRequestObjectResult("DuAnId is required");
+            }
+
+            var existingUserDuAn = _duAnRepo.GetAllUsersInDuAn(duAnId).FirstOrDefault(u => u.UserId == updateUserDuAn.UserId);
+            if (existingUserDuAn == null)
+            {
+                return new BadRequestObjectResult("User does not exist in the project.");
+            }
+
             UserDuAn userDuAn = _mapper.Map<UserDuAn>(updateUserDuAn);
             var result = _duAnRepo.UpdateUserInDuAn(duAnId, user, userDuAn);
+
             if (result == 0)
             {
-                return new BadRequestObjectResult("UserDuAn does not exist");
+                return new BadRequestObjectResult("Failed to update user in the project.");
             }
-            else if (result == -1)
-            {
-                return new BadRequestObjectResult("An error occurred while updating UserDuAn");
-            }
+
             return new OkResult();
         }
 
         public IActionResult DeleteUserFromDuAn(string user, string userId, string duAnId)
         {
+            if (string.IsNullOrEmpty(duAnId))
+            {
+                return new BadRequestObjectResult("DuAnId is required");
+            }
+
+            var existingUserDuAn = _duAnRepo.GetAllUsersInDuAn(duAnId).FirstOrDefault(u => u.UserId == userId);
+            if (existingUserDuAn == null)
+            {
+                return new BadRequestObjectResult("User does not exist in the project.");
+            }
+
             var result = _duAnRepo.DeleteUserFromDuAn(user, userId, duAnId);
+
             if (result == 0)
             {
-                return new BadRequestObjectResult("UserDuAn does not exist");
+                return new BadRequestObjectResult("Failed to delete user from the project.");
             }
-            else if (result == -1)
-            {
-                return new BadRequestObjectResult("An error occurred while deleting UserDuAn");
-            }
+
             return new OkResult();
         }
     }
