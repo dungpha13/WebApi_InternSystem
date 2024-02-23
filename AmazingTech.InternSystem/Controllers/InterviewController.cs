@@ -26,7 +26,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Intern")]
         [Route("List-Question/{idCongnghe}")]
         public async Task<List<ViewQuestionInterview>> CreateQuestion(string idCongnghe)
         {
@@ -34,7 +34,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Intern")]
         [Route("Anwser")]
         public async Task<IActionResult> CreateQuestion([FromBody] List<AwserQuest> traloi)
         {
@@ -51,6 +51,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, HR")]
         [Route("List-Anwser/{IdUser}")]
         public async Task<List<ViewAnswer>> ViewAnswer(string IdUser)
         {
@@ -59,7 +60,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         [Route("Rating")]
         public async Task<IActionResult> RatingAnwser([FromBody] List<RatingModel> traloi)
         {
@@ -77,7 +78,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         [Route("Update-Rating")]
         public async Task<IActionResult> UpdateRating([FromBody] List<RatingModel> traloi)
         {
@@ -85,7 +86,7 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                return await _service.RatingAnwser(user, traloi);
+                return await _service.UpdateRating(user, traloi);
             }
             catch (Exception ex)
             {
@@ -93,7 +94,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         [Route("Delete-Interview/{UserID}")]
         public async Task<IActionResult>DeleteRating(string UserID)
         {
