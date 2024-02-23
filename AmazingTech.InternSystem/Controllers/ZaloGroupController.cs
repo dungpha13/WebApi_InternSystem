@@ -152,7 +152,7 @@ namespace AmazingTech.InternSystem.Controllers
 
                 using (XLWorkbook wb = new XLWorkbook())
                 {
-                    var sheet1 = wb.AddWorksheet("Projects");
+                    var sheet1 = wb.AddWorksheet("ZaloGroups");
 
                     sheet1.Cell(1, 1).Value = "Group ID";
                     sheet1.Cell(1, 2).Value = "Group Name";
@@ -172,12 +172,14 @@ namespace AmazingTech.InternSystem.Controllers
                     sheet1.Columns(1, 2).Style.Font.FontColor = XLColor.Black;
                     sheet1.Column(3).Style.Font.FontColor = XLColor.Blue;
 
-                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.AntiFlashWhite;
+                    sheet1.Column(2).Style.Font.Bold = true;
+
+                    sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.BlueGray;
                     sheet1.Row(1).Style.Font.FontColor = XLColor.Black;
                     sheet1.Row(1).Style.Font.Bold = true;
                     sheet1.Row(1).Style.Font.Shadow = true;
                     sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
-                    sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+                    //sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
                     sheet1.Row(1).Style.Font.Italic = true;
 
                     // Apply borders to all cells
@@ -199,9 +201,8 @@ namespace AmazingTech.InternSystem.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
-                Console.WriteLine($"Error exporting projects to Excel: {ex.Message}");
-                return StatusCode(500, "An error occurred while exporting projects to Excel.");
+                Console.WriteLine($"Error exporting ZaloGroups to Excel: {ex.Message}");
+                return StatusCode(500, "An error occurred while exporting ZaloGroups to Excel.");
             }
         }
 
@@ -310,7 +311,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        [HttpDelete("delete-user-in-zalo-group/{nhomZaloId}/{userId}")]
+        [HttpDelete("delete-user-from-zalo-group/{nhomZaloId}/{userId}")]
         public async Task<ActionResult> RemoveUserFromZaloGroupAsync(string nhomZaloId, string userId)
         {
             try
