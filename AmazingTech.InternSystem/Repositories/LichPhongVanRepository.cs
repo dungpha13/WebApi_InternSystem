@@ -106,8 +106,8 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var lichphongvans = context.Set<LichPhongVan>().ToList();
-                Console.WriteLine("Lich Phonng Van: " + lichphongvans);
+                var lichphongvans = context.Set<LichPhongVan>().AsNoTracking().Where(t => t.DeletedTime == null).ToList();
+                
                 return lichphongvans;
             }
         }
@@ -124,9 +124,8 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                return context.Set<LichPhongVan>()
-                    .AsNoTracking()
-                    .Where(x => x.IdNguoiDuocPhongVan == idNguoiDuocPhongVan).ToList();
+               var list = context.Set<LichPhongVan>().AsNoTracking().Where( x => x.IdNguoiDuocPhongVan == idNguoiDuocPhongVan && x.DeletedTime == null).ToList();
+                return list;
             }
         }
     }

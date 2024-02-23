@@ -165,10 +165,13 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Route("api/lich-phong-vans/GetAllLichPhongVan")]
-        [Authorize(Roles = Roles.ADMIN + "," + Roles.HR)]
+        /*[Authorize(Roles = Roles.ADMIN + "," + Roles.HR)]*/
         public IActionResult GetAllLichPhongvan()
         {
-            return _guiLichPhongVanService.AllLichPhongVan();
+            /*return _guiLichPhongVanService.AllLichPhongVan();*/
+
+            var lichphongvanList = _guiLichPhongVanService.AllLichPhongVan();
+            return new OkObjectResult(lichphongvanList);
         }
 
         [HttpGet]
@@ -188,7 +191,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = ("Bearer"))]
+        /*[Authorize(AuthenticationSchemes = ("Bearer"))]*/
         [Route("api/lich-phong-vans/GetScheduleByIdNguoiDuocPhongVan/{id}")]
 
         public IActionResult GetLichPhongVanByIdNguoiDuocPhongVan(string id)

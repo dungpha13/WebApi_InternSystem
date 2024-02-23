@@ -31,7 +31,7 @@ namespace AmazingTech.InternSystem.Services
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
         public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan,DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
 
-        IActionResult AllLichPhongVan();
+        public List<LichPhongVanResponseModel> AllLichPhongVan();
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email);
         public List<LichPhongVanResponseModel> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
     }
@@ -415,29 +415,53 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
-        public IActionResult AllLichPhongVan()
+        public List<LichPhongVanResponseModel> AllLichPhongVan()
         {
             /*List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
             return new ObjectResult(lichPhongVans);*/
 
-            List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
+            /*List<LichPhongVan> lichPhongVans = _lichPhongVanRepository.GetAllLichPhongVan();
 
-            List<LichPhongVanResponseModel> lichPhongVanResponseModels = lichPhongVans.Select(lpv => new LichPhongVanResponseModel
+            List<LichPhongVanResponseModel> lichPhongVanResponseModels = lichPhongVans.Select(item => new LichPhongVanResponseModel
             {
-                ID = lpv.Id,
-                NguoiPhongVan = _userRepository.GetUserById(lpv.IdNguoiPhongVan).HoVaTen,
-                NguoiDuocPhongVan = _userRepository.GetUserById(lpv.IdNguoiDuocPhongVan).HoVaTen,
-                ThoiGianPhongVan = lpv.ThoiGianPhongVan,
-                TimeDuration = lpv.TimeDuration,
-                DiaDiemPhongVan = lpv.DiaDiemPhongVan,
-                InterviewForm = lpv.InterviewForm != null ? lpv.InterviewForm.ToString() : string.Empty,
-                TrangThai = lpv.TrangThai != null ? lpv.TrangThai.ToString() : string.Empty,
-                KetQua = lpv.KetQua != null ? lpv.KetQua.ToString() : string.Empty,
+               
+                ID = item.Id,
+                DiaDiemPhongVan = item.DiaDiemPhongVan,
+                InterviewForm = item.InterviewForm.ToString(),
+                KetQua = item.KetQua.ToString(),
+                NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
+                ThoiGianPhongVan = item.ThoiGianPhongVan,
+                TrangThai = item.TrangThai.ToString(),
+                NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen,
+                TimeDuration = item.TimeDuration
 
 
             }
                 ).ToList();
-            return new OkObjectResult(lichPhongVanResponseModels);
+            return lichPhongVanResponseModels;*/
+
+
+
+            var lichphongvan = _lichPhongVanRepository.GetAllLichPhongVan();
+            var lichphongvanlist = new List<LichPhongVanResponseModel>();
+            foreach (var item in lichphongvan)
+            {
+                var lichphongvanrepone = new LichPhongVanResponseModel
+                {
+                    ID = item.Id,
+                    DiaDiemPhongVan = item.DiaDiemPhongVan,
+                    InterviewForm = item.InterviewForm.ToString(),
+                    KetQua = item.KetQua.ToString(),
+                    NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
+                    ThoiGianPhongVan = item.ThoiGianPhongVan,
+                    TrangThai = item.TrangThai.ToString(),
+                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen,
+                    TimeDuration = item.TimeDuration
+                };
+                lichphongvanlist.Add(lichphongvanrepone);
+            }
+            return lichphongvanlist;
+
 
         }
 
@@ -502,26 +526,29 @@ namespace AmazingTech.InternSystem.Services
             return lichphongvanList;
         }
 
-
-
-
-
-
         public List<LichPhongVanResponseModel> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan)
         {
-            var lichPhongVanList = _lichPhongVanRepository.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
-            return lichPhongVanList.Select(lpv => new LichPhongVanResponseModel
+            var lichPhongVan = _lichPhongVanRepository.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
+            var lichPhongVanList = new List<LichPhongVanResponseModel>();
+            foreach (var  item in lichPhongVan)
             {
-                ID = lpv.Id,
-                NguoiPhongVan = _userRepository.GetUserById(lpv.IdNguoiPhongVan).HoVaTen,
-                NguoiDuocPhongVan = _userRepository.GetUserById(lpv.IdNguoiDuocPhongVan).HoVaTen,
-                ThoiGianPhongVan = lpv.ThoiGianPhongVan,
-                TimeDuration = lpv.TimeDuration,
-                DiaDiemPhongVan = lpv.DiaDiemPhongVan,
-                InterviewForm = lpv.InterviewForm.ToString() ?? string.Empty,
-                TrangThai = lpv.TrangThai.ToString() ?? string.Empty,
-                KetQua = lpv.KetQua.ToString() ?? string.Empty,
-            }).ToList();
+                var lichphongvanrepone = new LichPhongVanResponseModel
+                {
+                    ID = item.Id,
+                    DiaDiemPhongVan = item.DiaDiemPhongVan,
+                    InterviewForm = item.InterviewForm.ToString(),
+                    KetQua = item.KetQua.ToString(),
+                    NguoiDuocPhongVan = _userRepository.GetUserById(item.IdNguoiDuocPhongVan).HoVaTen,
+                    ThoiGianPhongVan = item.ThoiGianPhongVan,
+                    TrangThai = item.TrangThai.ToString(),
+                    NguoiPhongVan = _userRepository.GetUserById(item.IdNguoiPhongVan).HoVaTen,
+                    TimeDuration = item.TimeDuration
+
+                };
+                lichPhongVanList.Add(lichphongvanrepone);
+            }
+            return lichPhongVanList;
+           
         }
         public List<User> GetInternOnly()
         {
