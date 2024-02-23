@@ -31,7 +31,8 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<NhomZalo?> GetGroupByIdAsync(string id)
         {
-            return await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedTime == null);
+            return await _appDbContext.NhomZalos.Where(zl => zl.DeletedTime == null)
+                                                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<int> AddNewZaloAsync(string user, NhomZalo zalo)
@@ -56,7 +57,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             if (nhomZalo == null)
             {
-                throw new Exception($"NhomZalo with ID {id} not found.");
+                throw new Exception($"NhomZalo with ID ({id}) not found.");
             }
 
             nhomZalo.TenNhom = zalo.TenNhom ?? nhomZalo.TenNhom;
@@ -73,7 +74,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             if (nhomZalo == null)
             {
-                throw new Exception($"NhomZalo with ID {id} not found.");
+                throw new Exception($"NhomZalo with ID ({id}) not found.");
             }
 
             nhomZalo.DeletedBy = user;
@@ -102,11 +103,20 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser)
         {
+            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId
+                                                                                       && x.UserId == addUser.UserId
+                                                                                       && x.DeletedTime == null);
+
+            if (userNhomZalo == null)
+            {
+                throw new Exception($"UserNhomZalo with ID ({addUser.UserId}) in NhomZalo with ID ({nhomZaloId}) not found.");
+            }
+
             var nhomZalo = await _appDbContext.NhomZalos.FindAsync(nhomZaloId);
 
             if (nhomZalo == null)
             {
-                throw new Exception($"NhomZalo with ID {nhomZaloId} not found.");
+                throw new Exception($"NhomZalo with ID ({nhomZaloId}) not found.");
             }
 
             addUser.IdNhomZalo = nhomZaloId;
@@ -126,7 +136,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             if (userNhomZalo == null)
             {
-                throw new Exception($"UserNhomZalo with ID {updatedUser.UserId} in NhomZalo with ID {nhomZaloId} not found.");
+                throw new Exception($"UserNhomZalo with ID ({updatedUser.UserId}) in NhomZalo with ID ({nhomZaloId}) not found.");
             }
 
             //userNhomZalo.UserId = updatedUser.UserId;
@@ -147,7 +157,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             if (userNhomZalo == null)
             {
-                throw new Exception($"UserNhomZalo with ID {userId} in NhomZalo with ID {nhomZaloId} not found.");
+                throw new Exception($"UserNhomZalo with ID ({userId}) in NhomZalo with ID ({nhomZaloId}) not found.");
             }
 
             userNhomZalo.LeftTime = DateTime.Now;

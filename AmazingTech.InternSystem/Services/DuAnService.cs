@@ -74,7 +74,7 @@ namespace AmazingTech.InternSystem.Services
             var existingDuAn = _duAnRepo.GetDuAnById(id);
             if (existingDuAn == null)
             {
-                return new BadRequestObjectResult($"DuAn with ID {id} not found.");
+                return new BadRequestObjectResult($"DuAn with ID ({id}) not found.");
             }
 
             DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
@@ -93,7 +93,7 @@ namespace AmazingTech.InternSystem.Services
             var existingDuAn = _duAnRepo.GetDuAnById(id);
             if (existingDuAn == null)
             {
-                return new BadRequestObjectResult($"DuAn with ID {id} not found.");
+                return new BadRequestObjectResult($"DuAn with ID ({id}) not found.");
             }
 
             var result = _duAnRepo.DeleteDuAn(id, user);

@@ -102,7 +102,7 @@ namespace AmazingTech.InternSystem.Repositories
                                                                   && d.DeletedTime == null);
             if (existingDuAn == null)
             {
-                throw new Exception($"DuAn with ID {duAnId} not found.");
+                throw new Exception($"DuAn with ID ({duAnId}) not found.");
             }
 
             if (updatedDuAn.Ten != null)
@@ -129,7 +129,7 @@ namespace AmazingTech.InternSystem.Repositories
             var duAnToDelete = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedTime == null);
             if (duAnToDelete == null)
             {
-                throw new Exception($"DuAn with ID {duAnId} not found.");
+                throw new Exception($"DuAn with ID ({duAnId}) not found.");
             }
 
             duAnToDelete.DeletedBy = user;
@@ -142,8 +142,7 @@ namespace AmazingTech.InternSystem.Repositories
         // UserDuAn methods
         public List<UserDuAn> GetAllUsersInDuAn(string duAnId)
         {
-            return _dbContext.UserDuAns.Where(x => x.IdDuAn == duAnId && x.DeletedBy == null)
-                                                    .Where(da => da.DeletedTime == null)
+            return _dbContext.UserDuAns.Where(x => x.IdDuAn == duAnId && x.DeletedTime == null)
                                                     .OrderByDescending(da => da.CreatedTime)
                                                     .Include(da => da.DuAn)
                                                     .Include(da => da.User)
@@ -152,12 +151,26 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int AddUserToDuAn(string duAnId, string user, UserDuAn addUserDuAn)
         {
-            var duAn = _dbContext.DuAns.Find(duAnId);
+            //var duAn = _dbContext.DuAns.Find(duAnId);
 
-            if (duAn == null)
-            {
-                throw new Exception($"DuAn with ID {duAnId} not found.");
-            }
+            //if (duAn == null)
+            //{
+            //    throw new Exception($"DuAn with ID ({duAnId}) not found.");
+            //}
+
+            //var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDuAn.UserId && u.DeletedTime == null);
+            //if (existingUser == null)
+            //{
+            //    throw new Exception($"User with ID {existingUser.Id} not found.");
+            //}
+
+            //var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == addUserDuAn.UserId
+            //                                                     && x.IdDuAn == duAnId
+            //                                                     && x.DeletedTime == null);
+            //if (userDuAn == null)
+            //{
+            //    throw new Exception($"UserDuAn with ID ({addUserDuAn.UserId}) in DuAn '{addUserDuAn.DuAn.Ten}' not found.");
+            //}
 
             addUserDuAn.IdDuAn = duAnId;
 
@@ -171,13 +184,20 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int UpdateUserInDuAn(string duAnId, string user, UserDuAn updateUserDuAn)
         {
+            var duAn = _dbContext.DuAns.Find(duAnId);
+
+            if (duAn == null)
+            {
+                throw new Exception($"DuAn with ID ({duAnId}) not found.");
+            }
+
             var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == updateUserDuAn.UserId 
                                                                  && x.IdDuAn == duAnId 
                                                                  && x.DeletedTime == null);
 
             if (userDuAn == null)
             {
-                throw new Exception($"UserDuAn with ID {updateUserDuAn.UserId} in DuAn {updateUserDuAn.DuAn.Ten} not found.");
+                throw new Exception($"UserDuAn with ID ({updateUserDuAn.UserId}) in DuAn '{updateUserDuAn.DuAn.Ten}' not found.");
             }
 
             userDuAn.ViTri = updateUserDuAn.ViTri;
@@ -196,7 +216,14 @@ namespace AmazingTech.InternSystem.Repositories
 
             if (userDuAn == null)
             {
-                throw new Exception($"UserDuAn with ID {userId} in DuAn with ID {duAnId} not found.");
+                throw new Exception($"UserDuAn with ID ({userId}) in DuAn with ID '{duAnId}' not found.");
+            }
+
+            var duAn = _dbContext.DuAns.Find(duAnId);
+
+            if (duAn == null)
+            {
+                throw new Exception($"DuAn with ID ({duAnId}) not found.");
             }
 
             userDuAn.DeletedBy = user;

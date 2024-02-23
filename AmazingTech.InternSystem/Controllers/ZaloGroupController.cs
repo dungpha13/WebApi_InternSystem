@@ -5,6 +5,7 @@ using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -109,7 +110,7 @@ namespace AmazingTech.InternSystem.Controllers
                 var group = await _nhomZaloService.GetGroupByIdAsync(id);
                 if (group == null)
                 {
-                    return NotFound($"Zalo group with ID {id} not found.");
+                    return NotFound($"Zalo group with ID ({id}) not found.");
                 }
                 await _nhomZaloService.UpdateZaloAsync(id, user, zaloDTO);
                 return Ok("Zalo group updated successfully");
@@ -129,7 +130,7 @@ namespace AmazingTech.InternSystem.Controllers
                 var group = await _nhomZaloService.GetGroupByIdAsync(id);
                 if (group == null)
                 {
-                    return NotFound($"Zalo group with ID {id} not found.");
+                    return NotFound($"Zalo group with ID ({id}) not found.");
                 }
                 await _nhomZaloService.DeleteZaloAsync(id, user);
                 return Ok("Zalo group deleted successfully");
@@ -214,15 +215,32 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
 
+                if (users == null)
+                {
+                    return NotFound();
+                }
+
+                //var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+
+                //if (nhomZalo == null)
+                //{
+                //    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                //}
+
+                var nhomZalo = _dbContext.UserNhomZalos.FirstOrDefault(x => x.IdNhomZalo == nhomZaloId && x.DeletedTime == null);
+                if (nhomZalo == null)
+                {
+                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                }
+
                 if (users is List<UserNhomZalo> userNhomZaloList)
                 {
-                    var formattedResponse = userNhomZaloList.Select(userNhomZalo => new UpdateUserNhomZaloDTO
+                    var formattedResponse = userNhomZaloList.Select(userNhomZalo => new UserNhomZaloDTO
                     {
                         UserId = userNhomZalo.UserId,
                         UserName = userNhomZalo.User.HoVaTen,
+                        NhomZalo = userNhomZalo.NhomZalo.TenNhom,
                         IsMentor = userNhomZalo.IsMentor,
-                        //IdNhomZalo = userNhomZalo.IdNhomZalo,
-                        //NhomZalo = userNhomZalo.NhomZalo.TenNhom,
                         JoinedTime = userNhomZalo.JoinedTime,
                         LeftTime = userNhomZalo.LeftTime
                     }).ToList();
@@ -272,16 +290,42 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+                //var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+                //if (nhomZalo == null)
+                //{
+                //    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                //}
 
+                var nhomZalo = _dbContext.NhomZalos.Find(nhomZaloId);
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID {nhomZaloId} not found.");
+                    return NotFound($"GroupZalo with ID ({nhomZaloId}) not found.");
+                }
+
+                var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDTO.UserId && u.DeletedTime == null);
+                if (existingUser == null)
+                {
+                    return NotFound($"User with ID {addUserDTO.UserId} not found.");
+                }
+
+                var userZaloGroup = _dbContext.UserNhomZalos.FirstOrDefault(x => x.UserId == addUserDTO.UserId
+                                                                              && x.IdNhomZalo == nhomZaloId
+                                                                              && x.DeletedTime == null);
+                if (userZaloGroup == null)
+                {
+                    return NotFound($"UserDuAn with ID ({addUserDTO.UserId}) in GroupZalo not found.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
-                return Ok($"User added to Zalo group {nhomZalo.TenNhom} successfully");
+                var result = await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
+                if (result == null)
+                {
+                    return Ok($"User added to Zalo group '{nhomZalo.TenNhom}' successfully");
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
             }
             catch (Exception ex)
             {
@@ -298,12 +342,19 @@ namespace AmazingTech.InternSystem.Controllers
 
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID {nhomZaloId} not found.");
+                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
-                return Ok($"User in Zalo group {nhomZalo.TenNhom} updated successfully");
+                var result = await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
+                if (result == null)
+                {
+                    return Ok($"User in Zalo group '{nhomZalo.TenNhom}' updated successfully");
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
             }
             catch (Exception ex)
             {
@@ -320,12 +371,19 @@ namespace AmazingTech.InternSystem.Controllers
 
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID {nhomZaloId} not found.");
+                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
-                return Ok($"User removed from Zalo group {nhomZalo.TenNhom} successfully");
+                var result = await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
+                if (result == null)
+                {
+                    return Ok($"User removed from Zalo group '{nhomZalo.TenNhom}' successfully");
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
             }
             catch (Exception ex)
             {

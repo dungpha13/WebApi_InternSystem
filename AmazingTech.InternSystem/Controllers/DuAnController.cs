@@ -286,7 +286,7 @@ namespace AmazingTech.InternSystem.Controllers
                     //sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
                     sheet1.Row(1).Style.Font.Italic = true;
 
-                    
+
 
                     // Apply borders to all cells
                     var range = sheet1.RangeUsed();
@@ -316,21 +316,29 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet("get-all-user-in-project/{duAnId}")]
         public IActionResult GetAllUserDuAns(string duAnId)
         {
-            if (string.IsNullOrEmpty(duAnId))
-            {
-                return BadRequest("DuAnId is required");
-            }
 
-            var result = _duAnService.GetAllUsersInDuAn(duAnId);
-
-            if (result == null)
+            try
             {
-                return NotFound();
-            }
+                //var existingProject = _duAnService.GetDuAnById(duAnId);
+                //if (existingProject == null)
+                //{
+                //    return NotFound($"DuAn with ID ({duAnId}) not found.");
+                //}
 
-            if (result is OkObjectResult okResult)
-            {
-                var userDuAnList = okResult.Value as List<UserDuAn>;
+                var existingProject = _dbContext.UserDuAns.FirstOrDefault(x => x.IdDuAn == duAnId && x.DeletedTime == null);
+                if (existingProject == null)
+                {
+                    return NotFound($"DuAn with ID ({duAnId}) not found.");
+                }
+
+                var result = _duAnService.GetAllUsersInDuAn(duAnId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var userDuAnList = (result as OkObjectResult)?.Value as List<UserDuAn>;
 
                 if (userDuAnList != null)
                 {
@@ -349,9 +357,12 @@ namespace AmazingTech.InternSystem.Controllers
                     return Ok(formattedResponse);
                 }
 
+                return result;
             }
-
-            return result;
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
         [HttpPost("add-user-to-project/{duAnId}")]
@@ -360,6 +371,32 @@ namespace AmazingTech.InternSystem.Controllers
 
             try
             {
+                //var existingProject = _duAnService.GetDuAnById(duAnId);
+                //if (existingProject == null)
+                //{
+                //    return NotFound($"DuAn with ID {duAnId} not found.");
+                //}
+
+                var duAn = _dbContext.DuAns.Find(duAnId);
+                if (duAn == null)
+                {
+                    return NotFound($"DuAn with ID ({duAnId}) not found.");
+                }
+
+                var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDuAn.UserId && u.DeletedTime == null);
+                if (existingUser == null)
+                {
+                    return NotFound($"User with ID {existingUser.Id} not found.");
+                }
+
+                var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == addUserDuAn.UserId
+                                                                     && x.IdDuAn == duAnId
+                                                                     && x.DeletedTime == null);
+                if (userDuAn == null)
+                {
+                    return NotFound($"UserDuAn with ID ({addUserDuAn.UserId}) in DuAn not found.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var result = _duAnService.AddUserToDuAn(duAnId, user, addUserDuAn);
 
@@ -380,8 +417,6 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 return StatusCode(500, "Internal Server Error");
             }
-
-            //return _duAnService.AddUserToDuAn(duAnId, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), addUserDuAn);
         }
 
         [HttpPut("update-user-in-project/{duAnId}")]
@@ -430,7 +465,7 @@ namespace AmazingTech.InternSystem.Controllers
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                
+
                 var result = _duAnService.DeleteUserFromDuAn(duAnId, user, userId);
 
                 if (result is BadRequestObjectResult badRequestResult)

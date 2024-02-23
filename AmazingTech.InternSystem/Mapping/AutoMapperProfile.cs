@@ -54,22 +54,24 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<NhomZalo, NhomZaloDTO>()
                 .ForMember(dest => dest.TenNhom, opt => opt.MapFrom(src => src.TenNhom))
                 .ForMember(dest => dest.LinkNhom, opt => opt.MapFrom(src => src.LinkNhom));
-            /*.ForMember(dest => dest.IdMentor, opt => opt.MapFrom(src => src.IdMentor))
-            .ForMember(dest => dest.MentorName, opt => opt.MapFrom(src => src.Mentor.HoVaTen));*/
-
-            CreateMap<User, UpdateUserNhomZaloDTO>()
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.HoVaTen));
-
-            CreateMap<NhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
-            //.ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.TenNhom));
-
-            CreateMap<User, AddUserNhomZaloDTO>().ReverseMap();
+            CreateMap<NhomZalo, UserNhomZaloDTO>()
+                .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.TenNhom));
             CreateMap<NhomZalo, AddUserNhomZaloDTO>().ReverseMap();
+            CreateMap<NhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
+            
+            CreateMap<User, UserNhomZaloDTO>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.HoVaTen));
+            CreateMap<User, UpdateUserNhomZaloDTO>().ReverseMap();
+            CreateMap<User, AddUserNhomZaloDTO>().ReverseMap();
 
-            CreateMap<DuAn, DuAnModel>().ReverseMap();
-            CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
+            CreateMap<UserNhomZalo, UserNhomZaloDTO>();
             CreateMap<UserNhomZalo, AddUserNhomZaloDTO>().ReverseMap();
             CreateMap<UserNhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
+
+            CreateMap<DuAn, DuAnModel>().ReverseMap();
+            CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
+            CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
+            
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
@@ -91,7 +93,7 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.ViTris, opt => opt.MapFrom(src => src.UserViTris))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
-            CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
+            
             CreateMap<PhongVan, AwserQuest>().ReverseMap();
             CreateMap<PhongVan, RatingModel>().ReverseMap();
         }
