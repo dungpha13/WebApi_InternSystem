@@ -213,24 +213,22 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
-
-                if (users == null)
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
+                if (nhomZalo == null)
                 {
-                    return NotFound();
+                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 }
 
-                //var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
-
+                //var nhomZalo = _dbContext.UserNhomZalos.FirstOrDefault(x => x.IdNhomZalo == nhomZaloId && x.DeletedTime == null);
                 //if (nhomZalo == null)
                 //{
                 //    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 //}
 
-                var nhomZalo = _dbContext.UserNhomZalos.FirstOrDefault(x => x.IdNhomZalo == nhomZaloId && x.DeletedTime == null);
-                if (nhomZalo == null)
+                var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
+                if (users.Count == 0)
                 {
-                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                    return BadRequest("This GroupZalo does not have any members.");
                 }
 
                 if (users is List<UserNhomZalo> userNhomZaloList)
@@ -290,46 +288,20 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                //var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
-                //if (nhomZalo == null)
-                //{
-                //    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
-                //}
-
-                var nhomZalo = _dbContext.NhomZalos.Find(nhomZaloId);
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
                 if (nhomZalo == null)
                 {
-                    return NotFound($"GroupZalo with ID ({nhomZaloId}) not found.");
-                }
-
-                var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDTO.UserId && u.DeletedTime == null);
-                if (existingUser == null)
-                {
-                    return NotFound($"User with ID {addUserDTO.UserId} not found.");
-                }
-
-                var userZaloGroup = _dbContext.UserNhomZalos.FirstOrDefault(x => x.UserId == addUserDTO.UserId
-                                                                              && x.IdNhomZalo == nhomZaloId
-                                                                              && x.DeletedTime == null);
-                if (userZaloGroup == null)
-                {
-                    return NotFound($"UserDuAn with ID ({addUserDTO.UserId}) in GroupZalo not found.");
+                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var result = await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
-                if (result == null)
-                {
-                    return Ok($"User added to Zalo group '{nhomZalo.TenNhom}' successfully");
-                }
-                else
-                {
-                    return BadRequest(result);
-                }
+                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
+                return Ok($"User added to Zalo group '{nhomZalo.TenNhom}' successfully");
+
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -339,26 +311,24 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
-
                 if (nhomZalo == null)
                 {
                     return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 }
 
+                var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
+                if (users.Count == 0)
+                {
+                    return BadRequest("This GroupZalo does not have any members.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var result = await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
-                if (result == null)
-                {
-                    return Ok($"User in Zalo group '{nhomZalo.TenNhom}' updated successfully");
-                }
-                else
-                {
-                    return BadRequest(result);
-                }
+                await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
+                return Ok($"User in Zalo group '{nhomZalo.TenNhom}' updated successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -367,27 +337,26 @@ namespace AmazingTech.InternSystem.Controllers
         {
             try
             {
-                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
 
+                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
                 if (nhomZalo == null)
                 {
                     return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
                 }
 
+                var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
+                if (users.Count == 0)
+                {
+                    return BadRequest("This GroupZalo does not have any members.");
+                }
+
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var result = await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
-                if (result == null)
-                {
-                    return Ok($"User removed from Zalo group '{nhomZalo.TenNhom}' successfully");
-                }
-                else
-                {
-                    return BadRequest(result);
-                }
+                return Ok($"User removed from Zalo group '{nhomZalo.TenNhom}' successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(ex.Message);
             }
         }
     }

@@ -60,42 +60,18 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, AddUserNhomZaloDTO addUserDTO)
         {
-            var usersInGroup = await _nhomZaloRepo.GetUsersInGroupAsync(nhomZaloId);
-
-            var existingUserGroupZalo = usersInGroup.FirstOrDefault(zl => zl.UserId == addUserDTO.UserId);
-            if (existingUserGroupZalo != null)
-            {
-                return -1;
-            }
-
             UserNhomZalo userNhomZalo = _mapper.Map<UserNhomZalo>(addUserDTO);
             return await _nhomZaloRepo.AddUserToGroupAsync(nhomZaloId, user, userNhomZalo);
         }
 
         public async Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UpdateUserNhomZaloDTO updatedUserDTO)
         {
-            var usersInGroup = await _nhomZaloRepo.GetUsersInGroupAsync(nhomZaloId);
-
-            var existingUserGroupZalo = usersInGroup.FirstOrDefault(zl => zl.UserId == updatedUserDTO.UserId);
-            if (existingUserGroupZalo != null)
-            {
-                return -1;
-            }
-
             UserNhomZalo nhomZalo = _mapper.Map<UserNhomZalo>(updatedUserDTO);
             return await _nhomZaloRepo.UpdateUserInGroupAsync(nhomZaloId, user, nhomZalo);
         }
 
         public async Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId)
         {
-            var usersInGroup = await _nhomZaloRepo.GetUsersInGroupAsync(nhomZaloId);
-
-            var existingUserGroupZalo = usersInGroup.FirstOrDefault(zl => zl.UserId == userId);
-            if (existingUserGroupZalo != null)
-            {
-                return -1;
-            }
-
             return await _nhomZaloRepo.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
         }
     }

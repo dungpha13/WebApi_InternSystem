@@ -1,6 +1,8 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
+using AmazingTech.InternSystem.Models.Request.User;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -103,20 +105,19 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser)
         {
+            var existingUser = _appDbContext.Users.FirstOrDefault(u => u.Id == addUser.UserId && u.DeletedTime == null);
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID ({addUser.UserId}) not found.");
+            }
+
             var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId
                                                                                        && x.UserId == addUser.UserId
                                                                                        && x.DeletedTime == null);
 
-            if (userNhomZalo == null)
+            if (userNhomZalo != null)
             {
-                throw new Exception($"UserNhomZalo with ID ({addUser.UserId}) in NhomZalo with ID ({nhomZaloId}) not found.");
-            }
-
-            var nhomZalo = await _appDbContext.NhomZalos.FindAsync(nhomZaloId);
-
-            if (nhomZalo == null)
-            {
-                throw new Exception($"NhomZalo with ID ({nhomZaloId}) not found.");
+                throw new Exception($"User with ID ({addUser.UserId}) has already existed in this GroupZalo.");
             }
 
             addUser.IdNhomZalo = nhomZaloId;
@@ -130,17 +131,25 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         }
         public async Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZalo updatedUser)
         {
+
+            var existingUser = _appDbContext.Users.FirstOrDefault(u => u.Id == updatedUser.UserId && u.DeletedTime == null);
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID ({updatedUser.UserId}) not found.");
+            }
+
             var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId 
                                                                                        && x.UserId == updatedUser.UserId 
                                                                                        && x.DeletedTime == null);
 
             if (userNhomZalo == null)
             {
-                throw new Exception($"UserNhomZalo with ID ({updatedUser.UserId}) in NhomZalo with ID ({nhomZaloId}) not found.");
+                throw new Exception($"User with ID ({updatedUser.UserId}) does not exist in this GroupZalo.");
             }
 
             //userNhomZalo.UserId = updatedUser.UserId;
             //userNhomZalo.IdNhomZalo = updatedUser.IdNhomZalo;
+            userNhomZalo.IsMentor = updatedUser.IsMentor;
             userNhomZalo.JoinedTime = updatedUser.JoinedTime ?? userNhomZalo.JoinedTime;
             userNhomZalo.LeftTime = updatedUser.LeftTime;
             userNhomZalo.LastUpdatedBy = user;
@@ -151,18 +160,25 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
         public async Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId)
         {
+            var existingUser = _appDbContext.Users.FirstOrDefault(u => u.Id == userId && u.DeletedTime == null);
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID ({userId}) not found.");
+            }
+
             var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZalo == nhomZaloId 
                                                                                        && x.UserId == userId 
                                                                                        && x.DeletedTime == null);
 
             if (userNhomZalo == null)
             {
-                throw new Exception($"UserNhomZalo with ID ({userId}) in NhomZalo with ID ({nhomZaloId}) not found.");
+                throw new Exception($"User with ID ({userId}) does not exist in this GroupZalo.");
             }
 
             userNhomZalo.LeftTime = DateTime.Now;
             userNhomZalo.DeletedBy = user;
             userNhomZalo.DeletedTime = DateTime.Now;
+
             //_appDbContext.UserNhomZalos.Remove(userNhomZalo);
             return await _appDbContext.SaveChangesAsync();
         }
