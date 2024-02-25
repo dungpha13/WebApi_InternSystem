@@ -93,7 +93,7 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 await _nhomZaloService.AddNewZaloAsync(user, zaloDTO);
-                return Ok("Zalo group created successfully");
+                return Ok("ZaloGroup created successfully");
             }
             catch (Exception ex)
             {
@@ -110,10 +110,10 @@ namespace AmazingTech.InternSystem.Controllers
                 var group = await _nhomZaloService.GetGroupByIdAsync(id);
                 if (group == null)
                 {
-                    return NotFound($"Zalo group with ID ({id}) not found.");
+                    return NotFound($"ZaloGroup with ID ({id}) not found.");
                 }
                 await _nhomZaloService.UpdateZaloAsync(id, user, zaloDTO);
-                return Ok("Zalo group updated successfully");
+                return Ok("ZaloGroup updated successfully");
             }
             catch (Exception ex)
             {
@@ -130,10 +130,10 @@ namespace AmazingTech.InternSystem.Controllers
                 var group = await _nhomZaloService.GetGroupByIdAsync(id);
                 if (group == null)
                 {
-                    return NotFound($"Zalo group with ID ({id}) not found.");
+                    return NotFound($"ZaloGroup with ID ({id}) not found.");
                 }
                 await _nhomZaloService.DeleteZaloAsync(id, user);
-                return Ok("Zalo group deleted successfully");
+                return Ok("ZaloGroup deleted successfully");
             }
             catch (Exception ex)
             {
@@ -216,19 +216,19 @@ namespace AmazingTech.InternSystem.Controllers
                 var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                    return NotFound($"ZaloGroup with ID ({nhomZaloId}) not found.");
                 }
 
                 //var nhomZalo = _dbContext.UserNhomZalos.FirstOrDefault(x => x.IdNhomZalo == nhomZaloId && x.DeletedTime == null);
                 //if (nhomZalo == null)
                 //{
-                //    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                //    return NotFound($"ZaloGroup with ID ({nhomZaloId}) not found.");
                 //}
 
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
                 if (users.Count == 0)
                 {
-                    return BadRequest("This GroupZalo does not have any members.");
+                    return BadRequest($"ZaloGroup with ID ({nhomZaloId}) exists but does not have any members.");
                 }
 
                 if (users is List<UserNhomZalo> userNhomZaloList)
@@ -291,12 +291,12 @@ namespace AmazingTech.InternSystem.Controllers
                 var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                    return NotFound($"ZaloGroup with ID ({nhomZaloId}) not found.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
-                return Ok($"User added to Zalo group '{nhomZalo.TenNhom}' successfully");
+                return Ok($"User added to ZaloGroup '{nhomZalo.TenNhom}' successfully");
 
             }
             catch (Exception ex)
@@ -313,18 +313,18 @@ namespace AmazingTech.InternSystem.Controllers
                 var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                    return NotFound($"ZaloGroup with ID ({nhomZaloId}) not found.");
                 }
 
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
                 if (users.Count == 0)
                 {
-                    return BadRequest("This GroupZalo does not have any members.");
+                    return BadRequest($"ZaloGroup with ID ({nhomZaloId}) exists but does not have any members.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 await _nhomZaloService.UpdateUserInGroupAsync(nhomZaloId, user, updatedUserDTO);
-                return Ok($"User in Zalo group '{nhomZalo.TenNhom}' updated successfully");
+                return Ok($"User in ZaloGroup '{nhomZalo.TenNhom}' updated successfully");
             }
             catch (Exception ex)
             {
@@ -341,18 +341,18 @@ namespace AmazingTech.InternSystem.Controllers
                 var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
                 if (nhomZalo == null)
                 {
-                    return NotFound($"Zalo group with ID ({nhomZaloId}) not found.");
+                    return NotFound($"ZaloGroup with ID ({nhomZaloId}) not found.");
                 }
 
                 var users = await _nhomZaloService.GetUsersInGroupAsync(nhomZaloId);
                 if (users.Count == 0)
                 {
-                    return BadRequest("This GroupZalo does not have any members.");
+                    return BadRequest($"ZaloGroup with ID ({nhomZaloId}) exists but does not have any members.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var result = await _nhomZaloService.RemoveUserFromGroupAsync(nhomZaloId, user, userId);
-                return Ok($"User removed from Zalo group '{nhomZalo.TenNhom}' successfully");
+                return Ok($"User removed from ZaloGroup '{nhomZalo.TenNhom}' successfully");
             }
             catch (Exception ex)
             {

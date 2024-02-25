@@ -42,7 +42,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             var existingZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.TenNhom == zalo.TenNhom && x.DeletedTime == null);
             if (existingZalo != null)
             {
-                throw new Exception("A group with the same name already exists.");
+                throw new Exception("A group with the same name has already exists.");
             }
 
             zalo.CreatedBy = user;
