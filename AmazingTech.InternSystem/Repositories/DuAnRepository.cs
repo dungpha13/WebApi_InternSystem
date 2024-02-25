@@ -17,23 +17,19 @@ namespace AmazingTech.InternSystem.Repositories
         //DuAn methods
         public List<DuAn> GetAllDuAns()
         {
-            var duAns = _dbContext.DuAns
+            return _dbContext.DuAns
                 .Where(duAn => duAn.DeletedTime == null)
                 .OrderByDescending(duAn => duAn.CreatedTime)
                 .Include(duAn => duAn.Leader)
                 .ToList();
-
-            return duAns;
         }
 
-        public DuAn GetDuAnById(string id)
+        public DuAn? GetDuAnById(string id)
         {
-            var duAn = _dbContext.DuAns
+            return _dbContext.DuAns
                 .Where(duAn => duAn.DeletedTime == null)
                 .Include(duAn => duAn.Leader)
                 .FirstOrDefault(c => c.Id == id);
-
-            return duAn;
         }
 
         public DuAn GetDuAnByName(string projectName)
@@ -83,7 +79,7 @@ namespace AmazingTech.InternSystem.Repositories
             var existingDuAn = GetDuAnByName(createDuAn.Ten);
             if (existingDuAn != null)
             {
-                return -1;
+                throw new Exception("DuAn with the same name already exists.");
             }
 
             createDuAn.CreatedBy = user;
@@ -91,30 +87,28 @@ namespace AmazingTech.InternSystem.Repositories
             createDuAn.LastUpdatedTime = DateTime.Now;
 
             _dbContext.DuAns.Add(createDuAn);
-            _dbContext.SaveChanges();
-
-            return 1;
+            return _dbContext.SaveChanges();
         }
 
         public int UpdateDuAn(string duAnId, string user, DuAn updatedDuAn)
         {
-            var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId 
-                                                                  && d.DeletedTime == null);
+            var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedTime == null);
             if (existingDuAn == null)
             {
                 throw new Exception($"DuAn with ID ({duAnId}) not found.");
             }
 
-            if (updatedDuAn.Ten != null)
-            {
-                existingDuAn.Ten = updatedDuAn.Ten;
-                var check = _dbContext.DuAns.SingleOrDefault(x => x.Ten == existingDuAn.Ten && x.DeletedBy == null && x.Id != existingDuAn.Id);
-                if (check != null)
-                {
-                    return 0;
-                }
-            }
+            //if (updatedDuAn.Ten != null)
+            //{
+            //    existingDuAn.Ten = updatedDuAn.Ten;
+            //    var check = _dbContext.DuAns.SingleOrDefault(x => x.Ten == existingDuAn.Ten && x.DeletedBy == null && x.Id != existingDuAn.Id);
+            //    if (check != null)
+            //    {
+            //        return 0;
+            //    }
+            //}
 
+            existingDuAn.Ten = updatedDuAn.Ten;
             existingDuAn.LeaderId = updatedDuAn.LeaderId;
             existingDuAn.ThoiGianBatDau = updatedDuAn.ThoiGianBatDau;
             existingDuAn.ThoiGianKetThuc = updatedDuAn.ThoiGianKetThuc;
@@ -151,29 +145,21 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int AddUserToDuAn(string duAnId, string user, UserDuAn addUserDuAn)
         {
-            //var duAn = _dbContext.DuAns.Find(duAnId);
+            var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDuAn.UserId && u.DeletedTime == null);
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID ({addUserDuAn.UserId}) not found.");
+            }
 
-            //if (duAn == null)
-            //{
-            //    throw new Exception($"DuAn with ID ({duAnId}) not found.");
-            //}
-
-            //var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDuAn.UserId && u.DeletedTime == null);
-            //if (existingUser == null)
-            //{
-            //    throw new Exception($"User with ID {existingUser.Id} not found.");
-            //}
-
-            //var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == addUserDuAn.UserId
-            //                                                     && x.IdDuAn == duAnId
-            //                                                     && x.DeletedTime == null);
-            //if (userDuAn == null)
-            //{
-            //    throw new Exception($"UserDuAn with ID ({addUserDuAn.UserId}) in DuAn '{addUserDuAn.DuAn.Ten}' not found.");
-            //}
+            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == addUserDuAn.UserId
+                                                                 && x.IdDuAn == duAnId
+                                                                 && x.DeletedTime == null);
+            if (userDuAn != null)
+            {
+                throw new Exception($"User with ID ({addUserDuAn.UserId}) has already existed in this DuAn.");
+            }
 
             addUserDuAn.IdDuAn = duAnId;
-
             addUserDuAn.CreatedBy = user;
             addUserDuAn.LastUpdatedBy = user;
             addUserDuAn.LastUpdatedTime = DateTime.Now;
@@ -184,24 +170,21 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int UpdateUserInDuAn(string duAnId, string user, UserDuAn updateUserDuAn)
         {
-            var duAn = _dbContext.DuAns.Find(duAnId);
-
-            if (duAn == null)
+            var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == updateUserDuAn.UserId && u.DeletedTime == null);
+            if (existingUser == null)
             {
-                throw new Exception($"DuAn with ID ({duAnId}) not found.");
+                throw new Exception($"User with ID ({updateUserDuAn.UserId}) not found.");
             }
 
-            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == updateUserDuAn.UserId 
-                                                                 && x.IdDuAn == duAnId 
+            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == updateUserDuAn.UserId
+                                                                 && x.IdDuAn == duAnId
                                                                  && x.DeletedTime == null);
-
             if (userDuAn == null)
             {
-                throw new Exception($"UserDuAn with ID ({updateUserDuAn.UserId}) in DuAn '{updateUserDuAn.DuAn.Ten}' not found.");
+                throw new Exception($"User with ID ({updateUserDuAn.UserId}) does not exist in this DuAn.");
             }
 
             userDuAn.ViTri = updateUserDuAn.ViTri;
-
             userDuAn.LastUpdatedBy = user;
             userDuAn.LastUpdatedTime = DateTime.Now;
 
@@ -210,20 +193,18 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int DeleteUserFromDuAn(string duAnId, string user, string userId)
         {
-            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.IdDuAn == duAnId  
-                                                                 && x.UserId == userId 
-                                                                 && x.DeletedTime == null);
-
-            if (userDuAn == null)
+            var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == userId && u.DeletedTime == null);
+            if (existingUser == null)
             {
-                throw new Exception($"UserDuAn with ID ({userId}) in DuAn with ID '{duAnId}' not found.");
+                throw new Exception($"User with ID ({userId}) not found.");
             }
 
-            var duAn = _dbContext.DuAns.Find(duAnId);
-
-            if (duAn == null)
+            var userDuAn = _dbContext.UserDuAns.FirstOrDefault(x => x.UserId == userId
+                                                                 && x.IdDuAn == duAnId
+                                                                 && x.DeletedTime == null);
+            if (userDuAn == null)
             {
-                throw new Exception($"DuAn with ID ({duAnId}) not found.");
+                throw new Exception($"User with ID ({userId}) does not exist in this DuAn.");
             }
 
             userDuAn.DeletedBy = user;

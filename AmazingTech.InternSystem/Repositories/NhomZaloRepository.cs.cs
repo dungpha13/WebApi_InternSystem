@@ -40,7 +40,6 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         public async Task<int> AddNewZaloAsync(string user, NhomZalo zalo)
         {
             var existingZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.TenNhom == zalo.TenNhom && x.DeletedTime == null);
-
             if (existingZalo != null)
             {
                 throw new Exception("A group with the same name already exists.");
@@ -49,6 +48,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             zalo.CreatedBy = user;
             zalo.LastUpdatedBy = user;
             zalo.LastUpdatedTime = DateTime.Now;
+
             _appDbContext.NhomZalos.Add(zalo);
             return await _appDbContext.SaveChangesAsync();
         }
@@ -56,7 +56,6 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         public async Task<int> UpdateZaloAsync(string id, string user, NhomZalo zalo)
         {
             var nhomZalo = await _appDbContext.NhomZalos.FirstOrDefaultAsync(x => x.Id == id && x.DeletedTime == null);
-
             if (nhomZalo == null)
             {
                 throw new Exception($"NhomZalo with ID ({id}) not found.");
@@ -90,6 +89,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         public async Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId)
         {
             return await _appDbContext.UserNhomZalos.Where(x => x.IdNhomZalo == nhomZaloId && x.DeletedTime == null)
+                                                    .OrderByDescending(nz => nz.JoinedTime)
                                                     .Include(nz => nz.NhomZalo)
                                                     .Include(nz => nz.User)
                                                     .ToListAsync();
@@ -129,6 +129,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             _appDbContext.UserNhomZalos.Add(addUser);
             return await _appDbContext.SaveChangesAsync();
         }
+
         public async Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZalo updatedUser)
         {
 
