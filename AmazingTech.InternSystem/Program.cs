@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using AmazingTech.InternSystem.Services.Name;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace AmazingTech.InternSystem
 {
@@ -74,6 +77,7 @@ namespace AmazingTech.InternSystem
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
+           
 
             EmailSettingModel.Instance = builder.Configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
             builder.Services.AddHttpContextAccessor();

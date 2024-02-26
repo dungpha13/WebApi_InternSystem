@@ -38,7 +38,7 @@ namespace AmazingTech.InternSystem.Models.Validation
         private DateTime? ParseDateString(string dateString)
         {
             // Thử chuyển đổi theo định dạng "dd/MM/yyyy"
-            if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+            if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out var date))
             {
                 return date;
             }
