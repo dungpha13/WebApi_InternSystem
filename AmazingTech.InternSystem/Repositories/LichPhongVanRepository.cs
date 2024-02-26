@@ -13,6 +13,7 @@ namespace AmazingTech.InternSystem.Repositories
         public void DeleteLichPhongVan(LichPhongVan lichPhongVan);
         public void addNewLichPhongVan(LichPhongVan entity);
         public List<LichPhongVan> GetLichPhongVansByIdNgPhongVan(string id);
+        public LichPhongVan GetLichPhongVansByIdNgDuocPhongVan(string id);
         public void UpdateLichPhongVan(LichPhongVan lichPhongVan);
         public LichPhongVan GetScheduleById(string scheduleId);
  
@@ -125,6 +126,15 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                var list = context.Set<LichPhongVan>().AsNoTracking().Where( x => x.IdNguoiDuocPhongVan == idNguoiDuocPhongVan && x.DeletedTime == null).ToList();
+                return list;
+            }
+        }
+
+        public LichPhongVan GetLichPhongVansByIdNgDuocPhongVan(string id)
+        {
+            using (var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == id && x.DeletedTime == null).SingleOrDefault();
                 return list;
             }
         }

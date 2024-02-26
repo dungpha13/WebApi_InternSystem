@@ -60,6 +60,23 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
+        [Route("api/lich-phong-vans/Get-Schedule-By-IntervieweeLogin")]
+        public IActionResult GetScheduleByIntervieweeLogin()
+        {
+            try
+            {
+                var result = _guiLichPhongVanService.GetIntervieweeLoginSchedule();
+                return Ok(result);
+            }
+            catch (BadHttpRequestException ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("api/lich-phong-vans/ConfirmEmail")]
         public IActionResult ConfirmEmail([FromQuery] string id)
         {
