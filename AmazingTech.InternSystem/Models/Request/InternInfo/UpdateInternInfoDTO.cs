@@ -13,13 +13,13 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         [Required]
         public string HoTen { get; set; }
         [Required]
-        [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]
+        [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng yyyy-MM-dd")]
         public string NgaySinh { get; set; }
         [Required]
-        [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]
+        [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng yyyy-MM-dd")]
         public string? StartDate { get; set; }
         [Required]
-        [CompareDateTime("StartDate", ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]  //
+        [CompareDateTime("StartDate", ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng yyyy-MM-dd")]  
         public string? EndDate { get; set; }
         [Required]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Vui lòng nhập số điện thoại hợp lệ!")]

@@ -188,7 +188,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult("Thêm sinh viên thất bại!");
             }
 
-            return new OkObjectResult(entity);
+            return new OkObjectResult($"Thêm mới sinh viên với MSSV '{model.MSSV}' thành công!");
         }
 
         //Delete Intern
@@ -204,10 +204,10 @@ namespace AmazingTech.InternSystem.Services
 
             if (rs == 0)
             {
-                return new BadRequestObjectResult($"Intern mssv: {mssv} đã được xóa!");
+                return new BadRequestObjectResult($"Intern mssv: '{mssv}' đã được xóa!");
             }
 
-            return new OkObjectResult($"Xóa thành công Intern mssv: {mssv} !");
+            return new OkObjectResult($"Xóa thành công Intern mssv: '{mssv}' !");
         }
 
         //Update Intern
@@ -348,7 +348,7 @@ namespace AmazingTech.InternSystem.Services
 
             if (updateIntern == 0)
             {
-                return new BadRequestObjectResult($"Intern mssv: {mssv} cập nhật thất bại!");
+                return new BadRequestObjectResult($"Intern mssv: '{mssv}' cập nhật thất bại!");
             }
 
             return new OkObjectResult($"Cập nhật thành công Intern với mssv: '{mssv}' !");

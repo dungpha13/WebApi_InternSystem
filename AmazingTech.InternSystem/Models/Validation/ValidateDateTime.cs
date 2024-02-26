@@ -37,11 +37,11 @@ namespace AmazingTech.InternSystem.Models.Validation
         //Hàm kiểm tra định dạng ngày nhập vào theo format và DateTime input phải là một ngày hợp lệ
         private DateTime? ParseDateString(string dateString)
         {
-            // Thử chuyển đổi theo định dạng "dd/MM/yyyy"
-            if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out var date))
-            {
-                return date;
-            }
+            //// Thử chuyển đổi theo định dạng "dd/MM/yyyy"
+            //if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out var date))
+            //{
+            //    return date;
+            //}
 
             // Nếu không thành công, thử chuyển đổi theo định dạng "yyyy-MM-dd"
             if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date2))
