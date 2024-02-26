@@ -73,8 +73,17 @@ namespace AmazingTech.InternSystem.Controllers
         [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> UpdateInternInfo(UpdateInternInfoDTO model, string mssv)
         {
-            string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return await _internInfoService.UpdateInternInfo(userId, model, mssv);
+            try
+            {
+                string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return await _internInfoService.UpdateInternInfo(userId, model, mssv);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+           
 
         }
 
