@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Models.VItri;
 using AmazingTech.InternSystem.Repositories;
 using AmazingTech.InternSystem.Service;
+using AmazingTech.InternSystem.Services;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,13 +24,13 @@ namespace AmazingTech.InternSystem.Controller
         }
         [HttpGet("get")]
 
-        public async Task<IActionResult> GetViTriList()
+        public async Task<List<Vitrinew>> GetViTriList()
         {
-            var vitri = await _viTriService.GetViTriList();
-            return Ok(vitri);
+
+            return await _viTriService.GetViTriList();
         }
         [HttpPost]
-
+        [Authorize]
         [Route("create")]
         public async Task<IActionResult> AddViTri([FromBody] VitriModel vitriModel)
         {
@@ -38,7 +39,7 @@ namespace AmazingTech.InternSystem.Controller
             return Ok(save == 1 ? "Success" : "failed");
         }
         [HttpPut]
-
+        [Authorize]
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateViTri(string id, [FromBody] VitriModel updateVitri)
         {
@@ -47,7 +48,7 @@ namespace AmazingTech.InternSystem.Controller
             return Ok(save == 1 ? "Success" : "failed");
         }
         [HttpDelete]
-
+        [Authorize]
         [Route("delete/{id}")]
 
         public async Task<IActionResult> DeleteVitri(string id)

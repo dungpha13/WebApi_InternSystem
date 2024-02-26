@@ -6,13 +6,11 @@ namespace AmazingTech.InternSystem.Service
 {
     public interface IViTriService
     {
-        Task<List<ViTri>> GetViTriList();
+        Task<List<Vitrinew>> GetViTriList();
         Task<int> AddVitri(VitriModel vitriModel, string user);
         Task<int> DeleteVitri(string id, string user);
         Task<int> UpdateVitri(VitriModel updatedVitri, string vitriId, string user);
         Task<List<VitriUserViewModel>> UserViTriView(string id);
-
-
 
     }
 }

@@ -26,10 +26,11 @@ namespace AmazingTech.InternSystem.Services
         }
 
 
-        public async Task<List<ViTri>> GetViTriList()
+        public async Task<List<Vitrinew>> GetViTriList()
         {
             List<ViTri> viTris = await _VitriRepo.GetAllVitri();
-            return viTris;
+            List<Vitrinew> vitrinews = _mapper.Map<List<Vitrinew>>(viTris);
+            return vitrinews;
         }
         public async Task<int> AddVitri(VitriModel vitriModel, string user)
         {

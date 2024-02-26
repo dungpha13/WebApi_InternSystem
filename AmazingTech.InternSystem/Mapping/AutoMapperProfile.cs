@@ -38,7 +38,9 @@ namespace AmazingTech.InternSystem.Mapping
 
             CreateMap<InternInfo, AddInternInfoDTO>().ReverseMap();
             CreateMap<InternInfo, UpdateInternInfoDTO>().ReverseMap();
-
+            CreateMap<ViTri, VitriModel>().ReverseMap();
+            CreateMap<VitriUserViewModel, VitriUserViewModel>().ReverseMap();
+            CreateMap<Vitrinew, ViTri>().ReverseMap();
             //Add Comment
             CreateMap<Comment, CommentInternInfoDTO>().ReverseMap();
 
