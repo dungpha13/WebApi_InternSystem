@@ -11,7 +11,7 @@ namespace AmazingTech.InternSystem.Models.Request.InternInfo
         //[Required]
         //public string MSSV { get; set; }
         [Required]
-        public string HoTena { get; set; }
+        public string HoTen { get; set; }
         [Required]
         [ValidateDateTime(ErrorMessage = "Vui lòng nhập vào một ngày hợp lệ và đúng định dạng dd/MM/yyyy (hoặc yyyy-MM-dd)")]
         public string NgaySinh { get; set; }

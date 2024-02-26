@@ -213,145 +213,152 @@ namespace AmazingTech.InternSystem.Services
         //Update Intern
         public async Task<IActionResult> UpdateInternInfo(string user, UpdateInternInfoDTO model, string mssv)
         {
+            try {
+                var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
+                if (intern == null)
+                {
+                    return new BadRequestObjectResult($"Intern với MSSV: '{mssv}' không tồn tại!");
+                }
 
-            var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
-            if (intern == null)
-            {
-                return new BadRequestObjectResult($"Intern với MSSV: '{mssv}' không tồn tại!");
+                List<InternInfo> interns = await _internRepo.GetAllInternsInfoAsync();
+                if (interns.Any(intern => intern.Sdt == model.Sdt && intern.MSSV != mssv))
+                {
+                    return new BadRequestObjectResult("Sđt này đã có người sử dụng!");
+                }
+                if (interns.Any(intern => intern.EmailCaNhan == model.EmailCaNhan && intern.MSSV != mssv))
+                {
+                    return new BadRequestObjectResult("EmailCaNhan này đã có người sử dụng!");
+                }
+
+
+                ////Update UserViTri
+                //var existUserViTri = await _dbContext.UserViTris
+                //       .Where(uv => uv.UsersId == intern.UserId)
+                //       .ToListAsync();
+                //_dbContext.UserViTris.RemoveRange(existUserViTri);
+
+                //foreach (var viTriId in model.ViTrisId)
+                //{
+                //    // Kiểm tra nếu viTriId tồn tại trong CSDL
+                //    var isViTriExist = await _dbContext.ViTris.AnyAsync(vt => vt.Id == viTriId);
+
+                //    if (isViTriExist)
+                //    {
+
+                //        var userViTri = new UserViTri
+                //        {
+                //            UsersId = intern.UserId!,
+                //            ViTrisId = viTriId
+                //        };
+
+                //        _dbContext.UserViTris.Add(userViTri);
+                //    }
+                //    else
+                //    {
+                //        return new BadRequestObjectResult($"Vị trí với id: '{viTriId}' không tồn tại!");
+                //    }
+                //}
+
+
+                ////Update UserNhomZalo
+                //var existUserNhomZalo = await _dbContext.UserNhomZalos
+                //      .Where(unz => unz.UserId == intern.UserId)
+                //      .ToListAsync();
+                //_dbContext.UserNhomZalos.RemoveRange(existUserNhomZalo);
+
+                //foreach (var nhomZaloId in model.IdNhomZalo)
+                //{
+                //    var isNhomZaloExist = await _dbContext.NhomZalos.AnyAsync(nz => nz.Id == nhomZaloId);
+
+                //    if (isNhomZaloExist)
+                //    {
+                //        var userNhomZalo = new UserNhomZalo
+                //        {
+                //            UserId = intern.UserId!,
+                //            IdNhomZalo = nhomZaloId
+                //        };
+
+                //        _dbContext.UserNhomZalos.Add(userNhomZalo);
+                //    }
+                //    else
+                //    {
+                //        return new BadRequestObjectResult($"Nhóm Zalo với id '{nhomZaloId}' không tồn tại!");
+                //    }
+                //}
+
+
+                ////Update UserDuAn
+                //var existUserDuAn = await _dbContext.InternDuAns
+                //        .Where(uda => uda.UserId == intern.UserId)
+                //        .ToListAsync();
+                //_dbContext.InternDuAns.RemoveRange(existUserDuAn);
+
+                //foreach (var duAnId in model.IdDuAn)
+                //{
+                //    var isDuAnExist = await _dbContext.DuAns.AnyAsync(da => da.Id == duAnId);
+
+                //    if (isDuAnExist)
+                //    {
+                //        var userDuAn = new UserDuAn
+                //        {
+                //            UserId = intern.UserId!,
+                //            IdDuAn = duAnId
+                //        };
+
+                //        _dbContext.InternDuAns.Add(userDuAn);
+                //    }
+                //    else
+                //    {
+                //        return new BadRequestObjectResult($"Dự án với id '{duAnId}' không tồn tại!");
+                //    }
+                //}
+
+                //Check input IdTruong
+                var isTruongHocExist = await _dbContext.TruongHocs.AnyAsync(th => th.Id == model.IdTruong);
+
+                if (!isTruongHocExist)
+                {
+                    return new BadRequestObjectResult($"Trường học với id '{model.IdTruong}' không tồn tại!");
+                }
+
+                ////Update User
+                //var isUserExist = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == intern.UserId);
+                //isUserExist!.Email = model.EmailCaNhan;
+                //isUserExist.HoVaTen = model.HoTen; 
+
+                //_dbContext.Users.Update(isUserExist);
+                //await _dbContext.SaveChangesAsync();
+
+                if (model.Round == 0)
+                {
+                    intern.Status = "Chờ xét duyệt CV";
+                }
+                else if (model.Round == 1)
+                {
+                    intern.Status = "Chờ được phỏng vấn";
+                }
+                else
+                {
+                    intern.Status = "Đã đậu phỏng vấn";
+                }
+
+                var entity = _mapper.Map(model, intern);
+
+                var updateIntern = await _internRepo.UpdateInternInfoAsync(user, entity);
+
+
+                if (updateIntern == 0)
+                {
+                    return new BadRequestObjectResult($"Intern mssv: {mssv} cập nhật thất bại!");
+                }
+
+                return new OkObjectResult($"Cập nhật thành công Intern với mssv: '{mssv}' !");
             }
-
-            List<InternInfo> interns = await _internRepo.GetAllInternsInfoAsync();
-            if (interns.Any(intern => intern.Sdt == model.Sdt && intern.MSSV != mssv))
+            catch(Exception e)
             {
-                return new BadRequestObjectResult("Sđt này đã có người sử dụng!");
+                throw new Exception(e.Message);
             }
-            if (interns.Any(intern => intern.EmailCaNhan == model.EmailCaNhan && intern.MSSV != mssv ))
-            {
-                return new BadRequestObjectResult("EmailCaNhan này đã có người sử dụng!");
-            }
-
-
-            ////Update UserViTri
-            //var existUserViTri = await _dbContext.UserViTris
-            //       .Where(uv => uv.UsersId == intern.UserId)
-            //       .ToListAsync();
-            //_dbContext.UserViTris.RemoveRange(existUserViTri);
-
-            //foreach (var viTriId in model.ViTrisId)
-            //{
-            //    // Kiểm tra nếu viTriId tồn tại trong CSDL
-            //    var isViTriExist = await _dbContext.ViTris.AnyAsync(vt => vt.Id == viTriId);
-
-            //    if (isViTriExist)
-            //    {
-
-            //        var userViTri = new UserViTri
-            //        {
-            //            UsersId = intern.UserId!,
-            //            ViTrisId = viTriId
-            //        };
-
-            //        _dbContext.UserViTris.Add(userViTri);
-            //    }
-            //    else
-            //    {
-            //        return new BadRequestObjectResult($"Vị trí với id: '{viTriId}' không tồn tại!");
-            //    }
-            //}
-
-
-            ////Update UserNhomZalo
-            //var existUserNhomZalo = await _dbContext.UserNhomZalos
-            //      .Where(unz => unz.UserId == intern.UserId)
-            //      .ToListAsync();
-            //_dbContext.UserNhomZalos.RemoveRange(existUserNhomZalo);
-
-            //foreach (var nhomZaloId in model.IdNhomZalo)
-            //{
-            //    var isNhomZaloExist = await _dbContext.NhomZalos.AnyAsync(nz => nz.Id == nhomZaloId);
-
-            //    if (isNhomZaloExist)
-            //    {
-            //        var userNhomZalo = new UserNhomZalo
-            //        {
-            //            UserId = intern.UserId!,
-            //            IdNhomZalo = nhomZaloId
-            //        };
-
-            //        _dbContext.UserNhomZalos.Add(userNhomZalo);
-            //    }
-            //    else
-            //    {
-            //        return new BadRequestObjectResult($"Nhóm Zalo với id '{nhomZaloId}' không tồn tại!");
-            //    }
-            //}
-
-
-            ////Update UserDuAn
-            //var existUserDuAn = await _dbContext.InternDuAns
-            //        .Where(uda => uda.UserId == intern.UserId)
-            //        .ToListAsync();
-            //_dbContext.InternDuAns.RemoveRange(existUserDuAn);
-
-            //foreach (var duAnId in model.IdDuAn)
-            //{
-            //    var isDuAnExist = await _dbContext.DuAns.AnyAsync(da => da.Id == duAnId);
-
-            //    if (isDuAnExist)
-            //    {
-            //        var userDuAn = new UserDuAn
-            //        {
-            //            UserId = intern.UserId!,
-            //            IdDuAn = duAnId
-            //        };
-
-            //        _dbContext.InternDuAns.Add(userDuAn);
-            //    }
-            //    else
-            //    {
-            //        return new BadRequestObjectResult($"Dự án với id '{duAnId}' không tồn tại!");
-            //    }
-            //}
-
-            //Check input IdTruong
-            var isTruongHocExist = await _dbContext.TruongHocs.AnyAsync(th => th.Id == model.IdTruong);
-
-            if (!isTruongHocExist)
-            {
-                return new BadRequestObjectResult($"Trường học với id '{model.IdTruong}' không tồn tại!");
-            }
-
-            ////Update User
-            //var isUserExist = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == intern.UserId);
-            //isUserExist!.Email = model.EmailCaNhan;
-            //isUserExist.HoVaTen = model.HoTen; 
-
-            //_dbContext.Users.Update(isUserExist);
-            //await _dbContext.SaveChangesAsync();
-
-            if(model.Round == 0)
-            {
-                intern.Status = "Chờ xét duyệt CV";
-            }else if(model.Round == 1)
-            {
-                intern.Status = "Chờ được phỏng vấn";
-            }
-            else
-            {
-                intern.Status = "Đã đậu phỏng vấn";
-            }
-
-            var entity = _mapper.Map(model, intern);
-
-            var updateIntern = await _internRepo.UpdateInternInfoAsync(user, entity);
-
-
-            if (updateIntern == 0)
-            {
-                return new BadRequestObjectResult($"Intern mssv: {mssv} cập nhật thất bại!");
-            }
-
-            return new OkObjectResult($"Cập nhật thành công Intern với mssv: '{mssv}' !");
+            
 
         }
 

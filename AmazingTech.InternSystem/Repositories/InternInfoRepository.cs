@@ -145,13 +145,20 @@ namespace AmazingTech.InternSystem.Repositories
 
         public async Task<int> UpdateInternInfoAsync(string userId, InternInfo entity)
         {
-            var user = await _context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
-            string userName = user.UserName;
+            try {
+                var user = await _context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+                string userName = user.UserName;
 
-            entity.LastUpdatedBy = userName;
+                entity.LastUpdatedBy = userName;
 
-            _context.InternInfos?.Update(entity);
-            return await _context.SaveChangesAsync();
+                _context.InternInfos?.Update(entity);
+                return await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            
         }
 
         public async Task<InternInfo?> GetInternInfo(string id)
