@@ -9,6 +9,7 @@ using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using DocumentFormat.OpenXml.Office2010.CustomUI;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Identity;
@@ -64,9 +65,37 @@ namespace AmazingTech.InternSystem.Services
             {
                 return false;
             }
-            // Update user status (e.g., set DaXacNhanMail to true)
+
+            var lichphongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgDuocPhongVan(id);
+
+            var lichphongvanrespone = new LichPhongVanIntervieweeModel
+            {
+                DiaDiemPhongVan = lichphongvan.DiaDiemPhongVan,
+                InterviewForm = lichphongvan.InterviewForm.ToString(),
+                KetQua = lichphongvan.KetQua.ToString(),
+                NguoiDuocPhongVan = _userRepository.GetUserById(lichphongvan.IdNguoiDuocPhongVan).HoVaTen,
+                ThoiGianPhongVan = lichphongvan.ThoiGianPhongVan,
+                TrangThai = lichphongvan.TrangThai.ToString(),
+                NguoiPhongVan = _userRepository.GetUserById(lichphongvan.IdNguoiPhongVan).HoVaTen,
+                TimeDuration = lichphongvan.TimeDuration
+            };
+
+            var user = _userRepository.GetUserById(id);
+
+            string context = "Kính gửi bạn " + _userRepository.GetUserById(id).HoVaTen + ",<br><br>Đại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi gửi bạn thông báo về buổi phỏng vấn như sau: <br>" +
+                "<br>Thời gian phỏng vấn: " + lichphongvanrespone.ThoiGianPhongVan +
+                "<br>Khoảng thời gian phỏng vấn dự kiến :" + lichphongvanrespone.TimeDuration +
+                "<br> Hình thức phỏng vấn: " + lichphongvanrespone.InterviewForm.ToString() +
+                "<br>Địa điểm phỏng vấn: " + lichphongvanrespone.DiaDiemPhongVan +
+                "<br><br>Xin vui lòng cho chúng tôi  biết nếu có bất kỳ điều gì cần được điều chỉnh hoặc có bất kỳ thông tin nào khác chúng tôi cần cung cấp.<br><br>Trân trọng";
+
+            string subject = "[AMAZINGTECH - HR] THƯ THÔNG BÁO LỊCH PHỎNG VẤN";
+
+            _emailService.SendInterviewScheduleMail(context, user.Email, subject);
+
             lichPhongVan.DaXacNhanMail = true;
             _lichPhongVanRepository.UpdateLichPhongVan(lichPhongVan);
+
             return true;
         }
 
@@ -93,6 +122,7 @@ namespace AmazingTech.InternSystem.Services
             var resultIntern = _lichPhongVanRepository.GetScheduleByIntervieweeId(InternId).KetQua;
             string resultContext = "";
             string context = "";
+
 
             if (resultIntern == 0)
             {
@@ -216,8 +246,8 @@ namespace AmazingTech.InternSystem.Services
             };
             _lichPhongVanRepository.addNewLichPhongVan(NewLichPhongVan);
             string context = "Gửi bạn ứng viên,<br><br>Đại diện bộ phận Nhân sự (HR) tại <span style= \"font-weight: bold\">Công Ty TNHH Giải Pháp và Công nghệ Amazing</span>, chúng tôi xin chân thành ghi nhận sự quan tâm của bạn đối với cơ hội thực tập tại Công ty chúng tôi.<br>" +
-                "<br>Chúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi." +
-                "<br>Vui lòng xác nhận phỏng vấn bằng link dưới đây để chúng tôi có thể gửi lịch phỏng vấn cho bạn trên website: <br>";
+                "<br>Chúng tôi muốn mời bạn tham gia phỏng vấn để tìm hiểu và xem xét sự phù hợp của bạn với vị trí bạn muốn ứng tuyển tại công ty chúng tôi.<br>" +
+                "<br>Vui lòng xác nhận phỏng vấn bằng link dưới đây để chúng tôi có thể gửi lịch phỏng vấn cho bạn trên website: ";
 
             string subject = "[AMAZINGTECH - HR] THƯ GHI NHẬN THÔNG TIN THỰC TẬP SINH";
             _emailService.SendMail(context, model.Email, subject, InternId);
@@ -259,7 +289,13 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to get an interview schedule");
             }
+
             var lichphongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgDuocPhongVan(accountId);
+
+            if(lichphongvan.DaXacNhanMail == false)
+            {
+                throw new BadHttpRequestException("You need to confirm interview link in email to get schedule");
+            }
             var lichphongvanrespone = new LichPhongVanIntervieweeModel
             {
                 DiaDiemPhongVan = lichphongvan.DiaDiemPhongVan,

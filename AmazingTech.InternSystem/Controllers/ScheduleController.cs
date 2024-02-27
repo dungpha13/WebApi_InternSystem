@@ -93,7 +93,7 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/SendResultInterviewEmail")]
-        public IActionResult SendRessultInterviewEmail([FromQuery] string email)
+        public IActionResult SendResultInterviewEmail([FromQuery] string email)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
-        [Route("api/lich-phong-vans/Change-schudele")]
+        [Route("api/lich-phong-vans/Change-schedule")]
         public IActionResult UpdateScheduel(LichPhongVanRequestModel model)
         {
             try
