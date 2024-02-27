@@ -108,6 +108,12 @@ namespace AmazingTech.InternSystem.Services
         public IActionResult GetKiThucTapsByTruong(string idTruong)
         {
             List<KiThucTap> kis = _kiRepository.GetAllKiThucTaps().Where(_ => _.IdTruong.Equals(idTruong)).ToList();
+
+            if (kis.Count == 0)
+            {
+                return new BadRequestObjectResult($"Truong voi id {idTruong} khong ton tai");
+            }
+
             return new OkObjectResult(kis);
         }
 

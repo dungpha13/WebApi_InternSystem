@@ -52,7 +52,8 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 return context.KiThucTaps
-                        // .Include(ktt => ktt.InternInfos)
+                        .Include(ktt => ktt.Interns)
+                        .Include(ktt => ktt.Truong)
                         .FirstOrDefault(ktt => ktt.Id == id && ktt.DeletedBy == null);
             }
         }
