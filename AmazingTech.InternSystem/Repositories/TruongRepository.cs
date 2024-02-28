@@ -36,14 +36,19 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var truongs = context.Set<TruongHoc>().Where(t => t.DeletedBy == null).ToList();
+                var truongs = context.Set<TruongHoc>()
+                    .Where(t => t.DeletedBy == null)
+                    .Include(truong => truong.Interns)
+                    .ToList();
                 return truongs;
             }
         }
 
         public TruongHoc? GetTruong(string id)
         {
-            return _context.TruongHocs.FirstOrDefault(t => t.Id == id && t.DeletedBy == null);
+            return _context.TruongHocs
+                .Include(truong => truong.Interns)
+                .FirstOrDefault(t => t.Id == id && t.DeletedBy == null);
         }
 
         public int UpdateTruong(TruongHoc truong)

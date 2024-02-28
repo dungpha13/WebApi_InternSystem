@@ -1,7 +1,9 @@
 ﻿﻿using System.Security.Claims;
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models.Request.TruongHoc;
+using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingTech.InternSystem.Services
@@ -10,11 +12,12 @@ namespace AmazingTech.InternSystem.Services
     {
         private ITruongRepository _truongRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public TruongService(ITruongRepository truongRepository, IHttpContextAccessor httpContextAccessor)
+        private readonly IMapper _mapper;
+        public TruongService(ITruongRepository truongRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _truongRepository = truongRepository;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         public IActionResult AddTruong(AddTruongHocDTO request)
@@ -75,7 +78,7 @@ namespace AmazingTech.InternSystem.Services
         public IActionResult GetAllTruongs()
         {
             List<TruongHoc> truongs = _truongRepository.GetAllTruongs();
-            return new OkObjectResult(truongs);
+            return new OkObjectResult(_mapper.Map<List<TruongResponseDTO>>(truongs));
         }
 
         public IActionResult GetTruong(string id)
@@ -87,7 +90,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"Truong voi id {id} khong ton tai");
             }
 
-            return new OkObjectResult(truong);
+            return new OkObjectResult(_mapper.Map<TruongResponseDTO>(truong));
         }
 
         public IActionResult UpdateTruong(UpdateTruongHocDTO truong)

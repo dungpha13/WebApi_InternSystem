@@ -60,7 +60,7 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.NhomZalo, opt => opt.MapFrom(src => src.TenNhom));
             CreateMap<NhomZalo, AddUserNhomZaloDTO>().ReverseMap();
             CreateMap<NhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
-            
+
             CreateMap<User, UserNhomZaloDTO>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.HoVaTen));
             CreateMap<User, UpdateUserNhomZaloDTO>().ReverseMap();
@@ -76,7 +76,7 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<UserDuAn, CrudUserDuAnModel>().ReverseMap();
 
             CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
-            
+
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
@@ -98,9 +98,11 @@ namespace AmazingTech.InternSystem.Mapping
                 .ForMember(dest => dest.ViTris, opt => opt.MapFrom(src => src.UserViTris))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
-            
+
             CreateMap<PhongVan, AwserQuest>().ReverseMap();
             CreateMap<PhongVan, RatingModel>().ReverseMap();
+            CreateMap<TruongHoc, TruongResponseDTO>()
+                .ForMember(dest => dest.Interns, otp => otp.MapFrom(src => src.Interns.Count()));
         }
     }
 }
