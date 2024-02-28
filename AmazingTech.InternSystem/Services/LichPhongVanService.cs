@@ -2,7 +2,9 @@
 using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Request.LichPhongVan;
 using AmazingTech.InternSystem.Models.Response;
+using AmazingTech.InternSystem.Models.Response.User;
 using AmazingTech.InternSystem.Repositories;
+using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Math;
@@ -14,6 +16,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -29,8 +32,9 @@ namespace AmazingTech.InternSystem.Services
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request);
         public void deleteSchedudle(string ScheduleId);
         public bool ConfirmEmail(string id);
-        public void SendResultInterviewEmail(string email);
+        public void SendResultInterviewEmail(string email, string linkNhomZaloTong, string linkNhomZaloRieng);
         public List<User> GetInternWithoutInternView();
+        public Task<IActionResult> GetAllUserByKetQua(Result ketqua);
         public void UpdateResult(string idlichphongvan, Result result, string Vitri);
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
         public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
@@ -48,7 +52,8 @@ namespace AmazingTech.InternSystem.Services
         private readonly IEmailService _emailService;
         private readonly IViTriRepository _viTriRepository;
         private readonly IUserViTriRepository _userViTriRepository;
-        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager, IViTriRepository viTriRepository, IUserViTriRepository userViTriRepository)
+        private readonly IMapper _mapper;
+        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager, IViTriRepository viTriRepository, IUserViTriRepository userViTriRepository, IMapper mapper)
         {
             _userManager = userManager;
             _emailService = emailService;
@@ -57,6 +62,7 @@ namespace AmazingTech.InternSystem.Services
             _httpContextAccessor = httpContextAccessor;
             _viTriRepository = viTriRepository;
             _userViTriRepository = userViTriRepository;
+            _mapper = mapper;
         }
         public bool ConfirmEmail(string id)
         {
@@ -99,7 +105,7 @@ namespace AmazingTech.InternSystem.Services
             return true;
         }
 
-        public void SendResultInterviewEmail(string email)
+        public void SendResultInterviewEmail(string email, string linkNhomZaloTong, string linkNhomZaloRieng)
         {
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -107,9 +113,9 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-            var InternId = _userRepository.GetUserIdByEmail(email);
-            var user = _userRepository.GetUserById(InternId);
-            if (InternId == null)
+
+            var user = _userRepository.GetUserByEmail(email);
+            if (user == null)
             {
                 throw new BadHttpRequestException("This Mail is not exist in database");
             }
@@ -119,16 +125,16 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("You don't have permission to send email");
             }
 
-            var resultIntern = _lichPhongVanRepository.GetScheduleByIntervieweeId(InternId).KetQua;
+            var resultIntern = _lichPhongVanRepository.GetScheduleByIntervieweeId(user.Id);
             string resultContext = "";
             string context = "";
 
 
-            if (resultIntern == 0)
+            if (resultIntern.KetQua == 0)
             {
                 resultContext = "<span style = \"color:red; text-decoration:underline; font-weight: bold\">CHƯA ĐẠT YÊU CẦU THAM GIA THỰC TẬP</span>";
 
-                context = "Chào bạn ứng viên,<br><br>Đại diện bộ phận Nhân sự (HR) tại<span style = \"font-weight: bold\"> Công Ty TNHH Giải Pháp và Công nghệ Amazing</span>. Trước hết chúng tôi chân thành cảm ơn vì sự quan tâm và tham gia tích cực của bạn trong buổi phỏng vấn vị trí thực tập tại Công ty chúng tôi<br>" +
+                context = "<br>Chào bạn ứng viên,<br><br>Đại diện bộ phận Nhân sự (HR) tại<span style = \"font-weight: bold\"> Công Ty TNHH Giải Pháp và Công nghệ Amazing</span>. Trước hết chúng tôi chân thành cảm ơn vì sự quan tâm và tham gia tích cực của bạn trong buổi phỏng vấn vị trí thực tập tại Công ty chúng tôi<br>" +
                           "<br>Sau quá trình xem xét kỹ lưỡng, chúng tôi rất tiếc phải thông báo rằng<span style = \"font-weight: bold; font-style: italic\"> kết quả sau buổi phỏng vấn của bạn là</span>: " + resultContext + "<br>" +
                           "<br>Đây là một quyết định khó khăn, chúng tôi hiểu rằng có thể nó sẽ mang đến sự thất vọng. Cảm ơn bạn đã dành thời gian và nổ lực cho quá trình phỏng vấn đối với <span style=\"font-weight: bold\">Công Ty TNHH Giải Pháp và Công Nghệ Amazing</span><br>" +
                           "<br>Chúng tôi mong rằng bạn sẽ tìm được cơ hội phát triển tốt nhất cho sự nghiệp của mình trong tương lai.<br>" +
@@ -138,17 +144,19 @@ namespace AmazingTech.InternSystem.Services
             {
                 resultContext = "<span style = \"color:green; text-decoration:underline; font-weight: bold\">ĐẠT YÊU CẦU THAM GIA THỰC TẬP</span>";
 
-                context = "Chào bạn ứng viên,<br><br>Đại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, chúng tôi rất hân hạnh khi bạn đã quyết định tham gia chương trình thực tập tại Công ty của chúng tôi.<br>" +
+                context = "Chào <span style = \"font-weight: bold\">bạn ứng viên</span>,<br><br>Đại diện bộ phận Nhân sự (HR) tại <span style = \"font-weight: bold\">Công Ty TNHH Giải Pháp và Công nghệ Amazing</span>, chúng tôi rất hân hạnh khi bạn đã quyết định tham gia chương trình thực tập tại Công ty của chúng tôi.<br>" +
                     "<br>Đây là kết quả sau buổi phỏng vấn của bạn: " + resultContext + "<br>" +
                     "<br><h3 style = \"font-weight: bold\">A. THÔNG TIN VỀ KỲ THỰC TẬP:</h3>" +
-                    "<br>&nbsp;&nbsp;&nbsp; 1. Hình thức thực tập: Linh động giữa Online và Offline<br>" +
-                    "&nbsp;&nbsp;&nbsp; 2. Thời gian thực tập: Giờ hành chính (Thứ 2 - thứ 6, từ 8h00 - 17h00).<br>" +
-                    "&nbsp;&nbsp;&nbsp; 3. Group Zalo tham gia vào thực tập: <br>" +
-                    "&nbsp;&nbsp;&nbsp; 4. Hỗ trợ: <br>" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Chấm điểm gửi báo cáo hàng tuần (nếu trường yêu cầu) <br>" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Đóng mộc xác nhận cuối kỳ thực tập <br>" +
-                    "<br><span style=\"font-style: italic;\">Lưu ý: Chúng tôi muốn bạn biết rằng vị trí bạn mong muốn ban đầu và vị trí bạn thực tập không cố định, có thể được điều chỉnh dựa trên năng lực của bạn và yêu cầu dự án của công ty trong quá trình thực tập. </span><br>" +
-                    "<br>Chúng tôi tin rằng bạn sẽ mang đến một giá trị đặc biệt cho công ty của chúng tôi và hy vọng rằng bạn sẽ có một trải nghiệm thực tập thú vị, bổ ích tại Amazing Tech.<br>" +
+                    "&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">1. Hình thức thực tập:</span> Linh động giữa Online và Offline<br>" +
+                    "&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">2. Thời gian thực tập:</span> Giờ hành chính (Thứ 2 - thứ 6, từ 8h00 - 17h00).<br>" +
+                    "&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">3. Group Zalo tham gia vào thực tập</span>: <br>" +
+                    $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; <a href=\"{linkNhomZaloTong}\">Link Nhóm Zalo Chung</a>" +
+                    $"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; <a href=\"{linkNhomZaloRieng}\">Link Nhóm Zalo Chuyên Ngành</a>" +
+                    "<br>&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">4. Hỗ trợ:</span> <br>" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; Chấm điểm gửi báo cáo hàng tuần (nếu trường yêu cầu) <br>" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; Đóng mộc xác nhận cuối kỳ thực tập <br>" +
+                    "<br><span style=\"font-style: italic;font-weight: bold; text-decoration: underline;\">Lưu ý</span>: <span style=\"font-style: italic;\">Chúng tôi muốn bạn biết rằng vị trí bạn mong muốn ban đầu và vị trí bạn thực tập không cố định, có thể được điều chỉnh dựa trên năng lực của bạn và yêu cầu dự án của công ty trong quá trình thực tập. </span><br>" +
+                    "<br>Chúng tôi tin rằng bạn sẽ mang đến một giá trị đặc biệt cho công ty của chúng tôi và hy vọng rằng bạn sẽ có một trải nghiệm thực tập thú vị, bổ ích tại <span style = \"font-weight: bold\">Amazing Tech</span>.<br>" +
                     "<br>Trân trọng.<br>" +
                     "<div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div style=\"color:rgb(34,34,34)\"><table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background:transparent;font-size:14px;border-spacing:0px;border-collapse:collapse;font-family:Arial,sans-serif;color:rgb(46,154,164);max-width:500px\"><tbody><tr><td colspan=\"2\" width=\"500\" style=\"padding:0px 0px 4px;border-bottom:1px solid rgb(47,154,163)\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:18pt\"><span style=\"font-weight:700\"><font color=\"#0b5394\">--<br>Amazing Tech</font></span></span><br></font><span style=\"color:rgb(58,67,69);font-family:Tahoma,sans-serif;font-size:13.3333px;font-weight:700\">Software Development Company</span>&nbsp;&nbsp;<font face=\"tahoma, sans-serif\"><span style=\"font-size:10pt\">&nbsp;&nbsp;<font color=\"#6fa8dc\">&nbsp;</font><font color=\"#0b5394\">|</font>&nbsp;</span><a href=\"http://amazingtech.vn/\" rel=\"noopener\" style=\"color:rgb(17,85,204);background-color:transparent;font-size:10pt;font-weight:bold\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=http://amazingtech.vn/&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw1vaYI2qEOK2T13SAzEBs2K\"><span style=\"font-size:10pt\"><font color=\"#0b5394\">amazingtech.vn</font></span></a></font></td></tr><tr><td width=\"120\" style=\"padding:22px 0px 0px\"><p style=\"margin:0px;padding:0px\"><font face=\"tahoma, sans-serif\"><img border=\"0\" alt=\"Photo\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NYIQZghSrU6IZdMz9suNlE9PjPuyZ1EdHCVmzj1vU2jZHotFhiSOIh7oGk9mHRBWejqWtG8D56PF6Q3q59IV4nwG1DVQ2MRcXQl_NltCnkIt-h6k3jG4aAtPnP9QkKcWec1tfc=s0-d-e1-ft#https://amazingtech.vn/Content/amazingtech/assets/img/logo-amazing-tech-v2.png\" style=\"border:0px;vertical-align:middle;max-width:90px\" class=\"CToWUd\" data-bit=\"iit\"></font></p></td><td style=\"padding:25px 0px 0px\"><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><font color=\"#0b5394\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\">T:</span>&nbsp;</font>&nbsp;<span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">(028) 9999 - 7939</span></font></p><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\"><font color=\"#0b5394\">M:</font></span>&nbsp;<span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">(+84) 888 181 100</span></font></p><p style=\"margin:0px;padding-bottom:2px;padding-top:0px;line-height:10pt\"><font face=\"tahoma, sans-serif\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\"><font color=\"#0b5394\">E:</font></span><font color=\"#3d85c6\">&nbsp;</font><a href=\"mailto:amazingtech.hr@gmail.com\" style=\"color:rgb(16,16,16);background-color:transparent;font-size:9pt;line-height:10pt\" target=\"_blank\"><span style=\"font-size:9pt;line-height:10pt\">amazingtech.hr@gmail.com</span></a></font></p><p style=\"margin:0px;line-height:10pt;padding-bottom:2px;padding-top:0px\"><font face=\"tahoma, sans-serif\"><font color=\"#0b5394\"><span style=\"font-size:9pt;line-height:10pt;font-weight:bold\">A:</span>&nbsp;</font><span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\">74 Nguyễn Cửu Đàm, Phường Tân Sơn Nhì, Quận Tân Phú, TP.HCM</span></font></p><p style=\"margin:0px;line-height:10pt;padding-bottom:2px;padding-top:0px\"><span style=\"font-size:9pt;line-height:10pt;color:rgb(16,16,16)\"><font face=\"tahoma, sans-serif\">&nbsp; &nbsp; &nbsp;S9.02A Vinhome Grand Park, Nguyễn Xiển, Phường Phước Thiện, Quận Thủ Đức, TP.HCM</font></span></p><p style=\"margin:4px 0px 0px;padding-bottom:0px;padding-top:0px\"><font face=\"tahoma, sans-serif\"><a href=\"https://www.facebook.com/amazingtech74\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.facebook.com/amazingtech74&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw0PsTtrffG8GO6TFt1mZkDe\"><img border=\"0\" width=\"20\" alt=\"facebook icon\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Nb-H8iXOIGiIIOjCq60PcYJdwAiL3JI9ca8Zvfz7PzPeRO7EP5yLfmQlXiaR8gk8shP-__vXefTiEmbGIHRo-lRY8PhPrnocnAIhlpItBw65ruLKdU7nElsW1pxywyN9YiYA_O7zIbih2al=s0-d-e1-ft#https://www.mail-signatures.com/signature-generator/img/templates/brands-voice/fb.png\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;&nbsp;<a href=\"https://www.youtube.com/@amazingtechvietnam\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.youtube.com/@amazingtechvietnam&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw0Zu2_6T3U_WB0AOHMaEeUq\"><img border=\"0\" width=\"20\" alt=\"youtube icon\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NaAgTDtnkTEwIcx8mxmO4-t06QPEl5sXLKF7gnOvFVQ8c31ca2W8BQmyAIlOBlSAjvOrXh_A452L86DfYtVK0dug2BbivN6r8XOyEEjnuvCDGtihKh_bNird28dMxannXIagpI_NkDRXrF4=s0-d-e1-ft#https://www.mail-signatures.com/signature-generator/img/templates/brands-voice/yt.png\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;&nbsp;<a href=\"https://www.linkedin.com/company/amazingtech74\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://www.linkedin.com/company/amazingtech74&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw2Tb7NjZTwhK_taupiJr9iw\"><img border=\"0\" width=\"20\" alt=\"linkedin icon\" src=\"https://ci3.googleusercontent.com/meips/ADKq_Na22lJt_btcmFPUMmTXijHqUbMnhZF2iNtgvomlgswJg-7vB888Zz5mYQcCEZUJa3yv8bugefIkEYkRQaxxeNYbBGXdytU5BAgd5UyfBRUSkr4Whm9q6UjET04sVtiekVBDhGzB-6L_JUwn=s0-d-e1-ft#https://www.mail-signatures.com/signature-generator/img/templates/brands-voice/ln.png\" style=\"border:0px;vertical-align:middle;height:20px;width:20px\" class=\"CToWUd\" data-bit=\"iit\"></a>&nbsp;</font></p></td></tr><tr><td colspan=\"2\" style=\"padding:25px 0px 0px\"><a href=\"https://amazingtech.vn/\" rel=\"noopener\" style=\"color:rgb(51,122,183);background-color:transparent\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?q=https://amazingtech.vn/&amp;source=gmail&amp;ust=1706004238915000&amp;usg=AOvVaw11h_SNDADPSAg0WiKKnBHk\"><font face=\"tahoma, sans-serif\"><img border=\"0\" alt=\"Banner\" width=\"527\" src=\"https://ci3.googleusercontent.com/meips/ADKq_NZT7FwFWtXD-LTbufKOqpFfhg4b1eEPlZOVdgqqEYnGh-4T6jGP9ZYxGLs3OM5QSw2rwPVXTRBWooBDxsi466XySJNe9bvDYVVSqpql6UIqKEITfpN3U68wh91TZUyh=s0-d-e1-ft#https://amazingtech.vn/Content/amazingtech/assets/img/icon-1-1024x761.png\" height=\"392\" style=\"border:0px;vertical-align:middle;margin-right:0px\" class=\"CToWUd\" data-bit=\"iit\"></font></a></td></tr></tbody></table></div></div></div>";
             }
@@ -677,6 +685,32 @@ namespace AmazingTech.InternSystem.Services
             _userViTriRepository.AddUserViTriRepository(UserViTri);
             _lichPhongVanRepository.UpdateLichPhongVan(schedule);
 
+        }
+
+        public async Task<IActionResult> GetAllUserByKetQua(Result ketqua)
+        {
+            var lichphongvan = _lichPhongVanRepository.GetLichPhongVanByKetQua(ketqua);
+
+            List<User> resultUserList = new List<User>();
+
+            for(int i=0;i < lichphongvan.Count; i++)
+            {
+                var user = await _userManager.Users.Where(x => x.Id == lichphongvan[i].IdNguoiDuocPhongVan && x.DeletedTime == null).SingleOrDefaultAsync();   
+                resultUserList.Add(user);
+            }
+
+            var mappedUserList = _mapper.Map<List<GetUserDTO>>(resultUserList);
+
+            var result = new List<GetUserDTO>();
+            foreach (var user in mappedUserList)
+            {
+                var identityUser = await _userManager.FindByIdAsync(user.Id);
+                var roles = await _userManager.GetRolesAsync(identityUser);
+                user.Roles = roles.ToList();
+                result.Add(user);
+            }
+
+            return new OkObjectResult(result);
         }
     }
 }

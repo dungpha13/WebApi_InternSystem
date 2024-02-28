@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.Response;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Office2010.Excel;
@@ -25,6 +26,7 @@ namespace AmazingTech.InternSystem.Repositories
         public List<LichPhongVan> GetListScheduleByInterviewer(string interviewerid);
 
         public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
+        public List<LichPhongVan> GetLichPhongVanByKetQua(Result ketqua);
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -85,7 +87,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == intervieweeid && x.DeletedBy == null).SingleOrDefault();
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == intervieweeid && x.DeletedTime == null).SingleOrDefault();
             }
         }
         public List<LichPhongVan> getScheduleInPeriodTime(DateTime startDate , DateTime EndTime)
@@ -135,6 +137,15 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == id && x.DeletedTime == null).SingleOrDefault();
+                return list;
+            }
+        }
+
+        public List<LichPhongVan> GetLichPhongVanByKetQua(Result ketqua)
+        {
+            using (var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.KetQua == ketqua && x.DeletedTime == null).ToList();
                 return list;
             }
         }
