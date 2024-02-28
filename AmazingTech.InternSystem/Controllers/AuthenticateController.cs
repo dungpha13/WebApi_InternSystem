@@ -192,8 +192,8 @@ namespace AmazingTech.InternSystem.Controllers
             });
         }
 
-        [HttpGet("forgot-password/")]
-        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        [HttpGet("forgot-password/{email}")]
+        public async Task<IActionResult> ForgotPassword([FromRoute] string email)
         {
             // Check user with email exists
             var user = await _userManager.FindByEmailAsync(email);
