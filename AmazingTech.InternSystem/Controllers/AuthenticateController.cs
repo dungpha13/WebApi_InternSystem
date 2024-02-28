@@ -192,8 +192,8 @@ namespace AmazingTech.InternSystem.Controllers
             });
         }
 
-        [HttpGet("forgot-password/{email}")]
-        public async Task<IActionResult> ForgotPassword([FromRoute] string email)
+        [HttpGet("forgot-password/")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             // Check user with email exists
             var user = await _userManager.FindByEmailAsync(email);
@@ -212,7 +212,8 @@ namespace AmazingTech.InternSystem.Controllers
 
             return Ok(new
             {
-                message = "Sent reset link to your email."
+                message = "Sent reset link to your email.",
+                resetToken = token
             });
         }
 
