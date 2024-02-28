@@ -220,6 +220,11 @@ namespace AmazingTech.InternSystem
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            IConfiguration configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+            string accountDefaultHttpProtocol = configuration["AppSettings:ACCOUNT_DEFAULT_HTTP_PROTOCOL"];
 
             app.UseCors("AllowAll");
 
