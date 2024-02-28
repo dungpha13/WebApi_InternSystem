@@ -19,4 +19,5 @@ RUN dotnet publish "AmazingTech.InternSystem.csproj" -c Release -o /app/publish 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ACCOUNT_DEFAULT_HTTP_PROTOCOL=https
 ENTRYPOINT ["dotnet", "AmazingTech.InternSystem.dll"]
