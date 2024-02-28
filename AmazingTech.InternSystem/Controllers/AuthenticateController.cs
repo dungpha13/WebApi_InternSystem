@@ -214,6 +214,7 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(new
             {
                 message = "Sent reset link to your email.",
+                token,
                 encodedToken = WebUtility.UrlEncode(token),
                 decodedToken = WebUtility.UrlDecode(token)
             });
@@ -235,14 +236,19 @@ namespace AmazingTech.InternSystem.Controllers
 
             if (!result.Succeeded)
             {
-                var result2 = await _userManager.ResetPasswordAsync(user, (resetPasswordDTO.ResetToken), resetPasswordDTO.NewPassword);
+                var result2 = await _userManager.ResetPasswordAsync(user, WebUtility.UrlEncode(resetPasswordDTO.ResetToken), resetPasswordDTO.NewPassword);
 
                 if (!result2.Succeeded)
                 {
-                    return BadRequest(new
+                    var result3 = await _userManager.ResetPasswordAsync(user, (resetPasswordDTO.ResetToken), resetPasswordDTO.NewPassword);
+
+                    if (!result3.Succeeded)
                     {
-                        message = "Cannot verify token."
-                    });
+                        return BadRequest(new
+                        {
+                            message = "Cannot verify token."
+                        });
+                    }
                 }
             }
             return Ok(new
