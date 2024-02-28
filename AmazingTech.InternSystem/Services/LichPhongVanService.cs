@@ -172,9 +172,13 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
-            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0) || model.MailNgPhongVan == null)
+            if (model.ThoiGianPhongVan == null || model.DiaDiemPhongVan.Length == 0 || model.Email == null || TimeSpan.FromMinutes(model.TimeDuration) <= new TimeSpan(0, 0, 0) || model.MailNgPhongVan == null || model.interviewForm == null)
             {
                 throw new BadHttpRequestException("You need to fill all information");
+            }
+            if(!Enum.IsDefined(typeof(InterviewForm), model.interviewForm))
+            {
+                throw new BadHttpRequestException("This InterviewForm is invalid");
             }
             if (model.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || model.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
             {
