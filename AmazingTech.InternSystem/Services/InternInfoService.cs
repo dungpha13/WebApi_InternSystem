@@ -106,7 +106,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 return new BadRequestObjectResult("EmailCaNhan này đã được sử dụng!");
             }
-           
+
             if (interns.Any(intern => intern.EmailTruong == model.EmailTruong))
             {
                 return new BadRequestObjectResult("EmailTruong này đã được sử dụng!");
@@ -213,7 +213,7 @@ namespace AmazingTech.InternSystem.Services
         //Update Intern
         public async Task<IActionResult> UpdateInternInfo(string user, UpdateInternInfoDTO model, string mssv)
         {
-         
+
             var intern = await _dbContext.InternInfos.FirstOrDefaultAsync(x => x.MSSV == mssv && x.DeletedBy == null);
             if (intern == null)
             {
@@ -225,7 +225,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 return new BadRequestObjectResult("Sđt này đã có người sử dụng!");
             }
-            if (interns.Any(intern => intern.EmailCaNhan == model.EmailCaNhan && intern.MSSV != mssv ))
+            if (interns.Any(intern => intern.EmailCaNhan == model.EmailCaNhan && intern.MSSV != mssv))
             {
                 return new BadRequestObjectResult("EmailCaNhan này đã có người sử dụng!");
             }
@@ -329,10 +329,11 @@ namespace AmazingTech.InternSystem.Services
             //_dbContext.Users.Update(isUserExist);
             //await _dbContext.SaveChangesAsync();
 
-            if(model.Round == 0)
+            if (model.Round == 0)
             {
                 intern.Status = "Chờ xét duyệt CV";
-            }else if(model.Round == 1)
+            }
+            else if (model.Round == 1)
             {
                 intern.Status = "Chờ được phỏng vấn";
             }
@@ -544,7 +545,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult("Something went wrong!");
             }
 
-            return new OkResult();
+            return new OkObjectResult("Success!");
         }
     }
 }
