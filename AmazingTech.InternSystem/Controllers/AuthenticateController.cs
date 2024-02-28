@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AmazingTech.InternSystem.Services;
 using AmazingTech.InternSystem.Models.Request.Authenticate;
 using DocumentFormat.OpenXml.Office2013.Excel;
+using System.Net;
 
 namespace AmazingTech.InternSystem.Controllers
 {
@@ -213,7 +214,8 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(new
             {
                 message = "Sent reset link to your email.",
-                resetToken = token
+                encodedToken = WebUtility.UrlEncode(token),
+                decodedToken = WebUtility.UrlDecode(token)
             });
         }
 
@@ -229,14 +231,19 @@ namespace AmazingTech.InternSystem.Controllers
                 });
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, resetPasswordDTO.ResetToken, resetPasswordDTO.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, WebUtility.UrlDecode(resetPasswordDTO.ResetToken), resetPasswordDTO.NewPassword);
 
             if (!result.Succeeded)
             {
-                return BadRequest(new
+                var result2 = await _userManager.ResetPasswordAsync(user, (resetPasswordDTO.ResetToken), resetPasswordDTO.NewPassword);
+
+                if (!result2.Succeeded)
                 {
-                    message = "Cannot verify token."
-                });
+                    return BadRequest(new
+                    {
+                        message = "Cannot verify token."
+                    });
+                }
             }
             return Ok(new
             {
