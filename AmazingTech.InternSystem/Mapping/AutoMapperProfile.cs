@@ -71,7 +71,10 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<UserNhomZalo, UpdateUserNhomZaloDTO>().ReverseMap();
 
             CreateMap<DuAn, DuAnModel>().ReverseMap();
+            CreateMap<DuAn, CrudDuAnModel>().ReverseMap();
             CreateMap<UserDuAn, UserDuAnModel>().ReverseMap();
+            CreateMap<UserDuAn, CrudUserDuAnModel>().ReverseMap();
+
             CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
             
             CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
