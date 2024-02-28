@@ -214,9 +214,9 @@ namespace AmazingTech.InternSystem.Controllers
             return Ok(new
             {
                 message = "Sent reset link to your email.",
-                token,
-                encodedToken = WebUtility.UrlEncode(token),
-                decodedToken = WebUtility.UrlDecode(token)
+                //token,
+                //encodedToken = WebUtility.UrlEncode(token),
+                //decodedToken = WebUtility.UrlDecode(token)
             });
         }
 
