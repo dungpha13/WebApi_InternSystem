@@ -12,6 +12,7 @@ namespace AmazingTech.InternSystem.Models.Request.LichPhongVan
         public string Email { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime ThoiGianPhongVan { get; set; }
+
         public InterviewForm interviewForm { get; set; }
         public int TimeDuration { get; set; }
         public string MailNgPhongVan { get; set; }

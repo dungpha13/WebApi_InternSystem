@@ -77,7 +77,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.Id == scheduleId).SingleOrDefault();
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.Id == scheduleId && x.DeletedBy == null).SingleOrDefault();
             }
         }
 
