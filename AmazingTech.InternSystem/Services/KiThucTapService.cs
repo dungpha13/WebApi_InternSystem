@@ -121,7 +121,7 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult($"KiThucTap voi id Truong {idTruong} khong ton tai");
             }
 
-            return new OkObjectResult(kis);
+            return new OkObjectResult(_mapper.Map<List<KiThucTapResponseDTO>>(kis));
         }
 
         public IActionResult UpdateKiThucTap(UpdateKiThucTapDTO ki, string id)
