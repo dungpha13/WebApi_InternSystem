@@ -105,7 +105,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = _configuration.GetValue<string>("Url:Backend") + "api/auth/redirect-google?role=Intern",
+                RedirectUri = "api/auth/redirect-google?role=Intern",
                 Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
@@ -118,7 +118,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = _configuration.GetValue<string>("Url:Backend") + "api/auth/redirect-google?role=School",
+                RedirectUri = "api/auth/redirect-google?role=School",
                 Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
