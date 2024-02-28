@@ -10,8 +10,5 @@
         public string TrangThaiThucTap { get; set; }
         public List<string>? ViTris { get; set; }
         public List<string>? Roles { get; set; }
-        public DateTime? CreatedTime { get; set; }
-        public DateTime? LastUpdatedTime { get; set; }
-        public DateTime? DeletedTime { get; set; }
     }
 }

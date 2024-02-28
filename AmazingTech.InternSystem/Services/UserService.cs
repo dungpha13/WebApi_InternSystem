@@ -606,7 +606,7 @@ namespace AmazingTech.InternSystem.Services
             }
 
             //Check if user is exist or not
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString());
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id.ToString() && x.DeletedTime == null);
             if (user == null)
             {
                 return new NotFoundObjectResult(new
