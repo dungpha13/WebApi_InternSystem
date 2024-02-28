@@ -36,14 +36,14 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(duAn);
         }
 
-        public IActionResult CreateDuAn(string user, DuAnModel createDuAn)
+        public IActionResult CreateDuAn(string user, CrudDuAnModel createDuAn)
         {
             DuAn duAn = _mapper.Map<DuAn>(createDuAn);
             var result = _duAnRepo.CreateDuAn(user, duAn);
             return new OkObjectResult(result);
         }
 
-        public IActionResult UpdateDuAn(string id, string user, DuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn(string id, string user, CrudDuAnModel updatedDuAn)
         {
             DuAn duAn = _mapper.Map<DuAn>(updatedDuAn);
             var result = _duAnRepo.UpdateDuAn(id, user, duAn);

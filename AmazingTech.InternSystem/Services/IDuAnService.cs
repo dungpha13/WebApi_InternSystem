@@ -13,8 +13,8 @@ namespace AmazingTech.InternSystem.Services
         IActionResult SearchProject(string ten, string leaderName, DateTime? startDate, DateTime? endDate);
         IActionResult GetAllDuAns();
         IActionResult GetDuAnById(string id);
-        IActionResult CreateDuAn(string user, DuAnModel createDuAn);
-        IActionResult UpdateDuAn(string id, string user, DuAnModel updatedDuAn);
+        IActionResult CreateDuAn(string user, CrudDuAnModel createDuAn);
+        IActionResult UpdateDuAn(string id, string user, CrudDuAnModel updatedDuAn);
         IActionResult DeleteDuAn(string id, string user);
 
         //UserDuAn methods

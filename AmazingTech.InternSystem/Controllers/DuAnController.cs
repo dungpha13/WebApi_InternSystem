@@ -143,7 +143,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("create-project")]
-        public IActionResult CreateDuAn([FromBody] DuAnModel createDuAn)
+        public IActionResult CreateDuAn([FromBody] CrudDuAnModel createDuAn)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update-project/{id}")]
-        public IActionResult UpdateDuAn(string id, [FromBody] DuAnModel updatedDuAn)
+        public IActionResult UpdateDuAn(string id, [FromBody] CrudDuAnModel updatedDuAn)
         {
             try
             {
