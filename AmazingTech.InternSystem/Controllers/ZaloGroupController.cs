@@ -1,27 +1,19 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using static AmazingTech.InternSystem.Data.Enum.Enums;
 
 namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/group-zalos")]
     [ApiController]
-    //[Authorize(Roles = "Admin,Hr,Mentorn")]
+    [Authorize(Roles = "Admin,HR")]
     public class ZaloGroupController : ControllerBase
     {
         private readonly INhomZaloService _nhomZaloService;

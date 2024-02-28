@@ -8,6 +8,7 @@ using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -17,7 +18,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/du-ans")]
     [ApiController]
-    //[Authorize(Roles = "Admin,Hr,Mentorn")]
+    [Authorize(Roles = "Admin,HR")]
     public class DuAnController : ControllerBase
     {
         private readonly IDuAnService _duAnService;
