@@ -18,7 +18,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/du-ans")]
     [ApiController]
-    [Authorize(Roles = "Admin,HR")]
+    //[Authorize(Roles = "Admin,HR")]
     public class DuAnController : ControllerBase
     {
         private readonly IDuAnService _duAnService;

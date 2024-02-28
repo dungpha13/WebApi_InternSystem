@@ -82,6 +82,12 @@ namespace AmazingTech.InternSystem.Repositories
                 throw new Exception("DuAn with the same name already exists.");
             }
 
+            var existingLeader = _dbContext.Users.SingleOrDefault(d => d.Id == createDuAn.LeaderId && d.DeletedTime == null);
+            if (existingLeader == null)
+            {
+                throw new Exception($"Leader with ID ({createDuAn.LeaderId}) not found.");
+            }
+
             createDuAn.CreatedBy = user;
             createDuAn.LastUpdatedBy = user;
             createDuAn.LastUpdatedTime = DateTime.Now;
@@ -92,6 +98,12 @@ namespace AmazingTech.InternSystem.Repositories
 
         public int UpdateDuAn(string duAnId, string user, DuAn updatedDuAn)
         {
+            var existingLeader = _dbContext.Users.SingleOrDefault(d => d.Id == updatedDuAn.LeaderId && d.DeletedTime == null);
+            if (existingLeader == null)
+            {
+                throw new Exception($"Leader with ID ({updatedDuAn.LeaderId}) not found.");
+            }
+
             var existingDuAn = _dbContext.DuAns.SingleOrDefault(d => d.Id == duAnId && d.DeletedTime == null);
             if (existingDuAn == null)
             {

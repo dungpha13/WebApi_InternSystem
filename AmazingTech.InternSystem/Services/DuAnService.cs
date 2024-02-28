@@ -39,7 +39,7 @@ namespace AmazingTech.InternSystem.Services
         public IActionResult CreateDuAn(string user, CrudDuAnModel createDuAn)
         {
             DuAn duAn = _mapper.Map<DuAn>(createDuAn);
-            var result = _duAnRepo.CreateDuAn(user, duAn);
+            var result = _duAnRepo.CreateDuAn( user, duAn);
             return new OkObjectResult(result);
         }
 

@@ -4,7 +4,9 @@ namespace AmazingTech.InternSystem.Models.DTO.DuAn
 {
     public class CrudDuAnModel : IValidatableObject
     {
+        [Required]
         public string? Ten { get; set; }
+        [Required]
         public string LeaderId { get; set; }
 
         [Required(ErrorMessage = "ThoiGianBatDau la bat buoc")]
