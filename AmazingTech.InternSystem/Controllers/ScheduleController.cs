@@ -93,11 +93,11 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = ("Bearer"))]
         [Route("api/lich-phong-vans/SendResultInterviewEmail")]
-        public IActionResult SendResultInterviewEmail([FromQuery] string email)
+        public IActionResult SendResultInterviewEmail([FromQuery] string email, string linkNhomZaloTong, string linkNhomZaloChuyenNganh)
         {
             try
             {
-                _guiLichPhongVanService.SendResultInterviewEmail(email);
+                _guiLichPhongVanService.SendResultInterviewEmail(email, linkNhomZaloTong, linkNhomZaloChuyenNganh);
                 return Ok(new { Message = "Send email successfully." });
             }
             catch (BadHttpRequestException ex)
@@ -107,6 +107,13 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
+        [Route("api/lich-phong-vans/GetAllUserByKetQua")]
+        public async Task<IActionResult> GetAllUserByKetQua(Result ketqua)
+        {
+            return await _guiLichPhongVanService.GetAllUserByKetQua(ketqua);
+        }
 
 
         [HttpPut]
