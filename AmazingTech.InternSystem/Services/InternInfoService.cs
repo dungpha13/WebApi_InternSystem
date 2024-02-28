@@ -523,29 +523,37 @@ namespace AmazingTech.InternSystem.Services
         {
             // var uId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            List<InternInfo> interns = ReadFile(file);
-            var existingKi = _kiThucTapRepository.GetKiThucTap(kiThucTapId);
-
-            if (existingKi is null)
-                return new BadRequestObjectResult("Khong tim thay ki thuc tap voi id: " + kiThucTapId);
-
-            foreach (var intern in interns)
+            try
             {
-                intern.KiThucTapId = existingKi.Id;
-                // intern.CreatedBy = uId;
-                intern.IdTruong = existingKi.IdTruong;
-                intern.StartDate = existingKi.NgayBatDau;
-                intern.EndDate = existingKi.NgayKetThuc;
+
+                List<InternInfo> interns = ReadFile(file);
+                var existingKi = _kiThucTapRepository.GetKiThucTap(kiThucTapId);
+
+                if (existingKi is null)
+                    return new BadRequestObjectResult("Khong tim thay ki thuc tap voi id: " + kiThucTapId);
+
+                foreach (var intern in interns)
+                {
+                    intern.KiThucTapId = existingKi.Id;
+                    // intern.CreatedBy = uId;
+                    intern.IdTruong = existingKi.IdTruong;
+                    intern.StartDate = existingKi.NgayBatDau;
+                    intern.EndDate = existingKi.NgayKetThuc;
+                }
+
+                var result = await _internRepo.AddListInternInfoAsync(interns);
+
+                if (result == 0)
+                {
+                    return new BadRequestObjectResult("Something went wrong!");
+                }
+
+                return new OkObjectResult("Success!");
             }
-
-            var result = await _internRepo.AddListInternInfoAsync(interns);
-
-            if (result == 0)
+            catch (System.Exception)
             {
-                return new BadRequestObjectResult("Something went wrong!");
+                return new BadRequestObjectResult("Import fail!");
             }
-
-            return new OkObjectResult("Success!");
         }
     }
 }
