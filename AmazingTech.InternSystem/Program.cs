@@ -225,6 +225,11 @@ namespace AmazingTech.InternSystem
             .Build();
 
             string accountDefaultHttpProtocol = configuration["AppSettings:ACCOUNT_DEFAULT_HTTP_PROTOCOL"];
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next(context);
+            });
 
             app.UseCors("AllowAll");
 
