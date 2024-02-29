@@ -333,10 +333,14 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("Interview time is from 9:00 a.m. to 5:00 p.m");
             }
+            if (!Enum.IsDefined(typeof(InterviewForm), request.interviewForm))
+            {
+                throw new BadHttpRequestException("This InterviewForm is invalid");
+            }
             var Interviewer = _userRepository.GetUserByEmail(request.MailNgPhongVan);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var accountLogin = _userRepository.GetUserById(accountId);
-            ; string InternId = _userRepository.GetUserIdByEmail(request.Email);
+            string InternId = _userRepository.GetUserIdByEmail(request.Email);
             if (accountId == null)
             {
                 throw new BadHttpRequestException("You need to login to update schedule");
