@@ -312,7 +312,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("add-user-to-project/{duAnId}")]
-        public IActionResult AddUserToDuAn(string duAnId, [FromBody] CrudUserDuAnModel addUserDuAn)
+        public IActionResult AddUserToDuAn(string duAnId, [FromBody] UserDuAnModel addUserDuAn)
         {
 
             try
@@ -340,7 +340,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update-user-in-project/{duAnId}")]
-        public IActionResult UpdateUserInDuAn(string duAnId, [FromBody] CrudUserDuAnModel updateUserDuAn)
+        public IActionResult UpdateUserInDuAn(string duAnId, [FromBody] UserDuAnModel updateUserDuAn)
         {
             try
             {
