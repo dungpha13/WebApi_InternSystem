@@ -6,6 +6,7 @@ using AmazingTech.InternSystem.Services;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Controller
@@ -23,42 +24,75 @@ namespace AmazingTech.InternSystem.Controller
             _viTriRepository = viTriRepository;
         }
         [HttpGet("get")]
-
-        public async Task<List<Vitrinew>> GetViTriList()
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> GetViTriList()
         {
+            try
+            {
+                var position = await _viTriService.GetViTriList();
+                return Ok(position);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Vi Tri is not existed");
+            }
 
-            return await _viTriService.GetViTriList();
+
         }
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         [Route("create")]
-        public async Task<IActionResult> AddViTri([FromBody] VitriModel vitriModel)
+        public async Task<IActionResult> AddViTri( [FromBody] VitriModel vitriModel)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int save = await _viTriService.AddVitri(vitriModel, user);
-            return Ok(save == 1 ? "Success" : "failed");
+            try
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                int save = await _viTriService.AddVitri( user, vitriModel);
+                return Ok(save == 1 ? "Success" : "failed");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("not existed");
+            }
+
+
         }
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateViTri(string id, [FromBody] VitriModel updateVitri)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int save = await _viTriService.UpdateVitri(updateVitri, id, user);
-            return Ok(save == 1 ? "Success" : "failed");
+            try
+            {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                int save = await _viTriService.UpdateVitri(updateVitri, id, user);
+                return Ok(save == 1 ? "Success" : "failed");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("not existed");
+            }
         }
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "Admin, HR")]
         [Route("delete/{id}")]
 
-        public async Task<IActionResult> DeleteVitri(string id)
+        public async Task<IActionResult> DeleteViTri(string id)
         {
-            string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int save = await _viTriService.DeleteVitri(id, user);
-            return Ok(save == 1 ? "Success" : "failed");
-        }
-        [HttpGet]
+            try {
+                string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                int save = await _viTriService.DeleteVitri(id, user);
+                return Ok(save == 1 ? "Success" : "failed");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("not existed");
+            }
+            }
+        
 
+        [HttpGet]
+        [Authorize(Roles = "Admin, HR")]
         [Route("viewVitri/{id}")]
         public async Task<IActionResult> UserViTriView(string id)
         {

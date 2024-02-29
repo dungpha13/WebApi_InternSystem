@@ -18,8 +18,10 @@ namespace AmazingTech.InternSystem.Repositories
         {
             return await _context.ViTris.Where(x => x.DeletedBy == null).ToListAsync();
         }
-        public async Task<int> CreateViTri(ViTri viTri)
+        public async Task<int> CreateViTri(ViTri viTri,  string user)
         {
+           
+
             _context.ViTris.Add(viTri);
             return await _context.SaveChangesAsync();
 
@@ -49,7 +51,7 @@ namespace AmazingTech.InternSystem.Repositories
         }
         public async Task<List<InternInfo>> UserViTriView(string id)
         {
-            var user = await _context.Users.Where(x => x.UserViTris.Where(p => p.UsersId == x.Id).Any() && x.DeletedTime == null).ToListAsync();
+            var user = await _context.Users.Where(x => x.UserViTris.Where(p => p.ViTrisId == id).Any() && x.DeletedTime == null).ToListAsync();
             var intern = await _context.InternInfos.Where(x => x.DeletedTime == null).ToListAsync();
             List<InternInfo> internInfos = new List<InternInfo>();
             foreach (User obj in user)

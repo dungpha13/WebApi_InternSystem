@@ -7,7 +7,7 @@ namespace AmazingTech.InternSystem.Repositories
     {
         Task<List<ViTri>> GetAllVitri();
 
-        Task<int> CreateViTri(ViTri viTri);
+        Task<int> CreateViTri(ViTri viTri, string user);
 
         Task<int> UpdateViTri(string viTriId, ViTri updatedViTri);
 

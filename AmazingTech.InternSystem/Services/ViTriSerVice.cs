@@ -32,13 +32,13 @@ namespace AmazingTech.InternSystem.Services
             List<Vitrinew> vitrinews = _mapper.Map<List<Vitrinew>>(viTris);
             return vitrinews;
         }
-        public async Task<int> AddVitri(VitriModel vitriModel, string user)
+        public async Task<int> AddVitri( string user, VitriModel vitriModel)
         {
 
             ViTri viTri = _mapper.Map<ViTri>(vitriModel);
             viTri.CreatedBy = user;
             viTri.LastUpdatedBy = user;
-            return await _VitriRepo.CreateViTri(viTri);
+            return await _VitriRepo.CreateViTri(viTri, user);
         }
         public async Task<int> UpdateVitri(VitriModel updatedVitri, string vitriId, string user)
         {
