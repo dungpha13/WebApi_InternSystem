@@ -165,11 +165,12 @@ namespace AmazingTech.InternSystem.Controllers
         [HttpPost]
         [Authorize]
         [Route("api/lich-phong-vans/Auto-Create-Schedule")]
-        public IActionResult AutoCreateSchedule([EmailAddress] string mailNguoiPhongVan, DateTime start, DateTime end, string diadiemphongvan, InterviewForm interviewForm)
+        public IActionResult AutoCreateSchedule([EmailAddress] string mailNguoiPhongVan, DateTime start,  string diadiemphongvan, InterviewForm interviewForm,int TimeDuration)
         {
             try
             {
-                _guiLichPhongVanService.AutoCreateSchedule(mailNguoiPhongVan, start, end, diadiemphongvan, interviewForm);
+                DateTime end = new DateTime(start.Year, start.Month, start.Day, 17, 0, 0);
+                _guiLichPhongVanService.AutoCreateSchedule(mailNguoiPhongVan, start, end, diadiemphongvan, interviewForm,TimeDuration);
                 return Ok("Successful");
             }
             catch (BadHttpRequestException ex)

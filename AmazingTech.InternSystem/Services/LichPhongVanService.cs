@@ -37,7 +37,7 @@ namespace AmazingTech.InternSystem.Services
         public Task<IActionResult> GetAllUserByKetQua(Result ketqua);
         public void UpdateResult(string idlichphongvan, Result result, string Vitri);
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate);
-        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm);
+        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm, int timeDuration);
 
         public List<LichPhongVanResponseModel> AllLichPhongVan();
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email);
@@ -455,24 +455,25 @@ namespace AmazingTech.InternSystem.Services
                .ToList();
             return HrOrMentorWithoutInterview;
         }
-        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm)
+        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm,int timeDuration)
         {
-            if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes < 30)
+            
+            if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes < timeDuration)
             {
                 throw new BadHttpRequestException("The end time cannot be earlier than the start time and The time from start to end must not be less than 30 minutes.");
             }
-            if (startTime.Date != endTime.Date)
-            {
-                throw new BadHttpRequestException("Start and end times must be the same day");
-            }
+            //if (startTime.Date != endTime.Date)
+            //{
+            //    throw new BadHttpRequestException("Start and end times must be the same day");
+            //}
             if (startTime.TimeOfDay < new TimeSpan(9, 0, 0))
             {
                 startTime = startTime.Date.Add(new TimeSpan(9, 0, 0));
             }
-            if (endTime.TimeOfDay > new TimeSpan(17, 0, 0))
-            {
-                endTime = endTime.Date.Add(new TimeSpan(17, 0, 0));
-            }
+            //if (endTime.TimeOfDay > new TimeSpan(17, 0, 0))
+            //{
+            //    endTime = endTime.Date.Add(new TimeSpan(17, 0, 0));
+            //}
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             if (accountRole != Roles.ADMIN)
             {
@@ -490,13 +491,13 @@ namespace AmazingTech.InternSystem.Services
                     MailNgPhongVan = mailNgPhongVan,
                     Email = item1.Email,
                     ThoiGianPhongVan = startTime,
-                    TimeDuration = 15,
+                    TimeDuration = timeDuration,
                     DiaDiemPhongVan = DiaDiemPhongVan,
                     interviewForm = interviewForm,
                 };
-                startTime = startTime.AddMinutes(30);
+                startTime = startTime + TimeSpan.FromMinutes(timeDuration);
                 AddLichPhongVan(lichphongvan);
-                if (startTime.AddMinutes(30) >= endTime)
+                if (startTime >= endTime)
                 {
                     break;
                 }
