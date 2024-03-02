@@ -9,7 +9,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         Task<int> CreateViTri(ViTri viTri, string user);
 
-        Task<int> UpdateViTri(string viTriId, ViTri updatedViTri);
+        Task<int> UpdateViTri(string viTriId, ViTri updatedViTri, string user);
 
         Task<int> DeleteViTri(string viTriId, string user);
         Task<List<InternInfo>> UserViTriView(string id);

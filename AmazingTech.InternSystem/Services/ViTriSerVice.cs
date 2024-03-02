@@ -44,7 +44,7 @@ namespace AmazingTech.InternSystem.Services
         {
             ViTri viTri = _mapper.Map<ViTri>(updatedVitri);
             viTri.LastUpdatedBy = user;
-            return await _VitriRepo.UpdateViTri(vitriId, viTri);
+            return await _VitriRepo.UpdateViTri(vitriId, viTri,user);
         }
         public async Task<int> DeleteVitri(string id, string user)
         {

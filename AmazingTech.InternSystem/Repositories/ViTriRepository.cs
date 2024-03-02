@@ -18,23 +18,35 @@ namespace AmazingTech.InternSystem.Repositories
         {
             return await _context.ViTris.Where(x => x.DeletedBy == null).ToListAsync();
         }
+       
         public async Task<int> CreateViTri(ViTri viTri,  string user)
         {
-           
-
+           var ep = _context.ViTris.Where(x => x.Ten == viTri.Ten && x.DeletedBy == null).FirstOrDefault();
+           if(ep != null)
+            {
+                return 0;
+            }
             _context.ViTris.Add(viTri);
             return await _context.SaveChangesAsync();
 
         }
-        public async Task<int> UpdateViTri(string viTriId, ViTri updatedViTri)
+        public async Task<int> UpdateViTri(string viTriId, ViTri updatedViTri,string user)
         {
             var vitri = _context.ViTris.FirstOrDefault(x => x.Id == viTriId && x.DeletedBy == null);
             if (vitri == null)
             {
                 return 0;
             }
+            if(updatedViTri.Ten != null) vitri.Ten = updatedViTri.Ten;
+            var check = _context.ViTris.Where(x => x.Ten ==  vitri.Ten && x.Id  == viTriId && x.DeletedBy == null).FirstOrDefault();
+            if (check != null)
+            {
+                return 0;
+            }
             vitri.Ten = updatedViTri.Ten;
             vitri.LinkNhomZalo = updatedViTri.LinkNhomZalo;
+            vitri.LastUpdatedBy = user;
+            vitri.LastUpdatedTime = DateTime.Now;
             return await _context.SaveChangesAsync();
         }
         public async Task<int> DeleteViTri(string viTriId, string user)
