@@ -9,6 +9,5 @@ namespace AmazingTech.InternSystem.Models.DTO
         public string? Ten { get; set; }
         public string IdViTri { get; set; }
         public string? ImgUrl { get; set; }
-        public ViTri ViTri { get; set; }
     }
 }
