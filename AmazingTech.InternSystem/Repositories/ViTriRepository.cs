@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Models.Response.InternInfo;
 
 namespace AmazingTech.InternSystem.Repositories
 {
@@ -71,7 +72,7 @@ namespace AmazingTech.InternSystem.Repositories
                 throw new Exception("Can't find id or deleted.");
             }
             var user = await _context.Users.Where(x => x.UserViTris.Where(p => p.ViTrisId == id).Any() && x.DeletedTime == null).ToListAsync();
-            var intern = await _context.InternInfos.Where(x => x.DeletedTime == null).ToListAsync();
+            var intern = await _context.InternInfos.Where(x => x.DeletedTime == null ).Include(x => x.Truong).ToListAsync();
             List<InternInfo> internInfos = new List<InternInfo>();
             foreach (User obj in user)
             {

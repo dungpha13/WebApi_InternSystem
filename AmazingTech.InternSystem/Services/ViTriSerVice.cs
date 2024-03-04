@@ -56,10 +56,7 @@ namespace AmazingTech.InternSystem.Services
             List<InternInfo> interinfor = await _VitriRepo.UserViTriView(id);
             List<InternInfoDTO> viewModels = _mapper.Map<List<InternInfoDTO>>(interinfor);
             List<VitriUserViewModel> viewModel = _mapper.Map<List<VitriUserViewModel>>(viewModels);
-            foreach(var model in viewModel)
-            {
-                
-                }
+            
             return viewModel;
         }
 

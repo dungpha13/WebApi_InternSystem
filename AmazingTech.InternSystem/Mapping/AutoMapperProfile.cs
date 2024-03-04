@@ -76,7 +76,7 @@ namespace AmazingTech.InternSystem.Mapping
 
             CreateMap<NhomZalo, NhomZaloDTO>().ReverseMap();
 
-            CreateMap<InternInfoDTO, VitriUserViewModel>().ReverseMap();
+            CreateMap<VitriUserViewModel,InternInfoDTO >().ReverseMap();
             CreateMap<TechModel, CongNghe>().ReverseMap();
             CreateMap<Cauhoi, QuestionDTO>().ReverseMap();
             CreateMap<CauhoiCongnghe, ViewQuestionInterview>()

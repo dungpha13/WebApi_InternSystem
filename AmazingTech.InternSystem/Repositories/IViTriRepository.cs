@@ -1,4 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Models.Response.InternInfo;
 using AmazingTech.InternSystem.Models.VItri;
 
 namespace AmazingTech.InternSystem.Repositories

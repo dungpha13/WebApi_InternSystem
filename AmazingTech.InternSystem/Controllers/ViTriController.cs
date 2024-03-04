@@ -97,14 +97,19 @@ namespace AmazingTech.InternSystem.Controller
         public async Task<IActionResult> UserViTriView(string id)
         {
             List<VitriUserViewModel> list = new List<VitriUserViewModel>();
-
+            try {
                 list = await _viTriService.UserViTriView(id);
-                if(list.Count == 0)
-            {
-                return BadRequest("can not find");
-            }
+                if (list.Count == 0)
+                {
+                    return BadRequest("can not find");
+                }
                 return Ok(list);
-            
+
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(" Can't find id or deleted.");
+            }
             }
     }
 }
