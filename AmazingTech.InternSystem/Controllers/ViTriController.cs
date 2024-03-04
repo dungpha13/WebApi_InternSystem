@@ -89,16 +89,22 @@ namespace AmazingTech.InternSystem.Controller
                 return BadRequest("not existed");
             }
             }
-        
+
 
         [HttpGet]
         [Authorize(Roles = "Admin, HR")]
         [Route("viewVitri/{id}")]
         public async Task<IActionResult> UserViTriView(string id)
         {
+            List<VitriUserViewModel> list = new List<VitriUserViewModel>();
 
-            var save = await _viTriService.UserViTriView(id);
-            return Ok(save);
-        }
+                list = await _viTriService.UserViTriView(id);
+                if(list.Count == 0)
+            {
+                return BadRequest("can not find");
+            }
+                return Ok(list);
+            
+            }
     }
 }

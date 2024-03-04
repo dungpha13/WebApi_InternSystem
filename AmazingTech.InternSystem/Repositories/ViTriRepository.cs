@@ -63,6 +63,13 @@ namespace AmazingTech.InternSystem.Repositories
         }
         public async Task<List<InternInfo>> UserViTriView(string id)
         {
+            var checkid = await _context.ViTris.FirstOrDefaultAsync(x => x.Id == id && x.DeletedBy == null);
+
+            
+            if (checkid == null)
+            {
+                throw new Exception("Can't find id or deleted.");
+            }
             var user = await _context.Users.Where(x => x.UserViTris.Where(p => p.ViTrisId == id).Any() && x.DeletedTime == null).ToListAsync();
             var intern = await _context.InternInfos.Where(x => x.DeletedTime == null).ToListAsync();
             List<InternInfo> internInfos = new List<InternInfo>();
@@ -76,11 +83,16 @@ namespace AmazingTech.InternSystem.Repositories
                     }
                 }
             }
+          
             return internInfos;
         }
         public ViTri GetViTriByName(string name)
         {
             return (ViTri)_context.ViTris.Where(x => x.Ten == name).FirstOrDefault();
         }
+
+      
+
+        
     }
 }

@@ -11,6 +11,6 @@ namespace AmazingTech.InternSystem.Service
         Task<int> DeleteVitri(string id, string user);
         Task<int> UpdateVitri(VitriModel updatedVitri, string vitriId, string user);
         Task<List<VitriUserViewModel>> UserViTriView(string id);
-
+        
     }
 }
