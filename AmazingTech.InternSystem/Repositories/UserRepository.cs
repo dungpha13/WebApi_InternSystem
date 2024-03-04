@@ -110,15 +110,14 @@ namespace AmazingTech.InternSystem.Repositories
         //}
         public List<User> GetInternsWithoutInterview()
         {
-
             using (var context = new AppDbContext())
             {
                 var usersWithoutInterviewOrDeletedInterview = context.Set<User>()
-                    .Where(user => !context.Set<LichPhongVan>()
-                        .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id)
-                        || context.Set<LichPhongVan>()
-                            .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id && interview.DeletedBy != null))
-                    .ToList();
+              .Where(user => !context.Set<LichPhongVan>()
+                  .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id)
+                  || context.Set<LichPhongVan>()
+                      .Any(interview => interview.NguoiDuocPhongVan.Id == user.Id && interview.DeletedBy != null && interview.DeletedTime != null))
+               .ToList();
                 return usersWithoutInterviewOrDeletedInterview;
             }
         }

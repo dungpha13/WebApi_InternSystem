@@ -442,8 +442,6 @@ namespace AmazingTech.InternSystem.Services
         {
             var listUserWithOutInterview = _userRepository.GetInternsWithoutInterview();
             var InternWithoutInterview = listUserWithOutInterview.Where(listUserWithOutInterview => _userManager.IsInRoleAsync(listUserWithOutInterview, Roles.INTERN).Result).ToList();
-
-
             return InternWithoutInterview;
         }
         public List<User> GetHrOrMentorWithoutInternView(DateTime startDate, DateTime endDate)
@@ -480,10 +478,20 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("Only admin can use this function");
             }
             var listInternWithoutInterview = GetInternWithoutInternView();
+            for (int i = listInternWithoutInterview.Count - 1; i >= 0; i--)
+            {
+                var item = listInternWithoutInterview[i];
+                var lichphongvan = _lichPhongVanRepository.GetScheduleByIntervieweeId(item.Id);
+                if (lichphongvan != null)
+                {
+                    listInternWithoutInterview.RemoveAt(i);
+                }
+            }
             if (listInternWithoutInterview.Count == 0)
             {
                 throw new BadHttpRequestException("All interns have an interview schedule");
             }
+            
             foreach (var item1 in listInternWithoutInterview)
             {
                 var lichphongvan = new LichPhongVanRequestModel
