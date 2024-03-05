@@ -31,12 +31,14 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> ConfirmEmail(string userId, string token);
         Task<IActionResult> GoogleLoginRedirect(string email, string role);
         Task<IActionResult> UpdateTrangThaiThucTap(string id, string trangThaiThucTap);
+        Task<IActionResult> RegisterUserForRole(RegisterRoleDTO registerRoleDTO,string role);
 
         Task<IActionResult> CreateUser(CreateUserDTO createUserDto);
         Task<IActionResult> GetAllUsers();
         Task<IActionResult> GetUserById(string id);
         Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateUserDto);
         Task<IActionResult> DeleteUser(string id);
+
     }
 
     public class UserService : IUserService
@@ -68,6 +70,7 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
+           
 
         public async Task<IActionResult> RegisterIntern(RegisterInternDTO registerUser)
         {
@@ -113,6 +116,38 @@ namespace AmazingTech.InternSystem.Services
 
                 return await RegisterUser(user, registerUser.Password, Roles.INTERN);
             }
+        }
+
+        public async Task<IActionResult> RegisterUserForRole(RegisterRoleDTO registerDTO, string role)
+        {
+            var userExists = await _userManager.FindByNameAsync(registerDTO.Username)
+                              ?? await _userManager.FindByEmailAsync(registerDTO.Email);
+            if (userExists != null)
+            {
+                return new BadRequestObjectResult(new { message = "User already exists." });
+            }
+
+            var user = new User
+            {
+                UserName = registerDTO.Username,
+                Email = registerDTO.Email,
+            };
+
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
+            if (!result.Succeeded)
+            {
+                return new BadRequestObjectResult(new { message = "User creation failed. Please check user details and try again." });
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            if (!roleResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new { message = $"Failed to add user to the {role} role." });
+            }
+
+            // Optionally send email confirmation
+
+            return new OkObjectResult(new { message = $"{role} registered successfully." });
         }
 
         public async Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser)

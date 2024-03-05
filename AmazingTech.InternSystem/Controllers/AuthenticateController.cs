@@ -49,6 +49,26 @@ namespace AmazingTech.InternSystem.Controllers
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
+        [HttpPost]
+        [Route("register/admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRoleDTO registerAdminDTO)
+        {
+            return await _userService.RegisterUserForRole(registerAdminDTO, Roles.ADMIN);
+        }
+
+        [HttpPost]
+        [Route("register/hr")]
+        public async Task<IActionResult> RegisterHR([FromBody] RegisterRoleDTO registerHRDTO)
+        {
+            return await _userService.RegisterUserForRole(registerHRDTO, Roles.HR);
+        }
+
+        [HttpPost]
+        [Route("register/mentor")]
+        public async Task<IActionResult> RegisterMentor([FromBody] RegisterRoleDTO registerMentorDTO)
+        {
+            return await _userService.RegisterUserForRole(registerMentorDTO, Roles.MENTOR);
+        }
 
         [HttpPost]
         [Route("register/intern")]
@@ -219,7 +239,7 @@ namespace AmazingTech.InternSystem.Controllers
                 //decodedToken = WebUtility.UrlDecode(token)
             });
         }
-
+        
         [HttpPost("reset-password/{userId}")]
         public async Task<IActionResult> ResetPassword(string userId, [FromBody] ResetPasswordDTO resetPasswordDTO)
         {
@@ -255,6 +275,9 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 message = "Password reset successfully."
             });
+
+
         }
+
     }
 }
