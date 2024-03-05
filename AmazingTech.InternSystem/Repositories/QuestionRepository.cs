@@ -14,6 +14,7 @@ namespace AmazingTech.InternSystem.Repositories
         Task<int> UpdateQuestionAsync(string user, string congNgheId, string cauhoiId, Cauhoi cauhoi);
         Task<int> DeleteQuestionAsync(string user, string congNgheId, string cauhoiId);
         Task<int> AddListQuestionAsync(List<Cauhoi> cauhois, string user, string id);
+        Task<Cauhoi> GetCauHoiByIdAsync(string congNgheId, string id);
     }
     public class QuestionRepository : IQuestionRepository
     {
@@ -48,6 +49,15 @@ namespace AmazingTech.InternSystem.Repositories
             _context.cauhoiCongnghes.Add(cauhoiCongNghe);         
             await _context.SaveChangesAsync();
             return 1;
+        }
+
+
+        public async Task<Cauhoi> GetCauHoiByIdAsync( string congNgheId, string id)
+        {
+            var checkCongNghe = _context.CongNghes.Where(x => x.Id == congNgheId && x.DeletedBy == null).FirstOrDefault();
+            if(checkCongNghe == null) { throw new Exception(); }             
+            var Cauhoi = _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == congNgheId && d.IdCauhoi == id).Any()).FirstOrDefault();
+            return Cauhoi;
         }
 
         public async Task<int> UpdateQuestionAsync(string user, string congNgheId, string cauhoiId , Cauhoi cauhoi)

@@ -16,6 +16,7 @@ namespace AmazingTech.InternSystem.Services
         Task<int> UpdateQuestion(string user, string id, string cauhoiId, QuestionDTO CauHoi);
         Task<int> DeleteQuestion(string user, string id, string cauhoiId);
         Task<IActionResult> AddListQuest(IFormFile file, string CongNgheId, string UserId);
+        Task<QuestionDTO> getQuestionByID(string idCongNghe, string id);
 
     }
     public class QuestionService: IQuestionService
@@ -35,6 +36,14 @@ namespace AmazingTech.InternSystem.Services
             List<Cauhoi> cauhoi = await _QuestionRepo.GetAllCauHoiAsync(idCongNghe);
             List<QuestionDTO> result = _mapper.Map<List<QuestionDTO>>(cauhoi);
            return result;
+
+        }
+
+        public async Task<QuestionDTO> getQuestionByID(string idCongNghe,string id)
+        {
+            Cauhoi cauhoi = await _QuestionRepo.GetCauHoiByIdAsync(idCongNghe, id);
+            QuestionDTO result = _mapper.Map<QuestionDTO>(cauhoi);
+            return result;
 
         }
 

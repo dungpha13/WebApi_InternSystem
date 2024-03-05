@@ -17,6 +17,8 @@ namespace AmazingTech.InternSystem.Services
 
         Task<int> DeleteTech(string idVitri, string user, string id);
 
+        Task<TechView> getTechID(string id, string congngheID);
+
 
     }
 
@@ -36,6 +38,13 @@ namespace AmazingTech.InternSystem.Services
         {
             List<CongNghe> congNghe = await _congNgheRepo.GetAllCongNgheAsync(id);       
             List<TechView> tech = _mapper.Map<List<TechView>>(congNghe);
+            return tech;
+        }
+
+        public async Task<TechView> getTechID(string id, string congngheID)
+        {
+            CongNghe congNghe = await _congNgheRepo.GetCongNgheByIdAsync(id, congngheID);
+            TechView tech = _mapper.Map<TechView>(congNghe);
             return tech;
         }
 

@@ -28,7 +28,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, Mentor, HR")]
         [Route("get/{idViTri}")]
         public async Task<IActionResult> GetAllTech(string idViTri)
         {
@@ -41,6 +41,22 @@ namespace AmazingTech.InternSystem.Controllers
             {
                 return BadRequest("Vi Tri is not existed");
             }           
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin, Mentor, HR")]
+        [Route("get-CongNgheByID/{idViTri}/{idCongNghe}")]
+        public async Task<IActionResult> CongNgheID(string idViTri, string idCongNghe)
+        {
+            try
+            {
+                var tech = await _service.getTechID(idViTri, idCongNghe);
+                if (tech == null) { return BadRequest("Cong Nghe is not existed"); } 
+                return Ok(tech);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Vi Tri is not existed");
+            }
         }
 
         [HttpPost]

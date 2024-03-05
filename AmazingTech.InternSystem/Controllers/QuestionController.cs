@@ -24,13 +24,29 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, Mentor, HR")]
         [Route("get/{idCongNghe}")]
         public async Task<IActionResult> GetAllQuestion(string idCongNghe)
         {
             var question = await _service.getAllQuestion(idCongNghe);
             return Ok(question);
         }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Mentor, HR")]
+        [Route("get-CauHoiByID/{idCongNghe}/{idCauHoi}")]
+        public async Task<IActionResult> GetCauHoiByID(string idCongNghe, string idCauHoi)
+        {
+            try
+            {
+                var question = await _service.getQuestionByID(idCongNghe, idCauHoi);
+                if (question == null) { return BadRequest("CauHoi is not Existed"); }
+                return Ok(question);
+            } catch (Exception ex) { return BadRequest("CongNghe is not Existed"); }
+          
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin, HR")]
@@ -43,7 +59,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,  HR")]
         [Route("update/{idCongNghe}/{idCauHoi}")]
         public async Task<IActionResult> UpdateTech(string idCongNghe, string idCauHoi, [FromBody] QuestionDTO cauhoi)
         {

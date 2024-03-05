@@ -13,6 +13,7 @@ namespace AmazingTech.InternSystem.Repositories
          Task<int> CreateCongNgheAsync(string idvitri, string user, CongNghe CongNgheModel);
          Task<int> UpdateCongNgheAsync(string idvitri, string user, string congNgheId, CongNghe updatedCongNghe);
          Task<int> DeleteCongNgheAsync(string idvitri, string user, string congNgheId);
+         Task<CongNghe> GetCongNgheByIdAsync(string id, string congNgheId);
 
      }
     public class TechRepository : ITechRepo
@@ -24,6 +25,7 @@ namespace AmazingTech.InternSystem.Repositories
             _context = context;
         }
 
+
         public async Task<List<CongNghe>> GetAllCongNgheAsync(string id)
         {                      
             var checkidvitri = _context.ViTris.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefault();
@@ -31,13 +33,12 @@ namespace AmazingTech.InternSystem.Repositories
             return await _context.CongNghes.Where(x => x.IdViTri == id && x.DeletedBy == null).ToListAsync();
         }
 
-        public async Task<CongNghe> GetCongNgheByIdAsync(string congNgheId)
+        public async Task<CongNghe> GetCongNgheByIdAsync(string id, string congNgheId)
         {
-            var congNghe = await _context.CongNghes
-                .Include(c => c.ViTri)
-                .FirstOrDefaultAsync(c => c.Id == congNgheId);
-
-            return congNghe;
+            var checkidvitri = _context.ViTris.Where(x => x.Id == id && x.DeletedBy == null).FirstOrDefault();
+            if (checkidvitri == null) { throw new Exception(); }
+            var congNghe = _context.CongNghes.Where(x => x.IdViTri == id && x.DeletedBy == null && x.Id == congNgheId).FirstOrDefault();
+            return congNghe;           
         }
 
         public async Task<int> CreateCongNgheAsync(string idvitri, string user, CongNghe CongNgheModel)
