@@ -49,6 +49,36 @@ namespace AmazingTech.InternSystem.Controllers
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
+
+
+        [HttpPost]
+        [Route("confirm-user/{userId}")]
+        [Authorize(Roles = "Admin")] //only admins can access 
+        public async Task<IActionResult> ConfirmUserRegistration(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+
+            if (user.isConfirmed)
+            {
+                return BadRequest(new { message = "User already confirmed." });
+            }
+
+            user.isConfirmed = true;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { message = "Failed to confirm user." });
+            }
+
+           
+
+            return Ok(new { message = "User confirmed successfully." });
+        }
         [HttpPost]
         [Route("register/admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRoleDTO registerAdminDTO)
