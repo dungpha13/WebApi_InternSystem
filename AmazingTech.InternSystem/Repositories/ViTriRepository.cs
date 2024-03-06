@@ -31,15 +31,20 @@ namespace AmazingTech.InternSystem.Repositories
             return await _context.SaveChangesAsync();
 
         }
-        public async Task<int> UpdateViTri(string viTriId, ViTri updatedViTri,string user)
+        public async Task<int> UpdateViTri(string viTriId, ViTri updatedViTri, string user)
         {
             var vitri = _context.ViTris.FirstOrDefault(x => x.Id == viTriId && x.DeletedBy == null);
             if (vitri == null)
             {
                 return 0;
             }
-            if(updatedViTri.Ten != null) vitri.Ten = updatedViTri.Ten;
-            var check = _context.ViTris.Where(x => x.Ten ==  vitri.Ten && x.Id  == viTriId && x.DeletedBy == null).FirstOrDefault();
+            if (updatedViTri.Ten != null) vitri.Ten = updatedViTri.Ten;
+            var checkten = _context.ViTris.FirstOrDefault(x => x.Ten == updatedViTri.Ten && x.Id != viTriId && x.DeletedBy == null);
+            if (checkten != null)
+            {
+                return 0;
+            }
+            var check = _context.ViTris.Where(x => x.Ten == vitri.Ten && x.Id == viTriId && x.DeletedBy == null).FirstOrDefault();
             if (check != null)
             {
                 return 0;
