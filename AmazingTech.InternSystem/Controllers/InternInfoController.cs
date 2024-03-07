@@ -26,6 +26,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetAllInternsInfo()
         {
 
@@ -34,18 +35,21 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("getAllDeletedIntern")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetAllDeletedInternsInfo()
         {
             return await _internInfoService.GetAllDeletedInternInfo();
         }
 
         [HttpGet("get/{mssv}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetInternInfo(string mssv)
         {
             return await _internInfoService.GetInternInfo(mssv);
         }
 
         [HttpGet("getDeletedIntern/{mssv}")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetDeletedInternInfo(string mssv)
         {
             return await _internInfoService.GetDeletedInternInfo(mssv);
@@ -88,7 +92,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("list/{kiThucTapId}")]
-        // [Authorize(Roles = "School,HR,Admin")]
+        [Authorize(Roles = "School,HR,Admin")]
         public async Task<IActionResult> AddListInternInfo(IFormFile file, string kiThucTapId)
         {
             return await _internInfoService.AddListInternInfo(file, kiThucTapId);
