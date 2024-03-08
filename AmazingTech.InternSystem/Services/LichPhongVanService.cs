@@ -173,6 +173,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("The date of interview must be in the future");
             }
+            
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             // string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -184,9 +185,17 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to fill all information");
             }
-            if(!Enum.IsDefined(typeof(InterviewForm), model.interviewForm))
+            if(model.ThoiGianPhongVan.Minute % 15 != 0)
+            {
+                throw new BadHttpRequestException("The number of minutes of interview time must be a multiple of 15");
+            }
+            if (!Enum.IsDefined(typeof(InterviewForm), model.interviewForm))
             {
                 throw new BadHttpRequestException("This InterviewForm is invalid");
+            }
+            if (model.TimeDuration % 15 !=0 )
+            {
+                throw new BadHttpRequestException("Interview time must be a multiple of 15");
             }
             if (model.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || model.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
             {
@@ -328,6 +337,14 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("The date of interview must be in the future");
             }
+            if (request.TimeDuration % 15 != 0)
+            {
+                throw new BadHttpRequestException("Interview time must be a multiple of 15");
+            }
+            if (request.ThoiGianPhongVan.Minute % 15 != 0)
+            {
+                throw new BadHttpRequestException("The number of minutes of interview time must be a multiple of 15");
+            }
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             if (request.ThoiGianPhongVan.TimeOfDay > new TimeSpan(17, 0, 0) || request.ThoiGianPhongVan.TimeOfDay < new TimeSpan(9, 0, 0))
             {
@@ -459,6 +476,14 @@ namespace AmazingTech.InternSystem.Services
             if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes < timeDuration)
             {
                 throw new BadHttpRequestException("The end time cannot be earlier than the start time and The time from start to end must not be less than 30 minutes.");
+            }
+            if (timeDuration % 15 != 0)
+            {
+                throw new BadHttpRequestException("Interview time must be a multiple of 15");
+            }
+            if (startTime.Minute % 15 != 0)
+            {
+                throw new BadHttpRequestException("The number of minutes of interview time must be a multiple of 15");
             }
             //if (startTime.Date != endTime.Date)
             //{
