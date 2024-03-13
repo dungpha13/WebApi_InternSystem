@@ -53,29 +53,29 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
 
-        //[HttpGet("get/{id}")]
-        //public async Task<ActionResult<NhomZaloDTO>> GetZaloGroupByIdAsync(string id)
-        //{
-        //    try
-        //    {
-        //        var group = await _nhomZaloService.GetGroupByIdAsync(id);
+        [HttpGet("get/{id}")]
+        public async Task<ActionResult<NhomZaloDTO>> GetZaloGroupByIdAsync(string id)
+        {
+            try
+            {
+                var group = await _nhomZaloService.GetGroupByIdAsync(id);
 
-        //        if (group == null)
-        //            return NotFound($"Zalo group with ID {id} not found.");
+                if (group == null)
+                    return NotFound($"ZaloGroup with ID ({id}) not found.");
 
-        //        var formattedResponse = new NhomZaloDTO
-        //        {
-        //            TenNhom = group.TenNhom,
-        //            LinkNhom = group.LinkNhom,
-        //        };
+                var formattedResponse = new NhomZaloDTO
+                {
+                    TenNhom = group.TenNhom,
+                    LinkNhom = group.LinkNhom,
+                };
 
-        //        return Ok(formattedResponse);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "Internal Server Error");
-        //    }
-        //}
+                return Ok(formattedResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
 
 
         [HttpPost("create")]
