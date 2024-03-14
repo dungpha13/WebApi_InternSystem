@@ -30,7 +30,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             var checkCongNghe = _context.CongNghes.Where(x => x.Id == CongNgheID && x.DeletedBy == null).FirstOrDefault();
             if (checkCongNghe == null) { throw new Exception(); }
-            return await _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == CongNgheID).Any()).ToListAsync();
+            return await _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == CongNgheID).Any() && x.DeletedBy == null).ToListAsync();
         }
 
         public async Task<int> CreateCauHoiAsync(string user, string congngheId, Cauhoi cauhoi)
@@ -58,7 +58,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             var checkCongNghe = _context.CongNghes.Where(x => x.Id == congNgheId && x.DeletedBy == null).FirstOrDefault();
             if(checkCongNghe == null) { throw new Exception(); }             
-            var Cauhoi = _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == congNgheId && d.IdCauhoi == id).Any()).FirstOrDefault();
+            var Cauhoi = _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == congNgheId && d.IdCauhoi == id).Any() && x.DeletedBy == null).FirstOrDefault();
             return Cauhoi;
         }
 

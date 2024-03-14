@@ -11,12 +11,12 @@ namespace AmazingTech.InternSystem.Services
 {
     public interface IQuestionService
     {
-        Task<List<QuestionDTO>> getAllQuestion(string idCongNghe);
+        Task<List<QuestView>> getAllQuestion(string idCongNghe);
         Task<int> CreateQuestion(string user, string congngheId, QuestionDTO cauHoi);
         Task<int> UpdateQuestion(string user, string id, string cauhoiId, QuestionDTO CauHoi);
         Task<int> DeleteQuestion(string user, string id, string cauhoiId);
         Task<IActionResult> AddListQuest(IFormFile file, string CongNgheId, string UserId);
-        Task<QuestionDTO> getQuestionByID(string idCongNghe, string id);
+        Task<QuestView> getQuestionByID(string idCongNghe, string id);
 
     }
     public class QuestionService: IQuestionService
@@ -31,18 +31,18 @@ namespace AmazingTech.InternSystem.Services
             _mapper = mapper;
         }
 
-        public async Task<List<QuestionDTO>> getAllQuestion(string idCongNghe)
+        public async Task<List<QuestView>> getAllQuestion(string idCongNghe)
         {
             List<Cauhoi> cauhoi = await _QuestionRepo.GetAllCauHoiAsync(idCongNghe);
-            List<QuestionDTO> result = _mapper.Map<List<QuestionDTO>>(cauhoi);
+            List<QuestView> result = _mapper.Map<List<QuestView>>(cauhoi);
            return result;
 
         }
 
-        public async Task<QuestionDTO> getQuestionByID(string idCongNghe,string id)
+        public async Task<QuestView> getQuestionByID(string idCongNghe,string id)
         {
             Cauhoi cauhoi = await _QuestionRepo.GetCauHoiByIdAsync(idCongNghe, id);
-            QuestionDTO result = _mapper.Map<QuestionDTO>(cauhoi);
+            QuestView result = _mapper.Map<QuestView>(cauhoi);
             return result;
 
         }

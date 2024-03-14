@@ -102,6 +102,7 @@ namespace AmazingTech.InternSystem.Mapping
             CreateMap<PhongVan, RatingModel>().ReverseMap();
             CreateMap<TruongHoc, TruongResponseDTO>()
                 .ForMember(dest => dest.Interns, otp => otp.MapFrom(src => src.Interns.Count()));
+            CreateMap<Cauhoi,QuestView>().ReverseMap();
         }
     }
 }
