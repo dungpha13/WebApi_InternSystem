@@ -51,7 +51,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, HR , Mentor ")]
         [Route("List-Anwser/{IdUser}")]
         public async Task<List<ViewAnswer>> ViewAnswer(string IdUser)
         {
@@ -60,7 +60,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, HR , Mentor")]
         [Route("Rating")]
         public async Task<IActionResult> RatingAnwser([FromBody] List<RatingModel> traloi)
         {
@@ -78,7 +78,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, HR , Mentor")]
         [Route("Update-Rating")]
         public async Task<IActionResult> UpdateRating([FromBody] List<RatingModel> traloi)
         {
@@ -94,7 +94,7 @@ namespace AmazingTech.InternSystem.Controllers
             }
         }
         [HttpDelete]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, HR , Mentor")]
         [Route("Delete-Interview/{UserID}")]
         public async Task<IActionResult>DeleteRating(string UserID)
         {
