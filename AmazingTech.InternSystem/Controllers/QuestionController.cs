@@ -28,8 +28,15 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("get/{idCongNghe}")]
         public async Task<IActionResult> GetAllQuestion(string idCongNghe)
         {
-            var question = await _service.getAllQuestion(idCongNghe);
-            return Ok(question);
+            try
+            {
+                var question = await _service.getAllQuestion(idCongNghe);
+                return Ok(question);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("CongNghe is not Existed");
+            }
         }
 
 

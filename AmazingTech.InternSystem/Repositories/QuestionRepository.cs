@@ -27,7 +27,9 @@ namespace AmazingTech.InternSystem.Repositories
 
 
         public async Task<List<Cauhoi>> GetAllCauHoiAsync(string CongNgheID)
-        {        
+        {
+            var checkCongNghe = _context.CongNghes.Where(x => x.Id == CongNgheID && x.DeletedBy == null).FirstOrDefault();
+            if (checkCongNghe == null) { throw new Exception(); }
             return await _context.cauhois.Where(x => x.CauhoiCongnghe.Where(d => d.IdCongNghe == CongNgheID).Any()).ToListAsync();
         }
 
