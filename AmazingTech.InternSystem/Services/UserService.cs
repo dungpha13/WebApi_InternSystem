@@ -131,6 +131,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 UserName = registerDTO.Username,
                 Email = registerDTO.Email,
+                isConfirmed = false,
             };
 
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
@@ -201,24 +202,16 @@ namespace AmazingTech.InternSystem.Services
                 return new BadRequestObjectResult(new { Succeeded = false, Errors = "Invalid username/email or password." });
             }
 
-            if (!user.EmailConfirmed)
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var bypassEmailConfirmationRoles = new List<string> { Roles.ADMIN, Roles.HR, Roles.MENTOR };
+            bool requiresEmailConfirmation = !userRoles.Any(role => bypassEmailConfirmationRoles.Contains(role));
+
+            if (requiresEmailConfirmation && !user.EmailConfirmed)
             {
                 return new BadRequestObjectResult("Bạn chưa xác thực email.");
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles == null || !roles.Any())
-            {
-                return new BadRequestObjectResult(new { Succeeded = false, Errors = "This current user doesn't have a role." });
-            }
-
-            var identityUser = new User
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Id = user.Id
-            };
-            var jwtToken = JwtGenerator.GenerateToken(identityUser, roles.ToList());
+            var jwtToken = JwtGenerator.GenerateToken(user, userRoles.ToList());
 
             if (string.IsNullOrEmpty(jwtToken))
             {
@@ -227,6 +220,7 @@ namespace AmazingTech.InternSystem.Services
 
             return new OkObjectResult(new { accessToken = jwtToken });
         }
+
 
         private async Task<IActionResult> RegisterUser(User user, string password, string role)
         {
