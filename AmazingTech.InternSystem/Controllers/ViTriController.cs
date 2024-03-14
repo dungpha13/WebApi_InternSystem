@@ -24,7 +24,7 @@ namespace AmazingTech.InternSystem.Controller
             _viTriRepository = viTriRepository;
         }
         [HttpGet("get")]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, Mentor, HR")]
         public async Task<IActionResult> GetViTriList()
         {
             try
@@ -92,7 +92,7 @@ namespace AmazingTech.InternSystem.Controller
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, Mentor, HR")]
         [Route("viewVitri/{id}")]
         public async Task<IActionResult> UserViTriView(string id)
         {
