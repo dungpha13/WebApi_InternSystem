@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models.DTO.DuAn;
 using Microsoft.EntityFrameworkCore;
 
@@ -169,6 +170,12 @@ namespace AmazingTech.InternSystem.Repositories
             if (userDuAn != null)
             {
                 throw new Exception($"User with ID ({addUserDuAn.UserId}) has already existed in this DuAn.");
+            }
+
+            var shedule = _dbContext.LichPhongVans.FirstOrDefault(i => i.IdNguoiDuocPhongVan == addUserDuAn.UserId && i.DeletedTime == null);
+            if (shedule == null || shedule.KetQua == Result.Failed)
+            {
+                 throw new Exception("This user has not passed the interview and cannot be added to the project.");
             }
 
             addUserDuAn.IdDuAn = duAnId;
