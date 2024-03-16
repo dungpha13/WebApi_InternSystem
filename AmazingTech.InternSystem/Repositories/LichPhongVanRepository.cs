@@ -87,7 +87,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == intervieweeid && x.DeletedTime == null).SingleOrDefault();
+                return context.Set<LichPhongVan>().AsNoTracking().Where(x => x.IdNguoiDuocPhongVan == intervieweeid && x.DeletedBy == null).SingleOrDefault();
             }
         }
         public List<LichPhongVan> getScheduleInPeriodTime(DateTime startDate , DateTime EndTime)

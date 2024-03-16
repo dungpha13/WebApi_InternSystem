@@ -15,6 +15,7 @@ namespace AmazingTech.InternSystem.Models.Request.LichPhongVan
 
         public InterviewForm interviewForm { get; set; }
         public int TimeDuration { get; set; }
+        [EmailAddress]
         public string MailNgPhongVan { get; set; }
         public string DiaDiemPhongVan { get; set; }
     }
