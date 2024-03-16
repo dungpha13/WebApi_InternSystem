@@ -71,9 +71,17 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IUserViTriRepository, UserViTriRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<IInterviewRepo, InterviewRepository>();
-            builder.Services.AddScoped<IInterviewService, InterviewService>(); 
+            builder.Services.AddScoped<IInterviewService, InterviewService>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                );
+            });
 
-            builder.Services.AddControllers();;
+            builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -237,7 +245,7 @@ namespace AmazingTech.InternSystem
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseCors("CorsPolicy");
 
             app.MapControllers();
 
