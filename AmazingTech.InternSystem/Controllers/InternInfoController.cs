@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace AmazingTech.InternSystem.Controllers
@@ -87,7 +89,7 @@ namespace AmazingTech.InternSystem.Controllers
 
                 throw new Exception(ex.Message);
             }
-           
+
 
         }
 
@@ -114,5 +116,43 @@ namespace AmazingTech.InternSystem.Controllers
             return await _internInfoService.GetCommentsByMssv(mssv);
         }
 
+        [HttpGet("createtemplatefile")]
+        [Authorize(Roles = "School")]
+        public IActionResult CreateTemplateFile()
+        {
+            var memoryStream = new MemoryStream();
+
+            using (ExcelPackage package = new ExcelPackage(memoryStream))
+            {
+                ExcelWorksheet worksheet;
+                worksheet = package.Workbook.Worksheets.Add("TemplateFile");
+
+                worksheet.Name = "TemplateFile";
+
+                worksheet.Cells["A1"].Value = "STT";
+                worksheet.Cells["B1"].Value = "HoVaTen";
+                worksheet.Cells["C1"].Value = "NgaySinh";
+                worksheet.Cells["D1"].Value = "GioiTinh";
+                worksheet.Cells["E1"].Value = "SDT";
+                worksheet.Cells["F1"].Value = "EmailTruong";
+                worksheet.Cells["G1"].Value = "EmailCaNhan";
+                worksheet.Cells["H1"].Value = "MSSV";
+                worksheet.Cells["I1"].Value = "DiaChi";
+                worksheet.Cells["J1"].Value = "SdtNguoiThan";
+                worksheet.Cells["K1"].Value = "GPA";
+                worksheet.Cells["L1"].Value = "TrinhDoTiengAnh";
+                worksheet.Cells["M1"].Value = "NganhHoc";
+                worksheet.Cells["N1"].Value = "ViTriMongMuon";
+                worksheet.Cells["O1"].Value = "LinkFacebook";
+                worksheet.Cells["P1"].Value = "LinkCV";
+
+                package.Save();
+            }
+
+            memoryStream.Position = 0;
+            var contentType = "application/octet-stream";
+            var fileName = "templatefile.xlsx";
+            return File(memoryStream, contentType, fileName);
+        }
     }
 }
