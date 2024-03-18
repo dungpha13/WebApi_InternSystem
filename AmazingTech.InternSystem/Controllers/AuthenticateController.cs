@@ -114,6 +114,9 @@ namespace AmazingTech.InternSystem.Controllers
             return await _userService.RegisterSchool(registerUserRequestDTO);
         }
 
+
+
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] SignInUserRequestDTO signInUserRequestDTO)
