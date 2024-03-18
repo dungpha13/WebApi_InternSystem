@@ -74,11 +74,14 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IInterviewService, InterviewService>();
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy",
-                builder => builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                );
+                options.AddPolicy("AllowOrigin",
+                    b =>
+                    {
+                        b.SetIsOriginAllowed(host => true)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
             });
 
             builder.Services.AddControllers();
@@ -133,16 +136,7 @@ namespace AmazingTech.InternSystem
 
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(name: "AllowAll",
-                                  policy =>
-                                  {
-                                      policy.AllowAnyOrigin()
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod();
-                                  });
-            });
+
 
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
@@ -239,13 +233,21 @@ namespace AmazingTech.InternSystem
                 return next(context);
             });
 
-            app.UseCors("AllowAll");
+
+
+
 
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("CorsPolicy");
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+                app.UseCors("AllowOrigin");
+            }
 
             app.MapControllers();
 
