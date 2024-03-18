@@ -153,41 +153,42 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<IActionResult> RegisterSchool(RegisterSchoolDTO registerUser)
         {
-            using (var context = new AppDbContext())
+            var userExists = await _userManager.FindByNameAsync(registerUser.Username)
+                          ?? await _userManager.FindByEmailAsync(registerUser.Email);
+            if (userExists != null)
             {
-                var existedSchools = await _userManager.GetUsersInRoleAsync(Roles.SCHOOL);
-                if (existedSchools.Any())
-                {
-                    var school = existedSchools.Where(_ => _.HoVaTen.Equals(registerUser.SchoolName)).SingleOrDefault();
-                    if (school != null)
-                    {
-                        return new BadRequestObjectResult(new
-                        {
-                            message = "Tên trường đã tồn tại."
-                        });
-                    }
-                }
-
-                var existedUser = context.Users.Where(_ => _.NormalizedUserName.Equals(registerUser.Username.ToUpper()) || _.NormalizedEmail.Equals(registerUser.Email.ToUpper())).SingleOrDefault();
-
-                if (existedUser != null)
-                {
-                    return new BadRequestObjectResult(new
-                    {
-                        message = "Username hoặc email đã tồn tại."
-                    });
-                }
-
-                var user = new User
-                {
-                    HoVaTen = registerUser.SchoolName,
-                    Email = registerUser.Email,
-                    UserName = registerUser.Username,
-                    PhoneNumber = registerUser.PhoneNumber
-                };
-
-                return await RegisterUser(user, registerUser.Password, Roles.SCHOOL);
+                return new BadRequestObjectResult(new { message = "User already exists." });
             }
+
+            var existedSchools = await _userManager.GetUsersInRoleAsync(Roles.SCHOOL);
+            if (existedSchools.Any(u => u.HoVaTen.Equals(registerUser.SchoolName, StringComparison.OrdinalIgnoreCase)))
+            {
+                return new BadRequestObjectResult(new { message = "Tên trường đã tồn tại." });
+            }
+
+            var user = new User
+            {
+                HoVaTen = registerUser.SchoolName,
+                UserName = registerUser.Username,
+                Email = registerUser.Email,
+                PhoneNumber = registerUser.PhoneNumber,
+                isConfirmed = false,
+            };
+
+            var result = await _userManager.CreateAsync(user, registerUser.Password);
+            if (!result.Succeeded)
+            {
+                return new BadRequestObjectResult(result.Errors.Select(e => e.Description));
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, Roles.SCHOOL);
+            if (!roleResult.Succeeded)
+            {
+                return new BadRequestObjectResult(new { message = $"Failed to add user to the school role" });
+            }
+
+
+            return new OkObjectResult(new { message = "School registration thanh cong. Awaiting admin confirmation." });
         }
 
         public async Task<IActionResult> Login(SignInUserRequestDTO loginUser)
@@ -203,7 +204,7 @@ namespace AmazingTech.InternSystem.Services
             }
 
             var userRoles = await _userManager.GetRolesAsync(user);
-            var bypassEmailConfirmationRoles = new List<string> { Roles.ADMIN, Roles.HR, Roles.MENTOR };
+            var bypassEmailConfirmationRoles = new List<string> { Roles.ADMIN, Roles.HR, Roles.MENTOR, Roles.SCHOOL };
             bool requiresEmailConfirmation = !userRoles.Any(role => bypassEmailConfirmationRoles.Contains(role));
 
             if (requiresEmailConfirmation && !user.EmailConfirmed)
@@ -220,6 +221,9 @@ namespace AmazingTech.InternSystem.Services
 
             return new OkObjectResult(new { accessToken = jwtToken });
         }
+
+       
+
 
 
         private async Task<IActionResult> RegisterUser(User user, string password, string role)
