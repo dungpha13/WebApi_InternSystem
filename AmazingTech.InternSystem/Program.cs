@@ -217,7 +217,7 @@ namespace AmazingTech.InternSystem
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+            if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
@@ -242,12 +242,11 @@ namespace AmazingTech.InternSystem
             app.UseAuthentication();
             app.UseAuthorization();
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-                app.UseCors("AllowOrigin");
-            }
+
+
+
+            app.UseCors("AllowOrigin");
+
 
             app.MapControllers();
 
