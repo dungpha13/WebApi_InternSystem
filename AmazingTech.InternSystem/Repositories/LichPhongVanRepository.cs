@@ -109,7 +109,7 @@ namespace AmazingTech.InternSystem.Repositories
         {
             using (var context = new AppDbContext())
             {
-                var lichphongvans = context.Set<LichPhongVan>().AsNoTracking().Where(t => t.DeletedTime == null).ToList();
+                var lichphongvans = context.Set<LichPhongVan>().AsNoTracking().Where(t => t.DeletedTime == null && t.DeletedBy == null).ToList();
                 
                 return lichphongvans;
             }
