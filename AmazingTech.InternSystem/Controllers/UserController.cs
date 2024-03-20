@@ -21,7 +21,6 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    [Authorize(Roles = Roles.ADMIN)]
     public class UserController : ControllerBase
     {
 
@@ -44,6 +43,7 @@ namespace AmazingTech.InternSystem.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = Roles.ADMIN)]
         [HttpPost("update-trang-thai-thuc-tap/{id}")]
         public async Task<IActionResult> UpdateTrangThaiThucTap([FromRoute] string id, [FromBody] string trangThaiThucTap)
         {
@@ -51,6 +51,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get")]
+        [Authorize(Roles = Roles.ADMIN)]
         public async Task<IActionResult> GetAllUsers()
         {
             return await _userService.GetAllUsers();
@@ -58,15 +59,19 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpGet]
         [Route("get/{id}")]
-        //[Authorize(Roles = Roles.ADMIN)]
+        [Authorize]
         public async Task<IActionResult> GetUserById([FromRoute] string id)
         {
+            Console.WriteLine(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (!id.Equals(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) && !Roles.ADMIN.Equals(HttpContext.User.FindFirstValue(ClaimTypes.Role))) {
+                return Forbid();
+            }
             return await _userService.GetUserById(id);
         }
 
 
         [HttpPost("create")]
-        //[Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = Roles.ADMIN)]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDto)
         {
             return await _userService.CreateUser(createUserDto);
@@ -77,6 +82,10 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO updateUserRequestDTO, [FromRoute] string id)
         {
+            if (!id.Equals(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) && !Roles.ADMIN.Equals(HttpContext.User.FindFirstValue(ClaimTypes.Role)))
+            {
+                return Forbid();
+            }
             return await _userService.UpdateUser(id, updateUserRequestDTO);
         }
 

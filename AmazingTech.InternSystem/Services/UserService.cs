@@ -39,6 +39,7 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateUserDto);
         Task<IActionResult> DeleteUser(string id);
 
+        string GetUsernameById(string id);
     }
 
     public class UserService : IUserService
@@ -788,6 +789,17 @@ namespace AmazingTech.InternSystem.Services
             {
                 message = "Xóa thành công."
             });
+        }
+
+        public string GetUsernameById(string id)
+        {
+            var user = _userManager.Users.FirstOrDefault(u => u.Id.Equals(id));
+            if (user != null)
+            {
+                return user.UserName;
+            }
+
+            else return "";
         }
     }
 }
