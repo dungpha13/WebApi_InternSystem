@@ -18,7 +18,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/du-ans")]
     [ApiController]
-    [Authorize(Roles = "Admin,HR")]
+    //[Authorize(Roles = "Admin,HR")]
     public class DuAnController : ControllerBase
     {
         private readonly IDuAnService _duAnService;
@@ -304,6 +304,53 @@ namespace AmazingTech.InternSystem.Controllers
                 };
 
                 return Ok(formattedResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-all-projects-of-user/{userId}")]
+        public IActionResult GetAllDuAnsOfUser(string userId)
+        {
+
+            try
+            {
+                //var existingUser = _duAnService.GetAllDuAnsOfUser(userId);
+                //if (existingUser == null)
+                //{
+                //    return NotFound($"User with ID ({userId}) not found.");
+                //}
+
+                var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == userId && u.DeletedTime == null);
+                if (existingUser == null)
+                {
+                    throw new Exception($"User with ID ({userId}) not found.");
+                }
+
+                var result = _duAnService.GetAllDuAnsOfUser(userId);
+
+                if (result is OkObjectResult okResult)
+                {
+                    var duAnList = okResult.Value as List<UserDuAn>;
+
+                    if (duAnList != null)
+                    {
+                        var formattedResponse = new
+                        {
+                            value = duAnList.Select(duAn => new
+                            {
+                                id = duAn.IdDuAn,
+                                ten = duAn.DuAn.Ten
+                            })
+                        };
+
+                        return Ok(formattedResponse);
+                    }
+
+                }
+                return result;
             }
             catch (Exception ex)
             {

@@ -19,6 +19,7 @@ namespace AmazingTech.InternSystem.Services
 
         //UserDuAn methods
         IActionResult GetAllUsersInDuAn(string duAnId);
+        IActionResult GetAllDuAnsOfUser(string userId);
         IActionResult AddUserToDuAn(string duAnId, string user, UserDuAnModel addUserDuAn);
         IActionResult UpdateUserInDuAn(string duAnId, string user, UserDuAnModel updateUserDuAn);
         IActionResult DeleteUserFromDuAn(string duAnId, string user, string userId);

@@ -63,6 +63,12 @@ namespace AmazingTech.InternSystem.Services
             return new OkObjectResult(userDuAns);
         }
 
+        public IActionResult GetAllDuAnsOfUser(string userId)
+        {
+            List<UserDuAn> userDuAns = _duAnRepo.GetAllDuAnsOfUser(userId);
+            return new OkObjectResult(userDuAns);
+        }
+
         public IActionResult AddUserToDuAn(string duAnId, string user, UserDuAnModel addUserDuAn)
         {            
             UserDuAn userDuAn = _mapper.Map<UserDuAn>(addUserDuAn);

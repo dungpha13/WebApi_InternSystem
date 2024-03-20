@@ -19,6 +19,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         // UserDuAn methods
         List<UserDuAn> GetAllUsersInDuAn(string duAnId);
+        List<UserDuAn> GetAllDuAnsOfUser(string userId);
         int AddUserToDuAn(string duAnId, string user, UserDuAn addUserDuAn);
         int UpdateUserInDuAn(string duAnId,string user, UserDuAn updateUserDuAn);
         int DeleteUserFromDuAn(string duAnId, string user, string userId);

@@ -156,6 +156,16 @@ namespace AmazingTech.InternSystem.Repositories
                                                     .ToList();
         }
 
+        public List<UserDuAn> GetAllDuAnsOfUser(string userId)
+        {
+            return _dbContext.UserDuAns.Where(x => x.UserId == userId && x.DeletedTime == null)
+                                                    .OrderByDescending(da => da.CreatedTime)
+                                                    .Include(da => da.DuAn)
+                                                        .Where(x => x.DuAn.DeletedTime == null)
+                                                    .Include(da => da.User)
+                                                    .ToList();
+        }
+
         public int AddUserToDuAn(string duAnId, string user, UserDuAn addUserDuAn)
         {
             var existingUser = _dbContext.Users.FirstOrDefault(u => u.Id == addUserDuAn.UserId && u.DeletedTime == null);
