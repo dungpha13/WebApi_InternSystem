@@ -43,7 +43,7 @@ namespace AmazingTech.InternSystem.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         [HttpPost("update-trang-thai-thuc-tap/{id}")]
         public async Task<IActionResult> UpdateTrangThaiThucTap([FromRoute] string id, [FromBody] string trangThaiThucTap)
         {
@@ -51,7 +51,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get")]
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> GetAllUsers()
         {
             return await _userService.GetAllUsers();
@@ -62,8 +62,7 @@ namespace AmazingTech.InternSystem.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserById([FromRoute] string id)
         {
-            Console.WriteLine(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (!id.Equals(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) && !Roles.ADMIN.Equals(HttpContext.User.FindFirstValue(ClaimTypes.Role))) {
+            if (!id.Equals(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) && !Roles.ADMIN.Equals(HttpContext.User.FindFirstValue(ClaimTypes.Role)) && !Roles.HR.Equals(HttpContext.User.FindFirstValue(ClaimTypes.Role))) {
                 return Forbid();
             }
             return await _userService.GetUserById(id);
@@ -71,7 +70,7 @@ namespace AmazingTech.InternSystem.Controllers
 
 
         [HttpPost("create")]
-        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDto)
         {
             return await _userService.CreateUser(createUserDto);
@@ -82,7 +81,7 @@ namespace AmazingTech.InternSystem.Controllers
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO updateUserRequestDTO, [FromRoute] string id)
         {
-            if (!id.Equals(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) && !Roles.ADMIN.Equals(HttpContext.User.FindFirstValue(ClaimTypes.Role)))
+            if (!id.Equals(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
                 return Forbid();
             }
@@ -127,7 +126,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         [HttpDelete]
         [Route("delete/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> DeleteUser([FromRoute] string id)
         {
             return await _userService.DeleteUser(id);
