@@ -67,6 +67,8 @@ namespace AmazingTech.InternSystem.Controllers
             try
             {
                 var result = _guiLichPhongVanService.GetIntervieweeLoginSchedule();
+                if (result == null)
+                    return Ok("There is no schedule");
                 return Ok(result);
             }
             catch (BadHttpRequestException ex)

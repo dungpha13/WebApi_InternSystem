@@ -313,6 +313,9 @@ namespace AmazingTech.InternSystem.Services
 
             var lichphongvan = _lichPhongVanRepository.GetLichPhongVansByIdNgDuocPhongVan(accountId);
 
+            if (lichphongvan == null)
+                return null;
+
             if(lichphongvan.DaXacNhanMail == false)
             {
                 throw new BadHttpRequestException("You need to confirm interview link in email to get schedule");
