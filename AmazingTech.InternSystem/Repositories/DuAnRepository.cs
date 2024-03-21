@@ -183,7 +183,7 @@ namespace AmazingTech.InternSystem.Repositories
             }
 
             var shedule = _dbContext.LichPhongVans.FirstOrDefault(i => i.IdNguoiDuocPhongVan == addUserDuAn.UserId && i.DeletedTime == null);
-            if (shedule == null || shedule.KetQua == Result.Failed)
+            if (shedule == null || shedule.KetQua == Result.Failed || shedule.KetQua == Result.Consider)
             {
                  throw new Exception("This user has not passed the interview and cannot be added to the project.");
             }

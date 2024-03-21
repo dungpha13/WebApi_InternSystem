@@ -12,7 +12,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/group-zalos")]
     [ApiController]
-    //[Authorize(Roles = "Admin,HR")]
+    [Authorize(Roles = "Admin,HR")]
     public class ZaloGroupController : ControllerBase
     {
         private readonly INhomZaloService _nhomZaloService;
