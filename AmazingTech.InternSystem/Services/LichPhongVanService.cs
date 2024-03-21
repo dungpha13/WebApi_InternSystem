@@ -174,7 +174,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("The date of interview must be in the future");
             }
-            
+
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             // string accountId = "148ee64c-0ba2-47a1-abee-e83010944149";
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -186,7 +186,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("You need to fill all information");
             }
-            if(model.ThoiGianPhongVan.Minute % 15 != 0)
+            if (model.ThoiGianPhongVan.Minute % 15 != 0)
             {
                 throw new BadHttpRequestException("The number of minutes of interview time must be a multiple of 15");
             }
@@ -194,7 +194,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("This InterviewForm is invalid");
             }
-            if (model.TimeDuration % 15 !=0 )
+            if (model.TimeDuration % 15 != 0)
             {
                 throw new BadHttpRequestException("Interview time must be a multiple of 15");
             }
@@ -317,7 +317,7 @@ namespace AmazingTech.InternSystem.Services
             if (lichphongvan == null)
                 return null;
 
-            if(lichphongvan.DaXacNhanMail == false)
+            if (lichphongvan.DaXacNhanMail == false)
             {
                 throw new BadHttpRequestException("You need to confirm interview link in email to get schedule");
             }
@@ -474,9 +474,9 @@ namespace AmazingTech.InternSystem.Services
                .ToList();
             return HrOrMentorWithoutInterview;
         }
-        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm,int timeDuration)
+        public void AutoCreateSchedule([EmailAddress] string mailNgPhongVan, DateTime startTime, DateTime endTime, string DiaDiemPhongVan, InterviewForm interviewForm, int timeDuration)
         {
-            
+
             if (startTime > endTime || endTime.Subtract(startTime).TotalMinutes < timeDuration)
             {
                 throw new BadHttpRequestException("The end time cannot be earlier than the start time and The time from start to end must not be less than 30 minutes.");
@@ -520,7 +520,7 @@ namespace AmazingTech.InternSystem.Services
             {
                 throw new BadHttpRequestException("All interns have an interview schedule");
             }
-            
+
             foreach (var item1 in listInternWithoutInterview)
             {
                 var lichphongvan = new LichPhongVanRequestModel
@@ -656,7 +656,7 @@ namespace AmazingTech.InternSystem.Services
         {
             var lichPhongVan = _lichPhongVanRepository.GetLichPhongVanByIdNguoiDuocPhongVan(idNguoiDuocPhongVan);
             var lichPhongVanList = new List<LichPhongVanResponseModel>();
-            foreach (var  item in lichPhongVan)
+            foreach (var item in lichPhongVan)
             {
                 var lichphongvanrepone = new LichPhongVanResponseModel
                 {
@@ -674,7 +674,7 @@ namespace AmazingTech.InternSystem.Services
                 lichPhongVanList.Add(lichphongvanrepone);
             }
             return lichPhongVanList;
-           
+
         }
         public List<User> GetInternOnly()
         {
@@ -732,7 +732,7 @@ namespace AmazingTech.InternSystem.Services
         public async Task<IActionResult> GetAllUserByKetQua(Result ketqua)
         {
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
-            if(!(accountRole == Roles.HR || accountRole == Roles.MENTOR))
+            if (!(accountRole == Roles.HR || accountRole == Roles.MENTOR))
             {
                 throw new BadHttpRequestException("You don't have permission to do this function");
             }
@@ -740,9 +740,9 @@ namespace AmazingTech.InternSystem.Services
 
             List<User> resultUserList = new List<User>();
 
-            for(int i=0;i < lichphongvan.Count; i++)
+            for (int i = 0; i < lichphongvan.Count; i++)
             {
-                var user = await _userManager.Users.Where(x => x.Id == lichphongvan[i].IdNguoiDuocPhongVan && x.DeletedTime == null).SingleOrDefaultAsync();   
+                var user = await _userManager.Users.Where(x => x.Id == lichphongvan[i].IdNguoiDuocPhongVan && x.DeletedTime == null).SingleOrDefaultAsync();
                 resultUserList.Add(user);
             }
 
@@ -762,7 +762,7 @@ namespace AmazingTech.InternSystem.Services
         public List<GetUserDTO> UserWithConsiderResult()
         {
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
-            if (!(accountRole == Roles.HR || accountRole == Roles.MENTOR))
+            if (!(accountRole.ToUpper() == Roles.HR || accountRole == Roles.MENTOR  || accountRole == Roles.ADMIN))
             {
                 throw new BadHttpRequestException("You don't have permission to do this function");
             }
