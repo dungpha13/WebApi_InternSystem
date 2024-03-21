@@ -27,6 +27,7 @@ namespace AmazingTech.InternSystem.Repositories
 
         public List<LichPhongVan> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
         public List<LichPhongVan> GetLichPhongVanByKetQua(Result ketqua);
+        public List<LichPhongVan> GetLichPhongVanWithConsiderResult();
     }
     public class LichPhongVanRepository : ILichPhongVanRepository
     {
@@ -146,6 +147,14 @@ namespace AmazingTech.InternSystem.Repositories
             using (var context = new AppDbContext())
             {
                 var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.KetQua == ketqua && x.DeletedTime == null).ToList();
+                return list;
+            }
+        }
+        public List<LichPhongVan> GetLichPhongVanWithConsiderResult()
+        {
+            using (var context = new AppDbContext())
+            {
+                var list = context.Set<LichPhongVan>().AsNoTracking().Where(x => x.KetQua == Result.Consider  && x.DeletedTime == null).ToList();
                 return list;
             }
         }

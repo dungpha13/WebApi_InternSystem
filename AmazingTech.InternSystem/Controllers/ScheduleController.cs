@@ -264,6 +264,22 @@ namespace AmazingTech.InternSystem.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = ("Bearer"))]
+        [Route("api/lich-phong-vans/Get-All-User-With-Consider-Result")]
+        public IActionResult GetAllUserWithConsiderResult()
+        {
+            try
+            {
+                var result = _guiLichPhongVanService.UserWithConsiderResult();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }
 
