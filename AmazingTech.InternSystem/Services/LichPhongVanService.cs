@@ -42,6 +42,7 @@ namespace AmazingTech.InternSystem.Services
         public List<LichPhongVanResponseModel> AllLichPhongVan();
         public List<LichPhongVanResponseModel> SendListOfInternsToMentor(string email);
         public List<LichPhongVanResponseModel> GetLichPhongVanByIdNguoiDuocPhongVan(string idNguoiDuocPhongVan);
+        public List<GetUserDTO> UserWithConsiderResult();
     }
     public class LichPhongVanService : IGuiLichPhongVanService
     {
@@ -727,6 +728,11 @@ namespace AmazingTech.InternSystem.Services
 
         public async Task<IActionResult> GetAllUserByKetQua(Result ketqua)
         {
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            if(!(accountRole == Roles.HR || accountRole == Roles.MENTOR))
+            {
+                throw new BadHttpRequestException("You don't have permission to do this function");
+            }
             var lichphongvan = _lichPhongVanRepository.GetLichPhongVanByKetQua(ketqua);
 
             List<User> resultUserList = new List<User>();
@@ -750,5 +756,34 @@ namespace AmazingTech.InternSystem.Services
 
             return new OkObjectResult(result);
         }
+        public List<GetUserDTO> UserWithConsiderResult()
+        {
+            string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            if (!(accountRole == Roles.HR || accountRole == Roles.MENTOR))
+            {
+                throw new BadHttpRequestException("You don't have permission to do this function");
+            }
+            var lichphongvan = _lichPhongVanRepository.GetLichPhongVanByKetQua(Result.Consider);
+            var ListUser = new List<User>();
+            foreach (var item in lichphongvan)
+            {
+                var user = _userRepository.GetUserById(item.IdNguoiDuocPhongVan);
+                ListUser.Add(user);
+            }
+            var ListUserResponse = new List<GetUserDTO>();
+            foreach (var item in ListUser)
+            {
+                var UserReponse = new GetUserDTO
+                {
+                    Id = item.Id,
+                    Email = item.Email,
+                    PhoneNumber = item.PhoneNumber,
+                    TrangThaiThucTap = item.TrangThaiThucTap,
+                    Username = item.UserName,
+                };
+                ListUserResponse.Add(UserReponse);
+            }
+            return ListUserResponse;
+        } 
     }
 }
