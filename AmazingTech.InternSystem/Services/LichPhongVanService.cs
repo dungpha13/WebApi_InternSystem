@@ -4,6 +4,7 @@ using AmazingTech.InternSystem.Models.Request.LichPhongVan;
 using AmazingTech.InternSystem.Models.Response;
 using AmazingTech.InternSystem.Models.Response.User;
 using AmazingTech.InternSystem.Repositories;
+using AmazingTech.InternSystem.Repositories.NhomZaloManagement;
 using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Drawing.Charts;
@@ -32,7 +33,7 @@ namespace AmazingTech.InternSystem.Services
         public LichPhongVanResponseModel UpdateSchedule(LichPhongVanRequestModel request);
         public void deleteSchedudle(string ScheduleId);
         public bool ConfirmEmail(string id);
-        public void SendResultInterviewEmail(string email, string linkNhomZaloTong, string linkNhomZaloRieng);
+        public void SendResultInterviewEmail(string id);
         public List<User> GetInternWithoutInternView();
         public Task<IActionResult> GetAllUserByKetQua(Result ketqua);
         public void UpdateResult(string idlichphongvan, Result result, string Vitri);
@@ -53,8 +54,9 @@ namespace AmazingTech.InternSystem.Services
         private readonly IEmailService _emailService;
         private readonly IViTriRepository _viTriRepository;
         private readonly IUserViTriRepository _userViTriRepository;
+        private readonly INhomZaloRepo _nhomZaloRepository;
         private readonly IMapper _mapper;
-        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager, IViTriRepository viTriRepository, IUserViTriRepository userViTriRepository, IMapper mapper)
+        public LichPhongVanService(ILichPhongVanRepository lichPhongVanRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IEmailService emailService, UserManager<User> userManager, IViTriRepository viTriRepository, IUserViTriRepository userViTriRepository, IMapper mapper, INhomZaloRepo nhomZaloRepo)
         {
             _userManager = userManager;
             _emailService = emailService;
@@ -64,6 +66,7 @@ namespace AmazingTech.InternSystem.Services
             _viTriRepository = viTriRepository;
             _userViTriRepository = userViTriRepository;
             _mapper = mapper;
+            _nhomZaloRepository = nhomZaloRepo;
         }
         public bool ConfirmEmail(string id)
         {
@@ -106,7 +109,7 @@ namespace AmazingTech.InternSystem.Services
             return true;
         }
 
-        public void SendResultInterviewEmail(string email, string linkNhomZaloTong, string linkNhomZaloRieng)
+        public void SendResultInterviewEmail(string id)
         {
             string accountRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string accountId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -115,7 +118,8 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("You need to login to create an interview schedule");
             }
 
-            var user = _userRepository.GetUserByEmail(email);
+            var user = _userRepository.GetUserById(id);
+
             if (user == null)
             {
                 throw new BadHttpRequestException("This Mail is not exist in database");
@@ -126,10 +130,40 @@ namespace AmazingTech.InternSystem.Services
                 throw new BadHttpRequestException("You don't have permission to send email");
             }
 
-            var resultIntern = _lichPhongVanRepository.GetScheduleByIntervieweeId(user.Id);
+            var resultIntern = _lichPhongVanRepository.GetScheduleByIntervieweeId(id);
+            string email = user.Email;
+
+            if(resultIntern == null)
+            {
+                throw new BadHttpRequestException("This intern has been not interviewed yet");
+            }
+
+            if (resultIntern.KetQua == Result.Consider)
+            {
+                throw new BadHttpRequestException("Intern with Consider Result cannot be received result interview email");
+            }
             string resultContext = "";
             string context = "";
 
+            var userNhomZalo = _nhomZaloRepository.GetUserNhomZaloByUserId(id);
+
+            if(userNhomZalo == null)
+            {
+                throw new BadHttpRequestException("This Intern is not been add ZaloGroup");
+            }
+
+            var nhomZaloRiengLink = _nhomZaloRepository.GetNhomZaloById(userNhomZalo.IdNhomZaloRieng).LinkNhom;
+            var nhomZaloChungLink = _nhomZaloRepository.GetNhomZaloById(userNhomZalo.IdNhomZaloChung).LinkNhom;
+
+            if(nhomZaloChungLink == null)
+            {
+                throw new BadHttpRequestException("This intern does not have NhomZaloChung");
+            }
+
+            if (nhomZaloRiengLink == null)
+            {
+                throw new BadHttpRequestException("This intern does not have NhomZaloRieng");
+            }
 
             if (resultIntern.KetQua == 0)
             {
@@ -151,8 +185,8 @@ namespace AmazingTech.InternSystem.Services
                     "&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">1. Hình thức thực tập:</span> Linh động giữa Online và Offline<br>" +
                     "&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">2. Thời gian thực tập:</span> Giờ hành chính (Thứ 2 - thứ 6, từ 8h00 - 17h00).<br>" +
                     "&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">3. Group Zalo tham gia vào thực tập</span>: <br>" +
-                    $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; <a href=\"{linkNhomZaloTong}\">Link Nhóm Zalo Chung</a>" +
-                    $"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; <a href=\"{linkNhomZaloRieng}\">Link Nhóm Zalo Chuyên Ngành</a>" +
+                    $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; <a href=\"{nhomZaloChungLink}\">Link Nhóm Zalo Chung</a>" +
+                    $"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; <a href=\"{nhomZaloRiengLink}\">Link Nhóm Zalo Chuyên Ngành</a>" +
                     "<br>&nbsp;&nbsp;&nbsp; <span style = \"font-weight: bold\">4. Hỗ trợ:</span> <br>" +
                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; Chấm điểm gửi báo cáo hàng tuần (nếu trường yêu cầu) <br>" +
                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#x2022; Đóng mộc xác nhận cuối kỳ thực tập <br>" +
