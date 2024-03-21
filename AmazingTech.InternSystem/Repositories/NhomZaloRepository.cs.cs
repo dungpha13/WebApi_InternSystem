@@ -124,7 +124,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             var shedule = _appDbContext.LichPhongVans.FirstOrDefault(i => i.IdNguoiDuocPhongVan == addUser.UserId && i.DeletedTime == null);
             if (shedule == null || shedule.KetQua == Result.Failed || shedule.KetQua == Result.Consider)
             {
-                throw new Exception("This user has not passed the interview and cannot be added to the project.");
+                throw new Exception("This user has not passed the interview and cannot be added to this GroupZalo.");
             }
 
             addUser.IdNhomZaloChung = idNhomZaloChung;
