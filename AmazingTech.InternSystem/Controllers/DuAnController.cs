@@ -18,7 +18,6 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/du-ans")]
     [ApiController]
-    //[Authorize(Roles = "Admin,HR")]
     public class DuAnController : ControllerBase
     {
         private readonly IDuAnService _duAnService;
@@ -32,6 +31,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         //Manage DuAn
         [HttpGet("get-all-projects")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult GetAllDuAns()
         {
             var result = _duAnService.GetAllDuAns();
@@ -63,6 +63,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("get-project/{id}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult GetDuAnById(string id)
         {
             var result = _duAnService.GetDuAnById(id);
@@ -91,6 +92,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("search-project")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult SearchProject(string? ten, string? leaderName, DateTime? startDate, DateTime? endDate)
         {
             try
@@ -143,6 +145,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("create-project")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult CreateDuAn([FromBody] CrudDuAnModel createDuAn)
         {
             try
@@ -159,6 +162,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update-project/{id}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult UpdateDuAn(string id, [FromBody] CrudDuAnModel updatedDuAn)
         {
             try
@@ -174,6 +178,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete("delete-project/{id}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult DeleteDuAn(string id)
         {
             try
@@ -189,6 +194,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpGet("projects-excel-export")]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<ActionResult> ExportProjectsToExcelAsync()
         {
             try
@@ -267,6 +273,7 @@ namespace AmazingTech.InternSystem.Controllers
 
         //Manage UserDuAn
         [HttpGet("get-all-user-in-project/{duAnId}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult GetAllUserDuAns(string duAnId)
         {
 
@@ -359,6 +366,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPost("add-user-to-project/{duAnId}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult AddUserToDuAn(string duAnId, [FromBody] UserDuAnModel addUserDuAn)
         {
 
@@ -387,6 +395,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpPut("update-user-in-project/{duAnId}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult UpdateUserInDuAn(string duAnId, [FromBody] UserDuAnModel updateUserDuAn)
         {
             try
@@ -421,6 +430,7 @@ namespace AmazingTech.InternSystem.Controllers
         }
 
         [HttpDelete("delete-user-from-project/{duAnId}/{userId}")]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult DeleteUserFromDuAn(string duAnId, string userId)
         {
             try

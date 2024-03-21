@@ -1,5 +1,4 @@
 ﻿using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 using AmazingTech.InternSystem.Models.Request.User;
 using AmazingTech.InternSystem.Repositories;
@@ -58,10 +57,10 @@ namespace AmazingTech.InternSystem.Services
             return await _nhomZaloRepo.GetUserInGroupAsync(nhomZaloId, userId);
         }
 
-        public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, AddUserNhomZaloDTO addUserDTO)
+        public async Task<int> AddUserToGroupAsync(string idNhomZaloChung, string idNhomZaloRieng, string user, AddUserNhomZaloDTO addUserDTO)
         {
             UserNhomZalo userNhomZalo = _mapper.Map<UserNhomZalo>(addUserDTO);
-            return await _nhomZaloRepo.AddUserToGroupAsync(nhomZaloId, user, userNhomZalo);
+            return await _nhomZaloRepo.AddUserToGroupAsync(idNhomZaloChung, idNhomZaloRieng, user, userNhomZalo);
         }
 
         public async Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UpdateUserNhomZaloDTO updatedUserDTO)

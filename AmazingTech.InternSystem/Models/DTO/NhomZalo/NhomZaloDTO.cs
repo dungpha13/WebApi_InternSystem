@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AmazingTech.InternSystem.Models.DTO
+namespace AmazingTech.InternSystem.Models.DTO.NhomZalo
 {
     public class NhomZaloDTO
     {

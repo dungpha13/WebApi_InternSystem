@@ -88,7 +88,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         //UserNhomZalo methods
         public async Task<List<UserNhomZalo>> GetUsersInGroupAsync(string nhomZaloId)
         {
-            return await _appDbContext.UserNhomZalos.Where(x => x.IdNhomZaloRieng == nhomZaloId && x.DeletedTime == null)
+            return await _appDbContext.UserNhomZalos.Where(x => (x.IdNhomZaloChung == nhomZaloId || x.IdNhomZaloRieng == nhomZaloId) && x.DeletedTime == null)
                                                     .OrderByDescending(nz => nz.JoinedTime)
                                                     .Include(nz => nz.NhomZalo)
                                                     .Include(nz => nz.User)
@@ -98,12 +98,12 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
         public async Task<UserNhomZalo?> GetUserInGroupAsync(string nhomZaloId, string userId)
         {
             return await _appDbContext.UserNhomZalos.Include(nz => nz.NhomZalo)
-                                                    .FirstOrDefaultAsync(x => x.IdNhomZaloRieng == nhomZaloId
+                                                    .FirstOrDefaultAsync(x => x.IdNhomZaloChung == nhomZaloId || x.IdNhomZaloRieng == nhomZaloId
                                                                            && x.UserId == userId
                                                                            && x.DeletedTime == null);
         }
 
-        public async Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser)
+        public async Task<int> AddUserToGroupAsync(string idNhomZaloChung, string idNhomZaloRieng, string user, UserNhomZalo addUser)
         {
             var existingUser = _appDbContext.Users.FirstOrDefault(u => u.Id == addUser.UserId && u.DeletedTime == null);
             if (existingUser == null)
@@ -111,7 +111,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 throw new Exception($"User with ID ({addUser.UserId}) not found.");
             }
 
-            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZaloRieng == nhomZaloId
+            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZaloChung == idNhomZaloChung || x.IdNhomZaloRieng == idNhomZaloRieng
                                                                                        && x.UserId == addUser.UserId
                                                                                        && x.DeletedTime == null);
 
@@ -120,7 +120,8 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 throw new Exception($"User with ID ({addUser.UserId}) has already existed in this GroupZalo.");
             }
 
-            addUser.IdNhomZaloRieng = nhomZaloId;
+            addUser.IdNhomZaloChung = idNhomZaloChung;
+            addUser.IdNhomZaloRieng = idNhomZaloRieng;
             addUser.JoinedTime = DateTime.Now;
             addUser.CreatedBy = user;
             addUser.LastUpdatedBy = user;
@@ -139,7 +140,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 throw new Exception($"User with ID ({updatedUser.UserId}) not found.");
             }
 
-            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZaloRieng == nhomZaloId
+            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZaloChung == nhomZaloId || x.IdNhomZaloRieng == nhomZaloId
                                                                                        && x.UserId == updatedUser.UserId
                                                                                        && x.DeletedTime == null);
 
@@ -167,7 +168,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
                 throw new Exception($"User with ID ({userId}) not found.");
             }
 
-            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZaloRieng == nhomZaloId
+            var userNhomZalo = await _appDbContext.UserNhomZalos.FirstOrDefaultAsync(x => x.IdNhomZaloChung == nhomZaloId || x.IdNhomZaloRieng == nhomZaloId
                                                                                        && x.UserId == userId
                                                                                        && x.DeletedTime == null);
 

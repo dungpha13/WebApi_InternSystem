@@ -1,6 +1,5 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
-using AmazingTech.InternSystem.Models.DTO;
 using AmazingTech.InternSystem.Models.DTO.NhomZalo;
 using AmazingTech.InternSystem.Services;
 using ClosedXML.Excel;
@@ -13,7 +12,7 @@ namespace AmazingTech.InternSystem.Controllers
 {
     [Route("api/group-zalos")]
     [ApiController]
-    [Authorize(Roles = "Admin,HR")]
+    //[Authorize(Roles = "Admin,HR")]
     public class ZaloGroupController : ControllerBase
     {
         private readonly INhomZaloService _nhomZaloService;
@@ -76,7 +75,6 @@ namespace AmazingTech.InternSystem.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
-
 
         [HttpPost("create")]
         public async Task<ActionResult> CreateZaloGroupAsync([FromBody] NhomZaloDTO zaloDTO)
@@ -275,20 +273,26 @@ namespace AmazingTech.InternSystem.Controllers
         //    }
         //}
 
-        [HttpPost("add-user-to-zalo-group/{nhomZaloId}")]
-        public async Task<ActionResult> AddUserToZaloGroupAsync(string nhomZaloId, [FromBody] AddUserNhomZaloDTO addUserDTO)
+        [HttpPost("add-user-to-zalo-group/{idNhomZaloChung}/{idNhomZaloRieng}")]
+        public async Task<ActionResult> AddUserToZaloGroupAsync(string idNhomZaloChung, string idNhomZaloRieng, [FromBody] AddUserNhomZaloDTO addUserDTO)
         {
             try
             {
-                var nhomZalo = await _nhomZaloService.GetGroupByIdAsync(nhomZaloId);
-                if (nhomZalo == null)
+                var nhomZaloChung = await _nhomZaloService.GetGroupByIdAsync(idNhomZaloChung);
+                if (nhomZaloChung == null)
                 {
-                    return NotFound($"ZaloGroup with ID ({nhomZaloId}) not found.");
+                    return NotFound($"ZaloGroup with ID ({idNhomZaloChung}) not found.");
+                }
+
+                var nhomZaloRieng = await _nhomZaloService.GetGroupByIdAsync(idNhomZaloRieng);
+                if (nhomZaloRieng == null)
+                {
+                    return NotFound($"ZaloGroup with ID ({idNhomZaloRieng}) not found.");
                 }
 
                 string user = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await _nhomZaloService.AddUserToGroupAsync(nhomZaloId, user, addUserDTO);
-                return Ok($"User added to ZaloGroup '{nhomZalo.TenNhom}' successfully");
+                await _nhomZaloService.AddUserToGroupAsync(idNhomZaloChung, idNhomZaloRieng, user, addUserDTO);
+                return Ok($"User added to ZaloGroup '{nhomZaloChung.TenNhom}' and '{nhomZaloRieng.TenNhom}' successfully");
 
             }
             catch (Exception ex)
