@@ -58,6 +58,7 @@ namespace AmazingTech.InternSystem.Services
             }
         }
 
+
         public void SendMail(string Content,string ReceiveAddress, String Subject, String InternId)
         {
             // var confirmLink = $"https://localhost:7078/api/lich-phong-vans/confirmEmail?id={InternId}";

@@ -25,6 +25,7 @@ namespace AmazingTech.InternSystem.Controllers
         {
             this._internRepo = internRepo;
             this._internInfoService = internInfoService;
+            
         }
 
         [HttpGet("get")]
@@ -154,5 +155,19 @@ namespace AmazingTech.InternSystem.Controllers
             var fileName = "templatefile.xlsx";
             return File(memoryStream, contentType, fileName);
         }
+
+
+        //Gửi gmail cho tất cả sinh viên có trong kỳ thực tập
+        [HttpPost("sendEmailForSignUpAccount")]
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> SendEmailForSignUpAccountIntern([FromQuery] string idKyThucTap)
+        {
+
+            return await _internInfoService.SendMailForIntern(idKyThucTap);
+
+        }
+
+
+
     }
 }

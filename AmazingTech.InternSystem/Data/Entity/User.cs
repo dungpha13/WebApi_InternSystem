@@ -36,6 +36,8 @@ namespace AmazingTech.InternSystem.Data.Entity
         public ICollection<UserViTri> UserViTris { get; set; }
         public ICollection<UserNhomZalo> UserNhomZalos { get; set; }
 
+        public ICollection<EmailUserStatus> EmailUserStatuses { get; set; }
+
 
     }
 }

@@ -46,6 +46,8 @@ namespace AmazingTech.InternSystem.Data
         public DbSet<CauhoiCongnghe> cauhoiCongnghes { get; set; }
         public DbSet<PhongVan> phongVans { get; set; }
 
+        public DbSet<EmailUserStatus> EmailUserStatus { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var configuration = new ConfigurationBuilder()
@@ -131,7 +133,13 @@ namespace AmazingTech.InternSystem.Data
             modelBuilder.Entity<UserNhomZalo>()
                 .HasOne(zl => zl.NhomZalo)
                 .WithMany(u => u.UserNhomZalos)
-                .HasForeignKey(zl => zl.IdNhomZalo)
+                .HasForeignKey(zl => zl.IdNhomZaloRieng)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserNhomZalo>()
+                .HasOne(zl => zl.NhomZalo)
+                .WithMany(u => u.UserNhomZalos)
+                .HasForeignKey(zl => zl.IdNhomZaloChung)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserDuAn>()
@@ -202,6 +210,19 @@ namespace AmazingTech.InternSystem.Data
             modelBuilder.Entity<User>()
                 .HasOne(u => u.InternInfo)
                 .WithOne(i => i.User);
+
+            //Add moi bang EmailUserStatus
+            modelBuilder.Entity<EmailUserStatus>()
+               .HasOne(e => e.User)
+               .WithMany(u => u.EmailUserStatuses)
+               .HasForeignKey(z => z.idNguoiGui)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmailUserStatus>()
+              .HasOne(e => e.Intern)
+              .WithMany(u => u.EmailUserStatuses)
+              .HasForeignKey(z => z.idNguoiNhan)
+              .OnDelete(DeleteBehavior.NoAction);
 
             // Auto generate when inserted/updated
 

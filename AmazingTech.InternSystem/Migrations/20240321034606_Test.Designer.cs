@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazingTech.InternSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240220085356_Test")]
+    [Migration("20240321034606_Test")]
     partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -295,6 +295,56 @@ namespace AmazingTech.InternSystem.Migrations
                     b.ToTable("DuAn", "dbo");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.EmailUserStatus", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("EmailLoai1")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("EmailLoai2")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("EmailLoai3")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("idNguoiGui")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("idNguoiNhan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("idNguoiGui");
+
+                    b.HasIndex("idNguoiNhan");
+
+                    b.ToTable("EmailUserStatus", "dbo");
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
                     b.Property<string>("Id")
@@ -502,6 +552,9 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SendMailResult")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ThoiGianPhongVan")
                         .HasColumnType("datetime2");
@@ -860,9 +913,13 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("IdNhomZalo")
+                    b.Property<string>("IdNhomZaloChung")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdNhomZaloRieng")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsMentor")
                         .HasColumnType("bit");
@@ -885,7 +942,7 @@ namespace AmazingTech.InternSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdNhomZalo");
+                    b.HasIndex("IdNhomZaloChung");
 
                     b.HasIndex("UserId");
 
@@ -1185,6 +1242,25 @@ namespace AmazingTech.InternSystem.Migrations
                     b.Navigation("Leader");
                 });
 
+            modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.EmailUserStatus", b =>
+                {
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.User", "User")
+                        .WithMany("EmailUserStatuses")
+                        .HasForeignKey("idNguoiGui")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AmazingTech.InternSystem.Data.Entity.InternInfo", "Intern")
+                        .WithMany("EmailUserStatuses")
+                        .HasForeignKey("idNguoiNhan")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Intern");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.InternInfo", b =>
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.DuAn", null)
@@ -1305,7 +1381,7 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.HasOne("AmazingTech.InternSystem.Data.Entity.NhomZalo", "NhomZalo")
                         .WithMany("UserNhomZalos")
-                        .HasForeignKey("IdNhomZalo")
+                        .HasForeignKey("IdNhomZaloChung")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -1429,6 +1505,8 @@ namespace AmazingTech.InternSystem.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("EmailUserStatuses");
+
                     b.Navigation("User");
                 });
 
@@ -1457,6 +1535,8 @@ namespace AmazingTech.InternSystem.Migrations
             modelBuilder.Entity("AmazingTech.InternSystem.Data.Entity.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("EmailUserStatuses");
 
                     b.Navigation("LichPhongVans_DuocPhongVan");
 

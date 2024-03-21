@@ -15,7 +15,9 @@ namespace AmazingTech.InternSystem.Data.Entity
         public User User { get; set; }
 
         [ForeignKey("NhomZalo")]
-        public string IdNhomZalo { get; set; }
+        public string IdNhomZaloChung { get; set; }
+
+        public string IdNhomZaloRieng { get; set; }
         public NhomZalo NhomZalo { get; set; }
 
         public DateTime? JoinedTime { get; set; }

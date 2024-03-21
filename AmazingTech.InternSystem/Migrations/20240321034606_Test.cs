@@ -304,6 +304,7 @@ namespace AmazingTech.InternSystem.Migrations
                     ThoiGianPhongVan = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DiaDiemPhongVan = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DaXacNhanMail = table.Column<bool>(type: "bit", nullable: true),
+                    SendMailResult = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InterviewForm = table.Column<int>(type: "int", nullable: false),
                     TrangThai = table.Column<int>(type: "int", nullable: false),
                     TimeDuration = table.Column<TimeSpan>(type: "time", nullable: false),
@@ -375,7 +376,8 @@ namespace AmazingTech.InternSystem.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsMentor = table.Column<bool>(type: "bit", nullable: false),
-                    IdNhomZalo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdNhomZaloChung = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdNhomZaloRieng = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     JoinedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LeftTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -395,8 +397,8 @@ namespace AmazingTech.InternSystem.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_UserNhomZalo_NhomZalo_IdNhomZalo",
-                        column: x => x.IdNhomZalo,
+                        name: "FK_UserNhomZalo_NhomZalo_IdNhomZaloChung",
+                        column: x => x.IdNhomZaloChung,
                         principalSchema: "dbo",
                         principalTable: "NhomZalo",
                         principalColumn: "Id");
@@ -550,6 +552,41 @@ namespace AmazingTech.InternSystem.Migrations
                     table.ForeignKey(
                         name: "FK_Comment_InternInfo_IdNguoiDuocComment",
                         column: x => x.IdNguoiDuocComment,
+                        principalSchema: "dbo",
+                        principalTable: "InternInfo",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailUserStatus",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idNguoiGui = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idNguoiNhan = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmailLoai1 = table.Column<bool>(type: "bit", nullable: true),
+                    EmailLoai2 = table.Column<bool>(type: "bit", nullable: true),
+                    EmailLoai3 = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailUserStatus", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmailUserStatus_AspNetUsers_idNguoiGui",
+                        column: x => x.idNguoiGui,
+                        principalSchema: "dbo",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_EmailUserStatus_InternInfo_idNguoiNhan",
+                        column: x => x.idNguoiNhan,
                         principalSchema: "dbo",
                         principalTable: "InternInfo",
                         principalColumn: "Id");
@@ -818,6 +855,18 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "LeaderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmailUserStatus_idNguoiGui",
+                schema: "dbo",
+                table: "EmailUserStatus",
+                column: "idNguoiGui");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmailUserStatus_idNguoiNhan",
+                schema: "dbo",
+                table: "EmailUserStatus",
+                column: "idNguoiNhan");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InternInfo_DuAnId",
                 schema: "dbo",
                 table: "InternInfo",
@@ -922,10 +971,10 @@ namespace AmazingTech.InternSystem.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserNhomZalo_IdNhomZalo",
+                name: "IX_UserNhomZalo_IdNhomZaloChung",
                 schema: "dbo",
                 table: "UserNhomZalo",
-                column: "IdNhomZalo");
+                column: "IdNhomZaloChung");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserNhomZalo_UserId",
@@ -1028,6 +1077,10 @@ namespace AmazingTech.InternSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "Dashboard",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "EmailUserStatus",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

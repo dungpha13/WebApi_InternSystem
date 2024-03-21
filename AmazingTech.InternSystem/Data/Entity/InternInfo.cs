@@ -42,5 +42,7 @@ namespace AmazingTech.InternSystem.Data.Entity
         public string? KiThucTapId { get; set; }
         [JsonIgnore]
         public KiThucTap? KiThucTap { get; set; }
+
+        public ICollection<EmailUserStatus> EmailUserStatuses { get; set; }
     }
 }
