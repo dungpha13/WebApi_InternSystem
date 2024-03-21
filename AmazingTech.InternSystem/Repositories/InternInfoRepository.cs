@@ -125,6 +125,24 @@ namespace AmazingTech.InternSystem.Repositories
             return intern;
         }
 
+        public async Task<InternInfo> GetInternInfoByIdAsync(string id)
+        {
+            var intern = await _context.InternInfos
+                             .Where(intern => intern.DeletedBy == null)
+                             .Include(intern => intern.User)
+                             .Include(intern => intern.User!.UserViTris)
+                                .ThenInclude(uservitri => uservitri.ViTri)
+                            .Include(intern => intern.User!.UserNhomZalos)
+                                .ThenInclude(usernhomzalo => usernhomzalo.NhomZalo)
+                            .Include(intern => intern.User!.UserDuAns)
+                                .ThenInclude(userduan => userduan.DuAn)
+                            .Include(intern => intern.Truong)
+                            .Include(intern => intern.KiThucTap)
+                             .FirstOrDefaultAsync(i => i.Id == id);
+
+            return intern;
+        }
+
         public async Task<InternInfo> GetDeletedInternInfoAsync(string MSSV)
         {
             var intern = await _context.InternInfos

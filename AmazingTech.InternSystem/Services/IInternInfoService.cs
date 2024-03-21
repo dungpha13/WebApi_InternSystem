@@ -18,6 +18,6 @@ namespace AmazingTech.InternSystem.Services
         Task<IActionResult> AddCommentInternInfo(CommentInternInfoDTO comment, string idCommentor, string mssv);
         Task<IActionResult> GetCommentsByMssv(string mssv);
 
-        Task<IActionResult> SendMailForIntern(string idKyThucTap);
+        Task<IActionResult> SendMailForIntern(string idUser, string idKyThucTap);
     }
 }

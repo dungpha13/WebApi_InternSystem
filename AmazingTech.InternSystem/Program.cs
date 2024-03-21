@@ -72,6 +72,8 @@ namespace AmazingTech.InternSystem
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<IInterviewRepo, InterviewRepository>();
             builder.Services.AddScoped<IInterviewService, InterviewService>();
+
+            builder.Services.AddScoped<IEmailUserStatusRepo, EmailUserStatusRepo>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",

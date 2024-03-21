@@ -28,6 +28,7 @@ namespace AmazingTech.InternSystem.Services
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IKiThucTapRepository _kiThucTapRepository;
+        private readonly IEmailUserStatusRepo _emailUserStatusRepo;
 
         private readonly AppDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -37,7 +38,8 @@ namespace AmazingTech.InternSystem.Services
             IMapper mapper, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
             IKiThucTapRepository kiThucTapRepository,
-            AppDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+            AppDbContext dbContext, IHttpContextAccessor httpContextAccessor,
+            IEmailUserStatusRepo emailUserStatusRepo)
         {
             _dbContext = dbContext;
             _internRepo = internRepo;
@@ -48,6 +50,7 @@ namespace AmazingTech.InternSystem.Services
             _dbContext = dbContext;
             _kiThucTapRepository = kiThucTapRepository;
             _httpContextAccessor = httpContextAccessor;
+            _emailUserStatusRepo = emailUserStatusRepo;
         }
 
         //Get all Intern
@@ -597,11 +600,53 @@ namespace AmazingTech.InternSystem.Services
 
 
         //Hàm dùng để sendEmail cho tất cả Intern có trong kỳ thực tập
-        public async Task<IActionResult> SendMailForIntern(string idKyThucTap)
+        public async Task<IActionResult> SendMailForIntern(string idNguoiGui, string idKyThucTap)
         {
             try
             {
-                var kyThucTap = _kiThucTapRepository.GetKiThucTap(idKyThucTap);
+                KiThucTap kyThucTap = _kiThucTapRepository.GetKiThucTap(idKyThucTap);
+                if(kyThucTap == null) {
+                    return new BadRequestObjectResult("Id Kỳ thực tập không tồn tại!");
+                }
+
+                foreach(var intern in  kyThucTap.Interns) {
+                    string idNguoiNhan = intern.Id;
+
+                    //Kiểm tra mail được gửi cho Intern đó trước đây chưa
+                    bool hasSentMail = await _emailUserStatusRepo.HasSentEmail(idNguoiNhan);
+
+                    if (!hasSentMail)
+                    {
+                        var emailUserStatus = new EmailUserStatus
+                        {
+                            idNguoiGui = idNguoiGui,
+                            idNguoiNhan = idNguoiNhan,
+                            EmailLoai1 = true
+                        };
+
+                        int rs = await _emailUserStatusRepo.AddEmailUserStatus(emailUserStatus);
+                        if (rs == 0)
+                        {
+                            return new BadRequestObjectResult("Thêm thông tin vô bảng EmailUserStatus thất bại!");
+                        }
+
+                        //Lấy thông tin InternInfo = idNguoiNhan
+                        InternInfo internInfo = await _internRepo.GetInternInfoByIdAsync(idNguoiNhan);
+
+                        string subject = "[AMAZINGTECH - HR] THƯ THÔNG BÁO VỀ VIỆC ĐĂNG KÝ TÀI KHOẢN";
+
+                        string content = "Kính gửi sinh viên " + internInfo.HoTen + ",<br />\r\n      " +
+                        "Đại diện bộ phận Nhân sự (HR) tại Công Ty TNHH Giải Pháp và Công nghệ Amazing, \r\n      " +
+                        "chúng tôi gửi bạn đường link để truy cập vào trang web của công ty: <a href='https://www.youtube.com/watch?v=ET8rdp2b1a4'>https://www.youtube.com/watch?v=ET8rdp2b1a4</a><br />\r\n      " +
+                        "Sinh viên vui lòng đăng ký tài khoản trên trang web bằng gmail cá nhân. <br/>\r\n      " +
+                        "*Lưu ý: Về gmail cá nhân dùng để đăng ký <span style=\"font-weight: bold;\">(bắt buộc đúng với gmail đã điền trong form trước đó)</span>. <br />\r\n      " +
+                        "Xin vui lòng cho chúng tôi biết nếu bạn gặp bất kỳ trở ngại gì trong quá trình đăng ký hoặc có bất kỳ thông tin nào khác cần chúng tôi cung cấp.<br>\r\n      " +
+                        "Trân trọng!";
+
+                        SendMail(content, internInfo.EmailCaNhan, subject);
+                    }
+
+                }
 
 
                 return new OkObjectResult("Gửi email thành công!");

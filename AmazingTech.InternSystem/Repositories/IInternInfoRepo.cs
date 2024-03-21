@@ -25,5 +25,7 @@ namespace AmazingTech.InternSystem.Repositories
         public Task<int> AddListInternInfoAsync(List<InternInfo> interns);
 
         public Task<InternInfo> GetCommentByMssv(string mssv);
+
+        public Task<InternInfo> GetInternInfoByIdAsync(string id);
     }
 }

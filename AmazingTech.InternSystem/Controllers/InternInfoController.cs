@@ -162,9 +162,8 @@ namespace AmazingTech.InternSystem.Controllers
         [Authorize(Roles = "Admin, HR")]
         public async Task<IActionResult> SendEmailForSignUpAccountIntern([FromQuery] string idKyThucTap)
         {
-
-            return await _internInfoService.SendMailForIntern(idKyThucTap);
-
+            string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return await _internInfoService.SendMailForIntern(userId, idKyThucTap);
         }
 
 
