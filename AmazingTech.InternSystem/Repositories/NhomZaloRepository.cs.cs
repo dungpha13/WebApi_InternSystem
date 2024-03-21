@@ -1,5 +1,6 @@
 ﻿using AmazingTech.InternSystem.Data;
 using AmazingTech.InternSystem.Data.Entity;
+using AmazingTech.InternSystem.Data.Enum;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.User;
 using DocumentFormat.OpenXml.Office2010.Excel;
@@ -118,6 +119,12 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
             if (userNhomZalo != null)
             {
                 throw new Exception($"User with ID ({addUser.UserId}) has already existed in this GroupZalo.");
+            }
+
+            var shedule = _appDbContext.LichPhongVans.FirstOrDefault(i => i.IdNguoiDuocPhongVan == addUser.UserId && i.DeletedTime == null);
+            if (shedule == null || shedule.KetQua == Result.Failed || shedule.KetQua == Result.Consider)
+            {
+                throw new Exception("This user has not passed the interview and cannot be added to the project.");
             }
 
             addUser.IdNhomZaloChung = idNhomZaloChung;
