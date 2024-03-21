@@ -20,5 +20,7 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
          public Task<int> AddUserToGroupAsync(string nhomZaloId, string user, UserNhomZalo addUser);
          public Task<int> UpdateUserInGroupAsync(string nhomZaloId, string user, UserNhomZalo updatedUser);
          public Task<int> RemoveUserFromGroupAsync(string nhomZaloId, string user, string userId);
+         public UserNhomZalo GetUserNhomZaloByUserId(string id);
+         public NhomZalo GetNhomZaloById(string id);
     }
 }

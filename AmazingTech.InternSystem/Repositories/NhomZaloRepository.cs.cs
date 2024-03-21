@@ -2,6 +2,7 @@
 using AmazingTech.InternSystem.Data.Entity;
 using AmazingTech.InternSystem.Models;
 using AmazingTech.InternSystem.Models.Request.User;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
@@ -182,6 +183,22 @@ namespace AmazingTech.InternSystem.Repositories.NhomZaloManagement
 
             //_appDbContext.UserNhomZalos.Remove(userNhomZalo);
             return await _appDbContext.SaveChangesAsync();
+        }
+
+        public UserNhomZalo GetUserNhomZaloByUserId(string id)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<UserNhomZalo>().AsNoTracking().Where(zl => zl.UserId == id && zl.DeletedTime == null).SingleOrDefault();
+            }
+        }
+
+        public NhomZalo GetNhomZaloById(string id)
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Set<NhomZalo>().AsNoTracking().Where(zl => zl.Id == id && zl.DeletedTime == null).SingleOrDefault();
+            }
         }
     }
 }
