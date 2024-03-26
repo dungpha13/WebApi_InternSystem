@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<Folder Include="Logs\" />
+		<Folder Include="Unit_Test\" />
 		<Folder Include="Unit_test\" />
 	</ItemGroup>
 
