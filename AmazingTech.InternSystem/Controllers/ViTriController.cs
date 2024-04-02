@@ -23,8 +23,9 @@ namespace AmazingTech.InternSystem.Controller
             _viTriService = viTriService;
             _viTriRepository = viTriRepository;
         }
-        [HttpGet("get")]
+        [HttpGet]
         [Authorize(Roles = "Admin, Mentor, HR")]
+        [Route("get")]
         public async Task<IActionResult> GetViTriList()
         {
             try
