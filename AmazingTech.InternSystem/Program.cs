@@ -80,6 +80,7 @@ namespace AmazingTech.InternSystem
                     b =>
                     {
                         b.SetIsOriginAllowed(host => true)
+                            .AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
